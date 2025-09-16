@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Best Price Games</title>
+    
+
+    <!-- Estilos -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
+    
+    <!-- PWA Meta tags -->
+    <meta name="theme-color" content="#7c3aed">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Best Price Games">
+</head>
+<body>
+    <!-- NAVBAR PRINCIPAL -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <!-- Brand/Logo -->
+            <div class="nav-brand">
+                <div class="nav-logo">🎮</div>
+                <h1>BPG</h1>
+            </div>
+            
+            <!-- Búsqueda (Desktop y Mobile) -->
+            <div class="nav-search">
+                <i class="fas fa-search search-icon"></i>
+                <input 
+                    type="text" 
+                    class="search-input" 
+                    placeholder="Buscar juegos, géneros..."
+                    autocomplete="off"
+                >
+            </div>
+            
+            <!-- Navegación Desktop -->
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <button class="nav-btn" data-page="home">
+                        <i class="fas fa-home"></i>
+                        <span>Inicio</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" data-page="favoritos">
+                        <i class="fas fa-heart"></i>
+                        <span>Favoritos</span>
+                    </button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-btn" data-page="biblioteca">
+                        <i class="fas fa-book"></i>
+                        <span>Biblioteca</span>
+                    </button>
+                </li>
+            </ul>
+            
+            <!-- Usuario -->
+            <div class="nav-user" onclick="navigateToProfile()">
+                <div class="user-avatar">A</div>
+                <span class="user-name" style="display: none;">Alex_Gamer2024</span>
+                <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+            </div>
+        </div>
+    </nav>
+
+    <!-- CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        <div id="content-container">
+            <!-- El contenido de las páginas se carga aquí dinámicamente -->
+            <div class="loading-container" style="
+                display: flex; 
+                flex-direction: column;
+                align-items: center; 
+                justify-content: center; 
+                padding: 4rem 2rem;
+                min-height: 60vh;
+            ">
+                <div class="loading-spinner" style="
+                    width: 40px;
+                    height: 40px;
+                    border: 3px solid var(--color-primary);
+                    border-top-color: transparent;
+                    border-radius: 50%;
+                    animation: spin 1s linear infinite;
+                    margin-bottom: 1rem;
+                "></div>
+                <p style="
+                    font-size: 1.1rem;
+                    color: var(--text-secondary);
+                    margin: 0;
+                ">Cargando aplicación...</p>
+            </div>
+        </div>
+    </main>
+    
+    <!-- Services -->
+    <script src="services/modalBase.js"></script>
+    <script src="services/juegoService.js"></script>
+    <script src="services/usuarioService.js"></script>
+    <script src="services/favoritoService.js"></script>
+    <script src="services/bibliotecaService.js"></script>
+    
+    <!-- Modales -->
+    <script src="modals/confirmacion/confirmacion.js"></script>
+    <script src="modals/modals-init.js"></script>
+    
+    <!-- App principal -->
+    <script src="app.js"></script>
+
+    <!-- Service Worker para PWA -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('SW registrado: ', registration);
+                    })
+                    .catch(registrationError => {
+                        console.log('SW registro falló: ', registrationError);
+                    });
+            });
+        }
+    </script>
+</body>
+</html>
