@@ -10,8 +10,8 @@ window.API_BASE_URL = (function() {
 const pages = {
     home: {
         html: 'pages/home/home.html',
-        //css: 'pages/home/home.css',
-        //js: 'pages/home/home.js',
+        css: 'pages/home/home.css',
+        js: 'pages/home/home.js',
         deps: [
             /*'services/gamesService.js',
             'services/libraryService.js'*/
