@@ -370,7 +370,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🎮 Inicializando Best Price Games...');
 
     // Crear menú móvil si no existe
-    createMobileMenu();
+    //createMobileMenu();
 
     // Event listeners para navegación
     setupNavigationListeners();
@@ -477,7 +477,7 @@ function createMobileMenu() {
         overlay.className = 'mobile-overlay';
         document.body.appendChild(overlay);
     }
-}
+} 
 
 function setupNavigationListeners() {
     // Event listeners para botones de navegación (desktop y móvil)
