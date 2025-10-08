@@ -12,11 +12,31 @@ const pages = {
         html: 'pages/home/home.html',
         css: 'pages/home/home.css',
         js: 'pages/home/home.js',
-        deps: [
-            /*'services/gamesService.js',
-            'services/libraryService.js'*/
-        ],
         init: 'initializeHome'
+    },
+    favoritos: {
+        html: 'pages/favoritos/favoritos.html',
+        // css: 'pages/favoritos/favoritos.css',
+        // js: 'pages/favoritos/favoritos.js',
+        // init: 'initializeFavoritos'
+    },
+    biblioteca: {
+        html: 'pages/biblioteca/biblioteca.html',
+        // css: 'pages/biblioteca/biblioteca.css',
+        // js: 'pages/biblioteca/biblioteca.js',
+        // init: 'initializeBiblioteca'
+    },
+    perfil: {
+        html: 'pages/perfil/perfil.html',
+        // css: 'pages/perfil/perfil.css',
+        // js: 'pages/perfil/perfil.js',
+        // init: 'initializePerfil'
+    },
+    juego: {
+        html: 'pages/juego/juego.html',
+        // css: 'pages/juego/juego.css',
+        // js: 'pages/juego/juego.js',
+        // init: 'initializeJuego'
     }
 };
 
