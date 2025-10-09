@@ -10,13 +10,33 @@ window.API_BASE_URL = (function() {
 const pages = {
     home: {
         html: 'pages/home/home.html',
-        //css: 'pages/home/home.css',
-        //js: 'pages/home/home.js',
-        deps: [
-            /*'services/gamesService.js',
-            'services/libraryService.js'*/
-        ],
+        css: 'pages/home/home.css',
+        js: 'pages/home/home.js',
         init: 'initializeHome'
+    },
+    favoritos: {
+        html: 'pages/favoritos/favoritos.html',
+        // css: 'pages/favoritos/favoritos.css',
+        // js: 'pages/favoritos/favoritos.js',
+        // init: 'initializeFavoritos'
+    },
+    biblioteca: {
+        html: 'pages/biblioteca/biblioteca.html',
+        // css: 'pages/biblioteca/biblioteca.css',
+        // js: 'pages/biblioteca/biblioteca.js',
+        // init: 'initializeBiblioteca'
+    },
+    perfil: {
+        html: 'pages/perfil/perfil.html',
+        // css: 'pages/perfil/perfil.css',
+        // js: 'pages/perfil/perfil.js',
+        // init: 'initializePerfil'
+    },
+    juego: {
+        html: 'pages/juego/juego.html',
+        // css: 'pages/juego/juego.css',
+        // js: 'pages/juego/juego.js',
+        // init: 'initializeJuego'
     }
 };
 
@@ -370,7 +390,7 @@ document.addEventListener('DOMContentLoaded', () => {
     console.log('🎮 Inicializando Best Price Games...');
 
     // Crear menú móvil si no existe
-    createMobileMenu();
+    //createMobileMenu();
 
     // Event listeners para navegación
     setupNavigationListeners();
@@ -477,7 +497,7 @@ function createMobileMenu() {
         overlay.className = 'mobile-overlay';
         document.body.appendChild(overlay);
     }
-}
+} 
 
 function setupNavigationListeners() {
     // Event listeners para botones de navegación (desktop y móvil)
