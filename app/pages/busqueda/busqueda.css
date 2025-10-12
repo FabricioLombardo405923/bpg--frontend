@@ -1,0 +1,289 @@
+/* Contenedor principal de búsqueda */
+.busqueda-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+/* Header de búsqueda */
+.busqueda-header {
+    margin-bottom: 2rem;
+    text-align: center;
+}
+
+.busqueda-header .section-title {
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.busqueda-header .section-title span {
+    color: var(--color-primary);
+}
+
+.resultados-count {
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+/* Grid de resultados */
+.resultados-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+/* Card de resultado */
+.resultado-item {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    cursor: pointer;
+}
+
+.resultado-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 30px rgba(124, 58, 237, 0.3);
+}
+
+/* Imagen */
+.resultado-imagen-wrapper {
+    position: relative;
+    width: 100%;
+    padding-top: 133.33%; /* Aspecto 3:4 */
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.resultado-imagen {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.resultado-item:hover .resultado-imagen {
+    transform: scale(1.05);
+}
+
+/* Overlay con botón */
+.resultado-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.resultado-item:hover .resultado-overlay {
+    opacity: 1;
+}
+
+.btn-small {
+    padding: 0.5rem 1rem;
+    font-size: 0.9rem;
+}
+
+/* Info del juego */
+.resultado-info {
+    padding: 1rem;
+}
+
+.resultado-titulo {
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    line-height: 1.4;
+    min-height: 2.8em;
+}
+
+/* Meta información (rating y metacritic) */
+.resultado-meta {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 0.75rem;
+}
+
+.resultado-rating {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    color: #fbbf24;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.resultado-metacritic {
+    display: flex;
+    align-items: center;
+}
+
+.metacritic-score {
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 0.85rem;
+    color: white;
+}
+
+/* Géneros */
+.resultado-generos {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+}
+
+.genre-tag {
+    background: rgba(124, 58, 237, 0.2);
+    color: var(--color-primary);
+    padding: 0.25rem 0.75rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+/* Plataformas */
+.resultado-plataformas {
+    display: flex;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+    color: var(--text-muted);
+    font-size: 1rem;
+}
+
+.resultado-plataformas i {
+    transition: color 0.2s ease;
+}
+
+.resultado-plataformas i:hover {
+    color: var(--color-primary);
+}
+
+/* Precio */
+.resultado-precio {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    margin-top: 0.75rem;
+    padding-top: 0.75rem;
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.precio-actual {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #10b981;
+}
+
+.precio-original {
+    font-size: 1rem;
+    color: var(--text-muted);
+    text-decoration: line-through;
+}
+
+/* Loading indicator */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 3rem 0;
+    color: var(--text-muted);
+}
+
+.loading-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(124, 58, 237, 0.3);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* Mensaje de no más resultados */
+.no-more-message {
+    text-align: center;
+    padding: 2rem;
+    color: var(--text-muted);
+    font-size: 1.1rem;
+}
+
+/* Mensaje de error */
+.error-message {
+    text-align: center;
+    padding: 3rem;
+    color: #ef4444;
+    font-size: 1.1rem;
+}
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .resultados-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    }
+}
+
+@media (max-width: 768px) {
+    .busqueda-container {
+        padding: 1rem;
+    }
+    
+    .busqueda-header .section-title {
+        font-size: 1.5rem;
+    }
+    
+    .resultados-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 1rem;
+    }
+    
+    .resultado-titulo {
+        font-size: 0.95rem;
+    }
+    
+    .resultado-info {
+        padding: 0.75rem;
+    }
+    
+    .precio-actual {
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .resultados-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+    }
+    
+    .genre-tag {
+        font-size: 0.7rem;
+        padding: 0.2rem 0.5rem;
+    }
+    
+    .resultado-plataformas {
+        font-size: 0.85rem;
+    }
+}

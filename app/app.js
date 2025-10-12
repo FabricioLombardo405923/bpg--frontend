@@ -37,6 +37,12 @@ const pages = {
         // css: 'pages/juego/juego.css',
         // js: 'pages/juego/juego.js',
         // init: 'initializeJuego'
+    },
+    busqueda: {
+        html: 'pages/busqueda/busqueda.html',
+        css: 'pages/busqueda/busqueda.css',
+        js: 'pages/busqueda/busqueda.js',
+        init: 'initializeBusqueda'
     }
 };
 

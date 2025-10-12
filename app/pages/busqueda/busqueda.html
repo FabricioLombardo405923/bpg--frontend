@@ -1,0 +1,51 @@
+<div class="busqueda-container">
+    <!-- Header con el término de búsqueda -->
+    <div class="busqueda-header">
+        <h2 class="section-title">Resultados para: <span id="searchTerm"></span></h2>
+        <p class="resultados-count" id="resultsCount">Cargando...</p>
+    </div>
+
+    <!-- Grid de resultados -->
+    <div id="resultadosContainer" class="resultados-grid"></div>
+
+    <!-- Loader para scroll infinito -->
+    <div id="loadingIndicator" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Cargando más juegos...</p>
+    </div>
+
+    <!-- Mensaje cuando no hay más resultados -->
+    <div id="noMoreResults" class="no-more-message" style="display: none;">
+        <p>No hay más resultados</p>
+    </div>
+</div>
+
+<!-- Template para cada resultado -->
+<template id="resultado-template">
+    <div class="resultado-item">
+        <div class="resultado-imagen-wrapper">
+            <img class="resultado-imagen" loading="lazy" alt="Juego">
+            <div class="resultado-overlay">
+                <button class="btn btn-primary btn-small">Ver Detalles</button>
+            </div>
+        </div>
+        <div class="resultado-info">
+            <h3 class="resultado-titulo"></h3>
+            <div class="resultado-meta">
+                <div class="resultado-rating">
+                    <i class="fas fa-star"></i>
+                    <span class="rating-value"></span>
+                </div>
+                <div class="resultado-metacritic">
+                    <span class="metacritic-score"></span>
+                </div>
+            </div>
+            <div class="resultado-generos"></div>
+            <div class="resultado-plataformas"></div>
+            <div class="resultado-precio">
+                <span class="precio-actual"></span>
+                <span class="precio-original"></span>
+            </div>
+        </div>
+    </div>
+</template>
