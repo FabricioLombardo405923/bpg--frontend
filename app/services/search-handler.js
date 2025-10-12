@@ -11,7 +11,14 @@ function initializeSearchBar() {
         }
     });
     
-    // búsqueda en tiempo real con debounce
+    // Opcional: agregar un botón de búsqueda si no existe
+    const searchIcon = document.querySelector('.search-icon');
+    if (searchIcon) {
+        searchIcon.style.cursor = 'pointer';
+        searchIcon.addEventListener('click', realizarBusqueda);
+    }
+    
+    // Opcional: búsqueda en tiempo real con debounce
     let debounceTimer;
     searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
@@ -46,12 +53,14 @@ function realizarBusqueda() {
 }
 
 function navigateToBusqueda(query) {
-    // Usar el sistema de páginas de tu app
-    window.location.href = `/app/?page=busqueda&query=${encodeURIComponent(query)}`;
+    // Solo usar el sistema de páginas, sin query en URL
+    window.location.href = `/app/?page=busqueda`;
 }
 
+// Opcional: Sistema de sugerencias de búsqueda
 function mostrarSugerencias(query) {
-
+    // Aquí puedes implementar un dropdown con sugerencias
+    // usando el mismo endpoint pero con menos resultados
     
     let suggestionsBox = document.getElementById('search-suggestions');
     
@@ -65,13 +74,13 @@ function mostrarSugerencias(query) {
     }
     
     // Hacer fetch de sugerencias
-    const API_BASE = 'http://localhost:3000/api';
+    const API_BASE = window.API_BASE_URL || 'http://localhost:3000/api';
     fetch(`${API_BASE}/juegos/buscar?query=${encodeURIComponent(query)}&pageSize=5&pageNumber=0&ordering=-rating`)
         .then(res => res.json())
         .then(result => {
             if (result.success && result.data.length > 0) {
                 suggestionsBox.innerHTML = result.data.map(game => `
-                    <div class="suggestion-item" onclick="sessionStorage.setItem('searchQuery', '${game.name.replace(/'/g, "\\'")}'); window.location.href='/?page=busqueda&query=${encodeURIComponent(game.name)}'">
+                    <div class="suggestion-item" data-game-name="${game.name.replace(/"/g, '&quot;')}">
                         <img src="${game.background_image || 'https://via.placeholder.com/50'}" 
                              alt="${game.name}"
                              onerror="this.src='https://via.placeholder.com/50'">
@@ -81,6 +90,15 @@ function mostrarSugerencias(query) {
                         </div>
                     </div>
                 `).join('');
+                
+                // Agregar event listeners a cada sugerencia
+                suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        const gameName = item.getAttribute('data-game-name');
+                        sessionStorage.setItem('searchQuery', gameName);
+                        window.location.href = '/app/?page=busqueda';
+                    });
+                });
                 
                 suggestionsBox.style.display = 'block';
             } else {
