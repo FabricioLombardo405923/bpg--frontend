@@ -1,18 +1,148 @@
-<div class="error-container" style="
-            padding: 4rem 2rem; 
-            text-align: center; 
-            color: var(--color-danger);
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        ">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">😕</div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Pagina sin contenido</h2>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                <button onclick="loadPage('home')" class="btn btn-secondary">
-                    <i class="fas fa-home"></i> Ir al Inicio
-                </button>
+<div class="game-page" id="gamePage">
+        <!-- Loading State -->
+        <div id="loadingState" class="loading-state">
+            <div class="loading-spinner"></div>
+            <p>Cargando información del juego...</p>
+        </div>
+
+        <!-- Error State -->
+        <div id="errorState" class="error-state">
+            <i class="fas fa-exclamation-triangle"></i>
+            <h2>Error al cargar el juego</h2>
+            <p id="errorMessage"></p>
+        </div>
+    </div>
+
+    <!-- Templates -->
+    <template id="title-section-template">
+        <div class="title-section">
+            <h1 class="game-title"></h1>
+            <div class="game-metadata"></div>
+        </div>
+    </template>
+
+    <template id="metadata-item-template">
+        <div class="metadata-item">
+            <i></i>
+            <span></span>
+        </div>
+    </template>
+
+    <template id="carousel-section-template">
+        <div class="carousel-section">
+            <div class="carousel-container">
+                <button class="carousel-btn prev"><i class="fas fa-chevron-left"></i></button>
+                <div class="carousel-track"></div>
+                <button class="carousel-btn next"><i class="fas fa-chevron-right"></i></button>
             </div>
+            <div class="carousel-indicators"></div>
+        </div>
+    </template>
+
+    <template id="carousel-slide-template">
+        <div class="carousel-slide">
+            <img loading="lazy" alt="Screenshot">
+        </div>
+    </template>
+
+    <template id="carousel-video-template">
+        <div class="carousel-slide">
+            <video controls>
+                <source type="video/mp4">
+                Tu navegador no soporta video HTML5.
+            </video>
+        </div>
+    </template>
+
+    <template id="carousel-indicator-template">
+        <button class="indicator"></button>
+    </template>
+
+    <template id="price-section-template">
+        <div class="price-section">
+            <h2 class="section-title">
+                <i class="fas fa-shopping-cart"></i>
+                Opciones de Compra
+            </h2>
+            <div class="purchase-options"></div>
+        </div>
+    </template>
+
+    <template id="purchase-card-template">
+        <div class="purchase-card">
+            <div class="store-info">
+                <i class="store-icon fas fa-store"></i>
+                <div class="price-info">
+                    <div class="store-name"></div>
+                    <div class="price-display">
+                        <span class="current-price"></span>
+                        <span class="discount-badge"></span>
+                        <span class="original-price"></span>
+                    </div>
+                    
+                </div>
+            </div>
+            <a class="btn-buy" target="_blank" rel="noopener noreferrer">
+                <i class="fas fa-shopping-bag"></i>
+                Comprar Ahora
+            </a>
+        </div>
+    </template>
+
+    <template id="description-section-template">
+        <div class="description-section">
+            <h2 class="section-title">
+                <i class="fas fa-align-left"></i>
+                Descripción
+            </h2>
+            <div class="description-content"></div>
+        </div>
+    </template>
+
+    <template id="features-section-template">
+        <div class="features-section">
+            <h2 class="section-title">
+                <i class="fas fa-star"></i>
+                Características
+            </h2>
+            <div class="feature-grid"></div>
+        </div>
+    </template>
+
+    <template id="feature-group-template">
+        <div class="feature-group">
+            <h3 class="feature-group-title"></h3>
+            <div class="badge-container"></div>
+        </div>
+    </template>
+
+    <template id="badge-template">
+        <span class="badge"></span>
+    </template>
+
+    <template id="requirements-section-template">
+        <div class="requirements-section">
+            <h2 class="section-title">
+                <i class="fas fa-desktop"></i>
+                Especificaciones Técnicas
+            </h2>
+            <div class="requirements-grid">
+                <div class="requirements-column minimum">
+                    <h3><i class="fas fa-check-circle"></i> Requisitos Mínimos</h3>
+                    <div class="requirements-content"></div>
+                </div>
+                <div class="requirements-column recommended">
+                    <h3><i class="fas fa-star"></i> Requisitos Recomendados</h3>
+                    <div class="requirements-content"></div>
+                </div>
+            </div>
+        </div>
+    </template>
+
+    <template id="requirement-item-template">
+        <div class="requirement-item">
+            <strong class="req-label"></strong>
+            <span class="req-value"></span>
+        </div>
+    </template>
 </div>

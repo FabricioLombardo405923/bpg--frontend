@@ -1,9 +1,9 @@
 // Estado de la búsqueda
 const searchState = {
     query: '',
-    pageNumber: 0,
+    pageNumber: 1,
     pageSize: 10,
-    ordering: '-rating',
+    ordering: 'rating',
     isLoading: false,
     totalResults: 0,
     totalPages: 0,
@@ -30,66 +30,71 @@ async function initializeBusqueda() {
 // Cargar resultados de búsqueda
 async function cargarResultados() {
     if (searchState.isLoading) return;
-    
+
     searchState.isLoading = true;
     mostrarLoader(true);
-    
+
     const container = document.getElementById('resultadosContainer');
     container.innerHTML = '';
-    
+
     const API_BASE = 'http://localhost:3000/api';
-    const url = `${API_BASE}/juegos/buscar?query=${encodeURIComponent(searchState.query)}&pageSize=${searchState.pageSize}&pageNumber=${searchState.pageNumber}&ordering=${searchState.ordering}`;
+    const url = `${API_BASE}/games/search?q=${encodeURIComponent(searchState.query)}&page=${searchState.pageNumber}&pageSize=${searchState.pageSize}&ordenarPor=${searchState.ordering}`;
     
     try {
         const response = await fetch(url);
         const result = await response.json();
-        
-        if (!result.success || !result.data) {
+
+        // Validación de estructura
+        if (!result.success || !result.data || !Array.isArray(result.data.juegos)) {
             throw new Error('Error al cargar resultados');
         }
-        
-        // Actualizar estado
-        searchState.totalResults = result.paginacion.total;
-        searchState.totalPages = result.paginacion.totalPages;
-        
-        // Actualizar contador
-        //actualizarContador();
-        
-        // Renderizar juegos
-        if (result.data.length === 0) {
+
+        const juegos = result.data.juegos;
+        const { page, pageSize, total, hasNext } = result.data;
+
+        //Actualizar estado
+        searchState.pageNumber = page || 1;
+        searchState.pageSize = pageSize || 10;
+        searchState.totalResults = total || juegos.length;
+        searchState.totalPages = Math.ceil((total || 0) / (pageSize || 10));
+
+        // Renderizar resultados
+        if (juegos.length === 0) {
             document.getElementById('noResults').style.display = 'flex';
             if (searchState.pagination) {
                 searchState.pagination.destroy();
+                searchState.pagination = null;
             }
         } else {
             document.getElementById('noResults').style.display = 'none';
-            result.data.forEach(game => {
+
+            juegos.forEach(game => {
                 container.appendChild(crearResultadoCard(game));
             });
-            
-            // Inicializar o actualizar paginación
+
+            // Inicializar o actualizar paginador
             if (!searchState.pagination) {
                 searchState.pagination = new Pagination({
                     containerId: 'paginationContainer',
-                    currentPage: searchState.pageNumber,
+                    currentPage: searchState.pageNumber -1,
                     totalPages: searchState.totalPages,
                     maxButtons: 5,
                     onPageChange: (newPage) => {
-                        searchState.pageNumber = newPage;
+                        searchState.pageNumber = newPage + 1;
                         cargarResultados();
                     }
                 });
             } else {
                 searchState.pagination.update({
-                    currentPage: searchState.pageNumber,
+                    currentPage: searchState.pageNumber - 1,
                     totalPages: searchState.totalPages
                 });
             }
-            
+
             // Scroll al inicio
             window.scrollTo({ top: 0, behavior: 'smooth' });
         }
-        
+
     } catch (error) {
         console.error('Error al cargar resultados:', error);
         mostrarError('Error al cargar los resultados de búsqueda');
@@ -99,129 +104,109 @@ async function cargarResultados() {
     }
 }
 
+
+// Crear la card del juego
 function crearResultadoCard(game) {
     const template = document.getElementById('resultado-template');
     const card = template.content.cloneNode(true);
-    
-    // Imagen de RAWG
+
+    // Imagen
     const img = card.querySelector('.resultado-imagen');
-    img.src = game.background_image || 'https://via.placeholder.com/460x215?text=Sin+Imagen';
-    img.alt = game.name;
-    img.onerror = () => {
-        img.src = 'https://via.placeholder.com/460x215?text=Sin+Imagen';
-    };
-    
+    img.src = game.imagenes.portada.original || game.imagenes.portada.steamHeader || 'https://via.placeholder.com/460x215?text=Sin+Imagen';
+    img.alt = game.nombre;
+    img.onerror = () => { img.src = 'https://via.placeholder.com/460x215?text=Sin+Imagen'; };
+
     // Título
-    card.querySelector('.resultado-titulo').textContent = game.name;
+    card.querySelector('.resultado-titulo').textContent = game.nombre;
     
-    // Metacritic
-    /* const metacriticContainer = card.querySelector('.resultado-metacritic');
-    const metacriticScore = card.querySelector('.metacritic-score');
-    if (game.metacritic) {
-        metacriticScore.textContent = game.metacritic;
-        metacriticScore.style.backgroundColor = getMetacriticColor(game.metacritic);
-        metacriticContainer.style.display = 'block';
-    } else {
-        metacriticContainer.style.display = 'none';
-    } */
-    
-    // Rating de RAWG
-    const ratingContainer = card.querySelector('.resultado-rating');
-    const ratingValue = card.querySelector('.rating-value');
-    if (game.rating) {
-        ratingValue.textContent = game.rating.toFixed(1) + '/5';
-        ratingContainer.style.display = 'flex';
-    } else {
-        ratingContainer.style.display = 'none';
-    }
-    
-    // Fecha de lanzamiento
-    const fechaEl = card.querySelector('.resultado-fecha');
-    if (game.released) {
-        const fecha = new Date(game.released);
-        fechaEl.innerHTML = `<i class="fas fa-calendar"></i> ${fecha.toLocaleDateString('es-ES', { year: 'numeric', month: 'short', day: 'numeric' })}`;
-        fechaEl.style.display = 'flex';
-    } else {
-        fechaEl.style.display = 'none';
-    }
-    
-    // Géneros
-    const genresEl = card.querySelector('.resultado-generos');
-    if (game.genres && game.genres.length > 0) {
-        const genreNames = game.genres.slice(0, 3).map(g => g.name);
-        genresEl.innerHTML = genreNames.map(name => 
-            `<span class="genre-tag">${name}</span>`
-        ).join('');
-    } else {
-        genresEl.style.display = 'none';
-    }
-    
-    // Descripción (usando tags principales)
+    // Puntuación
+    // const ratingContainer = card.querySelector('.resultado-rating');
+    // const ratingValue = card.querySelector('.rating-value');
+    // if (game.puntuacion && game.puntuacion > 0) {
+    //     ratingValue.textContent = `${game.puntuacion.toFixed(0)}/100`;
+    //     ratingContainer.style.display = 'flex';
+    // } else {
+    //     ratingContainer.style.display = 'none';
+    // }
+
+    // Descripción
     const descripcionEl = card.querySelector('.resultado-descripcion');
-    if (game.tags && game.tags.length > 0) {
-        const mainTags = game.tags.slice(0, 4).map(t => t.name).join(' • ');
-        descripcionEl.textContent = mainTags;
+    if (game.descripcion) {
+        descripcionEl.textContent = game.descripcionCorta || game.descripcion;
     } else {
         descripcionEl.style.display = 'none';
     }
 
+    // Géneros
+    const generosEl = card.querySelector('.resultado-generos');
+    if (game.generos && game.generos.length > 0) {
+        generosEl.textContent = game.generos.join(' • ');
+        generosEl.style.display = 'block';
+    } else {
+        generosEl.style.display = 'none';
+    }
+
+
+    // tags
+    const tags = card.querySelector('.resultado-tags');
+    if (game.tags && game.tags.length > 0) {
+        tags.textContent = game.tags.slice(0, 4).join(' • ');
+    } else {
+        tags.style.display = 'none';
+    }
+
     // Plataformas
     const plataformasEl = card.querySelector('.resultado-plataformas');
-    if (game.parent_platforms && game.parent_platforms.length > 0) {
-        plataformasEl.innerHTML = game.parent_platforms
+    if (game.plataformas && game.plataformas.length > 0) {
+        plataformasEl.innerHTML = game.plataformas
             .slice(0, 6)
-            .map(p => `<span class="plataforma-icon">${getPlatformIcon(p.platform.slug)}</span>`)
+            .map(p => `<span class="plataforma-icon">${getPlatformIcon(p.toLowerCase())}</span>`)
             .join('');
         plataformasEl.style.display = 'flex';
     } else {
         plataformasEl.style.display = 'none';
     }
 
-    
-    // Precio (si tiene ofertas)
-    const precioContainer = card.querySelector('.resultado-precio');
-    const precioActual = card.querySelector('.precio-actual');
-    const precioOriginal = card.querySelector('.precio-original');
-    const precioDescuento = card.querySelector('.precio-descuento');
-    
-    if (game.ofertas && game.ofertas.length > 0 && game.tieneOferta) {
-        const mejorOferta = game.ofertas.reduce((min, oferta) => 
-            parseFloat(oferta.price) < parseFloat(min.price) ? oferta : min
-        );
-        
-        precioActual.textContent = `$${parseFloat(mejorOferta.price).toFixed(2)}`;
-        
-        if (parseFloat(mejorOferta.savings) > 0) {
-            precioOriginal.textContent = `$${parseFloat(mejorOferta.retailPrice).toFixed(2)}`;
-            precioOriginal.style.display = 'inline';
-            
-            precioDescuento.textContent = `-${Math.round(mejorOferta.savings)}%`;
-            precioDescuento.style.display = 'inline';
-        }
-        
-        precioContainer.style.display = 'flex';
-    } else if (game.ofertas && game.ofertas.length > 0) {
-        // Tiene precio pero sin descuento
-        const oferta = game.ofertas[0];
-        precioActual.textContent = `$${parseFloat(oferta.price).toFixed(2)}`;
-        precioContainer.style.display = 'flex';
-    } else {
-        precioContainer.style.display = 'none';
-    }
-    
-    // Click handler
-    card.querySelector('.btn-primary').onclick = () => navigateToGame(game.id);
+    // Precio y descuento
+    // const precioContainer = card.querySelector('.resultado-precio');
+    // const precioActual = card.querySelector('.precio-actual');
+    // const precioOriginal = card.querySelector('.precio-original');
+    // const precioDescuento = card.querySelector('.precio-descuento');
+
+    // if (game.precio && game.precio > 0) {
+    //     precioActual.textContent = `$${parseFloat(game.precio).toFixed(2)}`;
+
+    //     if (game.descuento && game.descuento > 0) {
+    //         const precioSinDescuento = game.precio / (1 - game.descuento / 100);
+    //         precioOriginal.textContent = `$${precioSinDescuento.toFixed(2)}`;
+    //         precioOriginal.style.display = 'inline';
+    //         precioDescuento.textContent = `-${Math.round(game.descuento)}%`;
+    //         precioDescuento.style.display = 'inline';
+    //     } else {
+    //         precioOriginal.style.display = 'none';
+    //         precioDescuento.style.display = 'none';
+    //     }
+
+    //     precioContainer.style.display = 'flex';
+    // } else {
+    //     precioContainer.style.display = 'none';
+    // }
+
+    // Click
+    card.querySelector('.btn-primary').onclick = () => navigateToGame(game.idSteam);
     card.querySelector('.resultado-item-horizontal').onclick = (e) => {
         if (e.target.tagName !== 'BUTTON' && !e.target.closest('.btn-primary')) {
-            navigateToGame(game.id);
+            navigateToGame(game.idSteam);
         }
     };
-    
+
     return card;
 }
 
+
 function navigateToGame(gameId) {
-    window.location.href = `/?page=juego&id=${gameId}`;
+    sessionStorage.setItem('gameID', `${gameId}`);
+    window.location.href = `/app/?page=juego`;
 }
 
 // Utilidades
@@ -249,18 +234,20 @@ function getMetacriticColor(score) {
 }
 
 function getPlatformIcon(slug) {
-    const icons = {
-        'pc': '<i class="fab fa-windows"></i>',
-        'playstation': '<i class="fab fa-playstation"></i>',
-        'xbox': '<i class="fab fa-xbox"></i>',
-        'nintendo': '<i class="fas fa-gamepad"></i>',
-        'ios': '<i class="fab fa-apple"></i>',
-        'android': '<i class="fab fa-android"></i>',
-        'mac': '<i class="fab fa-apple"></i>',
-        'linux': '<i class="fab fa-linux"></i>'
-    };
-    return icons[slug] || '<i class="fas fa-desktop"></i>';
+    const s = slug.toLowerCase();
+
+    if (s.includes('pc')) return '<i class="fab fa-windows"></i>';
+    if (s.includes('playstation')) return '<i class="fab fa-playstation"></i>';
+    if (s.includes('xbox')) return '<i class="fab fa-xbox"></i>';
+    if (s.includes('nintendo')) return '<i class="fas fa-gamepad"></i>';
+    if (s.includes('ios')) return '<i class="fab fa-apple"></i>';
+    if (s.includes('android')) return '<i class="fab fa-android"></i>';
+    if (s.includes('mac')) return '<i class="fab fa-apple"></i>';
+    if (s.includes('linux')) return '<i class="fab fa-linux"></i>';
+
+    return '<i class="fas fa-desktop"></i>';
 }
+
 
 // Inicializar cuando la página carga
 initializeBusqueda();

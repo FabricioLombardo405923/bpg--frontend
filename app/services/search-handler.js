@@ -1,4 +1,3 @@
-// Handler para el buscador del navbar
 function initializeSearchBar() {
     const searchInput = document.querySelector('.search-input');
     
@@ -7,18 +6,23 @@ function initializeSearchBar() {
     // Manejar el evento Enter
     searchInput.addEventListener('keypress', (e) => {
         if (e.key === 'Enter') {
+            e.preventDefault();
+            ocultarSugerencias();
             realizarBusqueda();
         }
     });
     
-    // Opcional: agregar un botón de búsqueda si no existe
+    // Agregar evento al ícono de búsqueda
     const searchIcon = document.querySelector('.search-icon');
     if (searchIcon) {
         searchIcon.style.cursor = 'pointer';
-        searchIcon.addEventListener('click', realizarBusqueda);
+        searchIcon.addEventListener('click', () => {
+            ocultarSugerencias();
+            realizarBusqueda();
+        });
     }
     
-    // Opcional: búsqueda en tiempo real con debounce
+    // Búsqueda en tiempo real con debounce para sugerencias
     let debounceTimer;
     searchInput.addEventListener('input', (e) => {
         clearTimeout(debounceTimer);
@@ -40,28 +44,21 @@ function realizarBusqueda() {
     const query = searchInput.value.trim();
     
     if (!query) {
-        // Mostrar mensaje o simplemente no hacer nada
         searchInput.focus();
         return;
     }
     
-    // Guardar query en sessionStorage para que busqueda.js lo pueda leer
     sessionStorage.setItem('searchQuery', query);
-    
-    // Navegar a la página de búsqueda
-    navigateToBusqueda(query);
-}
-
-function navigateToBusqueda(query) {
-    // Solo usar el sistema de páginas, sin query en URL
     window.location.href = `/app/?page=busqueda`;
 }
 
-// Opcional: Sistema de sugerencias de búsqueda
+function navigateAJuego(gameId) {
+    sessionStorage.setItem('gameID', `${gameId}`);
+    window.location.href = `/app/?page=juego`;
+}
+
+// Sistema de sugerencias de búsqueda
 function mostrarSugerencias(query) {
-    // Aquí puedes implementar un dropdown con sugerencias
-    // usando el mismo endpoint pero con menos resultados
-    
     let suggestionsBox = document.getElementById('search-suggestions');
     
     if (!suggestionsBox) {
@@ -74,13 +71,14 @@ function mostrarSugerencias(query) {
     }
     
     // Hacer fetch de sugerencias
-    const API_BASE = window.API_BASE_URL || 'http://localhost:3000/api';
+    const API_BASE = 'http://localhost:3000/api';
+    /*
     fetch(`${API_BASE}/juegos/buscar?query=${encodeURIComponent(query)}&pageSize=5&pageNumber=0&ordering=-rating`)
         .then(res => res.json())
         .then(result => {
             if (result.success && result.data.length > 0) {
                 suggestionsBox.innerHTML = result.data.map(game => `
-                    <div class="suggestion-item" data-game-name="${game.name.replace(/"/g, '&quot;')}">
+                    <div class="suggestion-item" data-game-id="${game.id}">
                         <img src="${game.background_image || 'https://via.placeholder.com/50'}" 
                              alt="${game.name}"
                              onerror="this.src='https://via.placeholder.com/50'">
@@ -94,9 +92,41 @@ function mostrarSugerencias(query) {
                 // Agregar event listeners a cada sugerencia
                 suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
                     item.addEventListener('click', () => {
-                        const gameName = item.getAttribute('data-game-name');
-                        sessionStorage.setItem('searchQuery', gameName);
-                        window.location.href = '/app/?page=busqueda';
+                        const gameId = item.getAttribute('data-game-id');
+                        navigateAJuego(gameId);
+                    });
+                });
+                
+                suggestionsBox.style.display = 'block';
+            } else {
+                ocultarSugerencias();
+            }
+        })
+        .catch(() => {
+            ocultarSugerencias();
+        });*/
+        fetch(`${API_BASE}/games/autocomplete?q=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(result => {
+            if (result.success && result.data.length > 0) {
+                suggestionsBox.innerHTML = result.data.map(game => `
+                    <div class="suggestion-item" data-game-id="${game.idSteam}">
+                        <img src="${game.imagenPortada.small || game.imagenPortada.steam ||  'https://via.placeholder.com/150x200.png?text=No+Image'}" 
+                                alt="${game.nombre}">
+                        <div class="suggestion-info">
+                            <span class="suggestion-title">${game.nombre}</span>
+                            <span class="suggestion-rating">${game.puntuacion ? '⭐ ' + game.puntuacion : ''}</span>
+                        </div>
+                    </div>
+                `).join('');
+                
+                // Agregar event listeners a cada sugerencia
+                suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+                    item.addEventListener('click', () => {
+                        //const gameId = item.getAttribute('data-game-id');
+                        const gameId = item.getAttribute('data-game-id');
+
+                        navigateAJuego(gameId);
                     });
                 });
                 
@@ -117,17 +147,16 @@ function ocultarSugerencias() {
     }
 }
 
-// Cerrar sugerencias al hacer click fuera
+// Cerrar sugerencias
 document.addEventListener('click', (e) => {
     const searchContainer = document.querySelector('.nav-search');
     const suggestionsBox = document.getElementById('search-suggestions');
     
-    if (suggestionsBox && !searchContainer.contains(e.target)) {
+    if (suggestionsBox && searchContainer && !searchContainer.contains(e.target)) {
         ocultarSugerencias();
     }
 });
 
-// Inicializar cuando el DOM esté listo
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initializeSearchBar);
 } else {
