@@ -1,0 +1,74 @@
+<div class="busqueda-container">
+    <!-- Header con el término de búsqueda -->
+    <div class="busqueda-header">
+        <h2 class="section-title">Resultados para: <span id="searchTerm"></span></h2>
+        <!--<p class="resultados-count" id="resultsCount">Cargando...</p>-->
+    </div>
+
+    <!-- Lista de resultados horizontal -->
+    <div id="resultadosContainer" class="resultados-list"></div>
+
+    <!-- Mensaje cuando no hay resultados -->
+    <div id="noResults" class="no-results-message" style="display: none;">
+        <i class="fas fa-search"></i>
+        <p>No se encontraron resultados para tu búsqueda</p>
+    </div>
+
+    <!-- Paginación -->
+    <div id="paginationContainer"></div>
+
+    <!-- Loader -->
+    <div id="loadingIndicator" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Cargando juegos...</p>
+    </div>
+</div>
+
+<!-- Template para cada resultado -->
+<template id="resultado-template">
+    <div class="resultado-item-horizontal">
+        <div class="resultado-imagen-container">
+            <img class="resultado-imagen" loading="lazy" alt="Juego">
+        </div>
+        
+        <div class="resultado-contenido">
+            <div class="resultado-header">
+                <h3 class="resultado-titulo"></h3>
+                <!-- <div class="resultado-rating">
+                    <i class="fas fa-star"></i>
+                    <span class="rating-value"></span>
+                    
+                </div> -->
+
+                <!-- METACRITIC -->
+                <!--
+                <div class="resultado-metacritic">
+                    <span class="metacritic-score"></span>
+                </div>
+                -->
+            </div>
+            
+            <div class="resultado-meta-info">
+                <span class="rating-value"></span>
+                <div class="resultado-fecha"></div>
+                <div class="resultado-plataformas"></div>
+            </div>
+            
+            <div class="resultado-generos"></div>
+            <div class="resultado-descripcion"></div>
+            <div class="resultado-tags"></div>
+
+            <div class="resultado-footer">
+                <!-- <div class="resultado-precio">
+                    <span class="precio-actual"></span>
+                    <span class="precio-original"></span>
+                    <span class="precio-descuento"></span>
+                </div> -->
+                <button class="btn btn-primary">
+                    <i class="fas fa-info-circle"></i>
+                    Ver Detalles
+                </button>
+            </div>
+        </div>
+    </div>
+</template>

@@ -34,9 +34,15 @@ const pages = {
     },
     juego: {
         html: 'pages/juego/juego.html',
-        // css: 'pages/juego/juego.css',
-        // js: 'pages/juego/juego.js',
-        // init: 'initializeJuego'
+        css: 'pages/juego/juego.css',
+        js: 'pages/juego/juego.js',
+        init: 'initializeJuego'
+    },
+    busqueda: {
+        html: 'pages/busqueda/busqueda.html',
+        css: 'pages/busqueda/busqueda.css',
+        js: 'pages/busqueda/busqueda.js',
+        init: 'initializeBusqueda'
     }
 };
 
@@ -331,13 +337,13 @@ function updateURL(pageName, params = {}) {
 // =================================================================
 // FUNCIONES DE BÚSQUEDA Y NAVEGACIÓN
 // =================================================================
-
+/*
 function handleSearch(query) {
     if (query.trim()) {
         loadPage('home', { search: query.trim() });
     }
 }
-
+*/
 function navigateToGame(gameId) {
     loadPage('juego', { id: gameId });
 }
@@ -428,7 +434,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Exponer funciones globales
     window.loadPage = loadPage;
-    window.handleSearch = handleSearch;
+    //window.handleSearch = handleSearch;
     window.navigateToGame = navigateToGame;
     window.navigateToProfile = navigateToProfile;
     window.navigateToFavorites = navigateToFavorites;

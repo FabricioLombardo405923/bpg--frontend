@@ -1,8 +1,8 @@
 const pageSize = 20;
-const API_URL_RECIENTES =
-    `http://localhost:3000/api/descuentos?pageSize=${pageSize}&pageNumber=0&idsTiendas=1,25`;
-const API_URL_POPULARES =
-    `http://localhost:3000/api/descuentos/populares?pageSize=${pageSize}&pageNumber=0&idsTiendas=1,25`;
+const API_URL_RECIENTES =``
+    //`http://localhost:3000/api/descuentos?pageSize=${pageSize}&pageNumber=0&idsTiendas=1,25`;
+const API_URL_POPULARES = ``
+    //`http://localhost:3000/api/descuentos/populares?pageSize=${pageSize}&pageNumber=0&idsTiendas=1,25`;
 
 async function initializeHome() {
     await Promise.all([cargarPopulares(), cargarLista(), cargarRecientes()]);
