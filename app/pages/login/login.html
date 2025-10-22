@@ -1,0 +1,21 @@
+<section class="login-section" style="max-width:400px; margin:3rem auto; text-align:center;">
+  <h2>Iniciar Sesion</h2>
+
+  <form id="login-form" style="display:flex; flex-direction:column; gap:1rem; margin-top:1rem;">
+    <input type="email" id="login-email" placeholder="Correo electronico" required style="padding:0.5rem;">
+    <input type="password" id="login-password" placeholder="Contraseña" required style="padding:0.5rem;" >
+    <button type="submit" class="btn btn-primary">Entrar</button>
+  </form>
+
+  <div style="margin-top:1rem;">
+    <button id="google-login" class="btn btn-secondary">
+      <i class="fab fa-google"></i> Entrar con Google
+    </button>
+  </div>
+
+  <p id="login-error" style="color:red; margin-top:1rem;"></p>
+
+  <p style="margin-top:1rem;">¿No tenés cuenta? 
+  <a href="#" onclick="loadPage('register')">Registrate</a>
+</p>
+</section>

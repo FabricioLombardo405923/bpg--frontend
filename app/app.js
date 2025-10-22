@@ -43,6 +43,16 @@ const pages = {
         css: 'pages/busqueda/busqueda.css',
         js: 'pages/busqueda/busqueda.js',
         init: 'initializeBusqueda'
+    },
+    login: { 
+        html: 'pages/login/login.html', 
+        js:'pages/login/login.js',
+        init: 'initializeLogin'
+    },
+    register: { 
+     html: 'pages/register/register.html', 
+     js:'pages/register/register.js',
+     init: 'initializeRegister' 
     }
 };
 
@@ -604,3 +614,6 @@ function getIconByType(type) {
     };
     return icons[type] || 'info-circle';
 }
+
+  
+
