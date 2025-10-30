@@ -173,20 +173,24 @@ const gameState = {
 
         function renderPriceSection() {
             const game = gameState.gameData;
-            
+
             if (!game.linksCompra?.length) return;
 
             const template = document.getElementById('price-section-template');
             const section = template.content.cloneNode(true);
             const container = section.querySelector('.purchase-options');
 
-            game.linksCompra.forEach(link => {
-                if (!link.esPrincipal) {
+            // Filtramos los links secundarios
+            const secondaryLinks = game.linksCompra.filter(link => !link.esPrincipal);
+
+            // Si hay secundarios (por ejemplo CheapShark), se renderizan
+            if (secondaryLinks.length > 0) {
+                secondaryLinks.forEach(link => {
                     const cardTemplate = document.getElementById('purchase-card-template');
                     const card = cardTemplate.content.cloneNode(true);
 
                     card.querySelector('.store-name').textContent = link.tienda;
-                    
+
                     if (link.precio !== null) {
                         card.querySelector('.current-price').textContent = `$${link.precio.toFixed(2)}`;
                     } else {
@@ -204,8 +208,40 @@ const gameState = {
                     card.querySelector('.btn-buy').href = link.url;
 
                     container.appendChild(card);
+                });
+            } else {
+                // Si no hay secundarios, usamos el link principal
+                const mainLink = game.linksCompra.find(link => link.esPrincipal);
+                if (mainLink) {
+                    const cardTemplate = document.getElementById('purchase-card-template');
+                    const card = cardTemplate.content.cloneNode(true);
+
+                    card.querySelector('.store-name').textContent = mainLink.tienda;
+
+                    // Usamos los datos del juego si no vienen en el link
+                    const precio = mainLink.precio ?? game.precio ?? game.precioNormal;
+                    const descuento = mainLink.descuento ?? game.descuento ?? 0;
+
+                    if (precio !== null) {
+                        card.querySelector('.current-price').textContent = `$${precio.toFixed(2)}`;
+                    } else {
+                        card.querySelector('.current-price').textContent = 'Ver precio';
+                    }
+
+                    if (game.precioNormal && descuento > 0) {
+                        const precioNormal = game.precioNormal;
+                        card.querySelector('.original-price').textContent = `$${precioNormal.toFixed(2)}`;
+                        card.querySelector('.discount-badge').textContent = `-${Math.round(descuento)}%`;
+                    } else {
+                        card.querySelector('.original-price').remove();
+                        card.querySelector('.discount-badge').remove();
+                    }
+
+                    card.querySelector('.btn-buy').href = mainLink.url;
+
+                    container.appendChild(card);
                 }
-            });
+            }
 
             document.getElementById('gamePage').appendChild(section);
         }
