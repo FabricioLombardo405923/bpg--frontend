@@ -16,9 +16,9 @@ const pages = {
     },
     favoritos: {
         html: 'pages/favoritos/favoritos.html',
-        // css: 'pages/favoritos/favoritos.css',
-        // js: 'pages/favoritos/favoritos.js',
-        // init: 'initializeFavoritos'
+        css: 'pages/favoritos/favoritos.css',
+        js: 'pages/favoritos/favoritos.js',
+        init: 'initializeFavoritos'
     },
     biblioteca: {
         html: 'pages/biblioteca/biblioteca.html',
@@ -575,25 +575,6 @@ window.addEventListener('unhandledrejection', (event) => {
 // =================================================================
 // UTILIDADES GLOBALES
 // =================================================================
-
-// Función para mostrar notificaciones
-window.showNotification = function(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type}`;
-    notification.innerHTML = `
-        <i class="alert-icon fas fa-${getIconByType(type)}"></i>
-        <div class="alert-content">
-            <div class="alert-message">${message}</div>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove después de 5 segundos
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
-};
 
 function getIconByType(type) {
     const icons = {

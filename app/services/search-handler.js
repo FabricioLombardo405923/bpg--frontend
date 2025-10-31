@@ -115,7 +115,6 @@ function mostrarSugerencias(query) {
                                 alt="${game.nombre}">
                         <div class="suggestion-info">
                             <span class="suggestion-title">${game.nombre}</span>
-                            <span class="suggestion-rating">${game.puntuacion ? '⭐ ' + game.puntuacion : ''}</span>
                         </div>
                     </div>
                 `).join('');

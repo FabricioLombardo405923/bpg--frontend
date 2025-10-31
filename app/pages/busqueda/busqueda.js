@@ -118,16 +118,6 @@ function crearResultadoCard(game) {
 
     // Título
     card.querySelector('.resultado-titulo').textContent = game.nombre;
-    
-    // Puntuación
-    // const ratingContainer = card.querySelector('.resultado-rating');
-    // const ratingValue = card.querySelector('.rating-value');
-    // if (game.puntuacion && game.puntuacion > 0) {
-    //     ratingValue.textContent = `${game.puntuacion.toFixed(0)}/100`;
-    //     ratingContainer.style.display = 'flex';
-    // } else {
-    //     ratingContainer.style.display = 'none';
-    // }
 
     // Descripción
     const descripcionEl = card.querySelector('.resultado-descripcion');
@@ -145,7 +135,6 @@ function crearResultadoCard(game) {
     } else {
         generosEl.style.display = 'none';
     }
-
 
     // tags
     const tags = card.querySelector('.resultado-tags');
@@ -167,42 +156,53 @@ function crearResultadoCard(game) {
         plataformasEl.style.display = 'none';
     }
 
-    // Precio y descuento
-    // const precioContainer = card.querySelector('.resultado-precio');
-    // const precioActual = card.querySelector('.precio-actual');
-    // const precioOriginal = card.querySelector('.precio-original');
-    // const precioDescuento = card.querySelector('.precio-descuento');
+    // ============================================
+    // Botones de favoritos y biblioteca
+    // ============================================
+    
+   // Botón favorito
+    const btnFavorite = card.querySelector('.btn-quick-favorite');
+    if (btnFavorite) {
+        btnFavorite.onclick = async (e) => {
+            e.stopPropagation();
+            await toggleQuickFavorite(btnFavorite, game);
+        };
+    } else {
+        console.warn('No se encontró .btn-quick-favorite en la card:', card);
+    }
 
-    // if (game.precio && game.precio > 0) {
-    //     precioActual.textContent = `$${parseFloat(game.precio).toFixed(2)}`;
+    // Botón biblioteca
+    const btnLibrary = card.querySelector('.btn-quick-library');
+    if (btnLibrary) {
+        btnLibrary.onclick = (e) => {
+            e.stopPropagation();
+            showNotification('Sistema de biblioteca próximamente', 'info');
+        };
+    } else {
+        console.warn('No se encontró .btn-quick-library en la card:', card);
+    }
 
-    //     if (game.descuento && game.descuento > 0) {
-    //         const precioSinDescuento = game.precio / (1 - game.descuento / 100);
-    //         precioOriginal.textContent = `$${precioSinDescuento.toFixed(2)}`;
-    //         precioOriginal.style.display = 'inline';
-    //         precioDescuento.textContent = `-${Math.round(game.descuento)}%`;
-    //         precioDescuento.style.display = 'inline';
-    //     } else {
-    //         precioOriginal.style.display = 'none';
-    //         precioDescuento.style.display = 'none';
-    //     }
 
-    //     precioContainer.style.display = 'flex';
-    // } else {
-    //     precioContainer.style.display = 'none';
-    // }
+    checkAndUpdateFavoriteButton(btnFavorite, game.idSteam);
 
-    // Click
-    card.querySelector('.btn-primary').onclick = () => navigateToGame(game.idSteam);
-    card.querySelector('.resultado-item-horizontal').onclick = (e) => {
-        if (e.target.tagName !== 'BUTTON' && !e.target.closest('.btn-primary')) {
-            navigateToGame(game.idSteam);
-        }
-    };
+    const btnDetalles = card.querySelector('.btn-ver-detalles');
+    const itemContainer = card.querySelector('.resultado-item-horizontal');
+
+    if (btnDetalles) {
+        btnDetalles.onclick = () => navigateToGame(game.idSteam);
+    }
+
+    if (itemContainer) {
+        itemContainer.onclick = (e) => {
+            if (!e.target.closest('button')) {
+                navigateToGame(game.idSteam);
+            }
+        };
+    }
+
 
     return card;
 }
-
 
 function navigateToGame(gameId) {
     sessionStorage.setItem('gameID', `${gameId}`);
@@ -251,3 +251,138 @@ function getPlatformIcon(slug) {
 
 // Inicializar cuando la página carga
 initializeBusqueda();
+
+// ============================================
+// FUNCIONES DE FAVORITOS EN BÚSQUEDA
+// ============================================
+
+async function toggleQuickFavorite(btn, gameData) {
+    const userId = getUserId();
+    
+    if (!userId) {
+        showAlert('Debes iniciar sesión para agregar favoritos', 'warning');
+        return;
+    }
+
+    // Deshabilitar botón mientras procesa
+    btn.disabled = true;
+    const icon = btn.querySelector('i');
+    const wasActive = btn.classList.contains('active');
+
+    try {
+        if (wasActive) {
+            // ELIMINAR de favoritos
+            const success = await eliminarFavorito(gameData.idSteam);
+            if (success) {
+                btn.classList.remove('active');
+                icon.className = 'far fa-heart';
+                showAlert('Eliminado de favoritos', 'success');
+            }
+        } else {
+            // AGREGAR a favoritos
+            const success = await agregarFavorito(gameData);
+            if (success) {
+                btn.classList.add('active');
+                icon.className = 'fas fa-heart';
+                showAlert('¡Agregado a favoritos! ❤️', 'success');
+            }
+        }
+    } catch (error) {
+        showAlert('Error al actualizar favoritos', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+// Verificar y actualizar estado del botón
+async function checkAndUpdateFavoriteButton(btn, idSteam) {
+    const userId = getUserId();
+    if (!userId) return;
+
+    try {
+        const isFavorite = await verificarFavorito(idSteam);
+        if (isFavorite) {
+            btn.classList.add('active');
+            btn.querySelector('i').className = 'fas fa-heart';
+        }
+    } catch (error) {
+        console.error('Error al verificar favorito:', error);
+    }
+}
+
+// Verificar si está en favoritos
+async function verificarFavorito(idSteam) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`http://localhost:3000/api/favoritos/${userId}/check/${idSteam}`);
+        const result = await response.json();
+        return result.isFavorite || false;
+    } catch (error) {
+        console.error('Error al verificar favorito:', error);
+        return false;
+    }
+}
+
+// Agregar a favoritos
+async function agregarFavorito(gameData) {
+    try {
+        const userId = getUserId();
+        const response = await fetch('http://localhost:3000/api/favoritos', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                idSteam: gameData.idSteam,
+                nombre: gameData.nombre,
+                portada: gameData.imagenes?.portada?.original || 
+                        gameData.imagenes?.portada?.steamHeader || 
+                        null,
+                generos: gameData.generos || [],
+                plataformas: gameData.plataformas || []
+            })
+        });
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            showAlert(result.error || 'Error al agregar favorito', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error al agregar favorito:', error);
+        showAlert('Error de conexión', 'error');
+        return false;
+    }
+}
+
+// Eliminar de favoritos
+async function eliminarFavorito(idSteam) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`http://localhost:3000/api/favoritos/${userId}/${idSteam}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            showAlert(result.error || 'Error al eliminar favorito', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error al eliminar favorito:', error);
+        showAlert('Error de conexión', 'error');
+        return false;
+    }
+}
+
+// Obtener userId
+function getUserId() {
+    return sessionStorage.getItem('userId') || 
+           localStorage.getItem('userId') || 
+           'demo-user-123';
+}
