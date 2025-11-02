@@ -22,6 +22,10 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Best Price Games">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
 </head>
 <body>
     <!-- NAVBAR PRINCIPAL -->
@@ -112,7 +116,8 @@
     <script src="services/pagination.js"></script>
     <script src="services/search-handler.js"></script>
     <link rel="stylesheet" href="services/search-suggestions.css">
-    
+    <script src="services/toast.js"></script>
+
     <!-- Modales -->
     <script src="modals/confirmacion/confirmacion.js"></script>
     <script src="modals/modals-init.js"></script>
@@ -120,19 +125,5 @@
     <!-- App principal -->
     <script src="app.js"></script>
 
-    <!-- Service Worker para PWA -->
-  <!--   <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('SW registrado: ', registration);
-                    })
-                    .catch(registrationError => {
-                        console.log('SW registro falló: ', registrationError);
-                    });
-            });
-        }
-    </script> -->
 </body>
 </html>

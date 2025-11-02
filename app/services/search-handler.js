@@ -71,9 +71,8 @@ function mostrarSugerencias(query) {
     }
     
     // Hacer fetch de sugerencias
-    const API_BASE = 'http://localhost:3000/api';
     /*
-    fetch(`${API_BASE}/juegos/buscar?query=${encodeURIComponent(query)}&pageSize=5&pageNumber=0&ordering=-rating`)
+    fetch(`${API_BASE_URL}/juegos/buscar?query=${encodeURIComponent(query)}&pageSize=5&pageNumber=0&ordering=-rating`)
         .then(res => res.json())
         .then(result => {
             if (result.success && result.data.length > 0) {
@@ -105,7 +104,7 @@ function mostrarSugerencias(query) {
         .catch(() => {
             ocultarSugerencias();
         });*/
-        fetch(`${API_BASE}/games/autocomplete?q=${encodeURIComponent(query)}`)
+        fetch(`${API_BASE_URL}/games/autocomplete?q=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(result => {
             if (result.success && result.data.length > 0) {
@@ -115,7 +114,6 @@ function mostrarSugerencias(query) {
                                 alt="${game.nombre}">
                         <div class="suggestion-info">
                             <span class="suggestion-title">${game.nombre}</span>
-                            <span class="suggestion-rating">${game.puntuacion ? '⭐ ' + game.puntuacion : ''}</span>
                         </div>
                     </div>
                 `).join('');

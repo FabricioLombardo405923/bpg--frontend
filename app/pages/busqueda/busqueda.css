@@ -108,7 +108,7 @@
 
 /* Meta información */
 .resultado-meta-info {
-     display: flex;
+    display: flex;
     align-items: center;
     gap: 0.4rem;
     font-size: 1rem;
@@ -391,5 +391,80 @@
         font-size: 0.85rem;
         padding: 0.5rem 0.6rem;
         min-width: 35px;
+    }
+}
+
+/* Botones rápidos sobre la imagen */
+.resultado-imagen-container {
+    position: relative;
+}
+
+.resultado-quick-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.resultado-item-horizontal:hover .resultado-quick-actions {
+    opacity: 1;
+}
+
+.btn-quick-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-quick-action:hover {
+    transform: scale(1.1);
+}
+
+.btn-quick-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Favorito */
+.btn-quick-favorite:hover {
+    background: rgba(239, 68, 68, 0.9);
+}
+
+.btn-quick-favorite.active {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+/* Biblioteca */
+.btn-quick-library:hover {
+    background: rgba(59, 130, 246, 0.9);
+}
+
+.btn-quick-library.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* Responsive - Mostrar siempre en móvil */
+@media (max-width: 768px) {
+    .resultado-quick-actions {
+        opacity: 1;
+    }
+    
+    .btn-quick-action {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
     }
 }
