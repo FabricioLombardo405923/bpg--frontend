@@ -509,7 +509,5 @@ async function eliminarBiblioteca(idSteam) {
 
 function getUserId() {
     var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
-    if (!userId)
-        showAlert('Usuario no logueado. Iniciar sesión.', 'error');
     return userId;
 }

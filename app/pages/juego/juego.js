@@ -219,7 +219,6 @@ function updateCarousel() {
 
 function renderPriceSection() {
     const game = gameState.gameData;
-
     if (!game.linksCompra?.length) return;
 
     const template = document.getElementById('price-section-template');
@@ -228,6 +227,32 @@ function renderPriceSection() {
 
     const secondaryLinks = game.linksCompra.filter(link => !link.esPrincipal);
 
+    // ==========================================
+    // FUNCIÓN AUXILIAR PARA FORMATEAR PRECIOS
+    // ==========================================
+    function formatPriceARS(amount) {
+        if (amount == null) return 'No disponible'; // evita undefined o null
+        return new Intl.NumberFormat('es-AR', {
+            style: 'currency',
+            currency: 'ARS',
+            minimumFractionDigits: 0,
+            maximumFractionDigits: 0
+        }).format(amount);
+    }
+
+    function formatPriceUSD(amount) {
+        if (amount == null) return 'No disponible';
+        return new Intl.NumberFormat('en-US', {
+            style: 'currency',
+            currency: 'USD',
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2
+        }).format(amount);
+    }
+
+    // ==========================================
+    // LINKS SECUNDARIOS
+    // ==========================================
     if (secondaryLinks.length > 0) {
         secondaryLinks.forEach(link => {
             const cardTemplate = document.getElementById('purchase-card-template');
@@ -235,25 +260,37 @@ function renderPriceSection() {
 
             card.querySelector('.store-name').textContent = link.tienda;
 
-            if (link.precio !== null) {
-                card.querySelector('.current-price').textContent = `$${link.precio.toFixed(2)}`;
+            // Detectar el precio disponible
+            const precio = link.precioArs ?? link.precioUsd ?? link.precio ?? null;
+            const esUsd = link.precioUsd != null;
+
+            if (precio !== null) {
+                card.querySelector('.current-price').textContent = esUsd
+                    ? formatPriceUSD(precio)
+                    : formatPriceARS(precio);
             } else {
                 card.querySelector('.current-price').textContent = 'Ver precio';
             }
 
-            if (game.precioNormal && link.precio < game.precioNormal) {
-                card.querySelector('.original-price').textContent = `$${game.precioNormal.toFixed(2)}`;
-                card.querySelector('.discount-badge').textContent = `-${Math.round(link.descuento)}%`;
+            // Precio anterior y descuento
+            const precioAntiguo = link.precioAntiguo ?? null;
+            if (precioAntiguo && precio < precioAntiguo) {
+                card.querySelector('.original-price').textContent = esUsd
+                    ? formatPriceUSD(precioAntiguo)
+                    : formatPriceARS(precioAntiguo);
+                card.querySelector('.discount-badge').textContent = `-${Math.round(link.descuento ?? 0)}%`;
             } else {
                 card.querySelector('.original-price').remove();
                 card.querySelector('.discount-badge').remove();
             }
 
             card.querySelector('.btn-buy').href = link.url;
-
             container.appendChild(card);
         });
     } else {
+        // ==========================================
+        // LINK PRINCIPAL (único)
+        // ==========================================
         const mainLink = game.linksCompra.find(link => link.esPrincipal);
         if (mainLink) {
             const cardTemplate = document.getElementById('purchase-card-template');
@@ -261,18 +298,22 @@ function renderPriceSection() {
 
             card.querySelector('.store-name').textContent = mainLink.tienda;
 
-            const precio = mainLink.precio ?? game.precio ?? game.precioNormal;
+            const precio = mainLink.precioArs ?? mainLink.precioUsd ?? game.precio ?? game.precioNormal ?? null;
+            const esUsd = mainLink.precioUsd != null;
             const descuento = mainLink.descuento ?? game.descuento ?? 0;
 
             if (precio !== null) {
-                card.querySelector('.current-price').textContent = `$${precio.toFixed(2)}`;
+                card.querySelector('.current-price').textContent = esUsd
+                    ? formatPriceUSD(precio)
+                    : formatPriceARS(precio);
             } else {
                 card.querySelector('.current-price').textContent = 'Ver precio';
             }
 
             if (game.precioNormal && descuento > 0) {
-                const precioNormal = game.precioNormal;
-                card.querySelector('.original-price').textContent = `$${precioNormal.toFixed(2)}`;
+                card.querySelector('.original-price').textContent = esUsd
+                    ? formatPriceUSD(game.precioNormal)
+                    : formatPriceARS(game.precioNormal);
                 card.querySelector('.discount-badge').textContent = `-${Math.round(descuento)}%`;
             } else {
                 card.querySelector('.original-price').remove();
@@ -280,7 +321,6 @@ function renderPriceSection() {
             }
 
             card.querySelector('.btn-buy').href = mainLink.url;
-
             container.appendChild(card);
         }
     }
@@ -425,7 +465,6 @@ function showError(message) {
 
 async function initFavoriteButton() {
     const userId = getUserId();
-    if (!userId) return;
     
     const btn = document.getElementById('btnFavorite');
     if (!btn) {
@@ -508,6 +547,11 @@ async function verificarFavorito(idSteam) {
 async function agregarFavorito(gameData) {
     try {
         const userId = getUserId();
+        
+        if (!userId) {
+            showAlert('Debes iniciar sesión para agregar a favoritos', 'warning');
+            return;
+        }
         const response = await fetch(`${API_BASE_URL}/favoritos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -573,7 +617,6 @@ async function eliminarFavorito(idSteam) {
 
 async function initLibraryButton() {
     const userId = getUserId();
-    if (!userId) return;
     
     const btn = document.getElementById('btnLibrary');
     if (!btn) {
@@ -655,6 +698,11 @@ async function verificarBiblioteca(idSteam) {
 async function agregarBiblioteca(gameData) {
     try {
         const userId = getUserId();
+        
+        if (!userId) {
+            showAlert('Debes iniciar sesión para agregar a biblioteca', 'warning');
+            return;
+        }
         const response = await fetch(`${API_BASE_URL}/biblioteca`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -716,8 +764,6 @@ async function eliminarBiblioteca(idSteam) {
 
 function getUserId() {
     var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
-    if (!userId)
-    showAlert('Usuario no logueado. Iniciar sesión.', 'error');
     return userId;
 }
 
