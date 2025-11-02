@@ -5,7 +5,7 @@ const gameState = {
     gameData: null
 };
 
-const API_BASE = 'http://localhost:3000/api';
+const API_BASE_URL = 'http://localhost:3000/api';
 
 let currentGameData = null;
 let isFavorite = false;
@@ -26,7 +26,7 @@ async function loadGameData() {
     showLoading(true);
     
     try {
-        const response = await fetch(`${API_BASE}/games/${gameState.gameId}`);
+        const response = await fetch(`${API_BASE_URL}/games/${gameState.gameId}`);
         const result = await response.json();
 
         if (!result.success || !result.data) {
@@ -39,9 +39,10 @@ async function loadGameData() {
         renderGameDetails();
         showLoading(false);
         
-        // CORRECCIÓN: Esperar un poco para que el DOM se renderice
+        // Esperar un poco para que el DOM se renderice
         setTimeout(async () => {
             await initFavoriteButton();
+            await initLibraryButton();
         }, 100);
 
     } catch (error) {
@@ -399,7 +400,7 @@ function parseRequirements(htmlString, container) {
     });
 }
 
-// CORRECCIÓN: Mejorar las funciones de loading y error
+// Mejorar las funciones de loading y error
 function showLoading(show) {
     const loadingEl = document.getElementById('loadingState');
     const errorEl = document.getElementById('errorState');
@@ -436,17 +437,10 @@ async function initFavoriteButton() {
     isFavorite = await verificarFavorito(currentGameData.idSteam);
     updateFavoriteButton();
     
-    // Agregar event listener al botón
+    // Agregar event listener
     btn.onclick = toggleFavorite;
-    
-    // Botón de biblioteca (placeholder)
-    const btnLibrary = document.getElementById('btnLibrary');
-    if (btnLibrary) {
-        btnLibrary.onclick = () => {
-            showAlert('Sistema de biblioteca próximamente', 'info');
-        };
-    }
 }
+
 
 function updateFavoriteButton() {
     const btn = document.getElementById('btnFavorite');
@@ -502,7 +496,7 @@ async function toggleFavorite() {
 async function verificarFavorito(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE}/favoritos/${userId}/check/${idSteam}`);
+        const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/check/${idSteam}`);
         const result = await response.json();
         return result.isFavorite || false;
     } catch (error) {
@@ -511,11 +505,10 @@ async function verificarFavorito(idSteam) {
     }
 }
 
-// CORRECCIÓN: Manejar el error "ya está en favoritos"
 async function agregarFavorito(gameData) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE}/favoritos`, {
+        const response = await fetch(`${API_BASE_URL}/favoritos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -533,7 +526,7 @@ async function agregarFavorito(gameData) {
         const result = await response.json();
         
         if (!result.success) {
-            // CORRECCIÓN: Si ya está en favoritos, actualizar el estado local
+            // Si ya está en favoritos, actualizar el estado local
             if (result.error && result.error.includes('ya está en favoritos')) {
                 isFavorite = true;
                 updateFavoriteButton();
@@ -555,7 +548,7 @@ async function agregarFavorito(gameData) {
 async function eliminarFavorito(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE}/favoritos/${userId}/${idSteam}`, {
+        const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/${idSteam}`, {
             method: 'DELETE'
         });
 
@@ -574,11 +567,160 @@ async function eliminarFavorito(idSteam) {
     }
 }
 
-function getUserId() {
-    return sessionStorage.getItem('userId') || 
-           localStorage.getItem('userId') || 
-           'demo-user-123';
+//=============================================
+// BIBLIOTECA
+//=============================================
+
+async function initLibraryButton() {
+    const userId = getUserId();
+    if (!userId) return;
+    
+    const btn = document.getElementById('btnLibrary');
+    if (!btn) {
+        console.warn('Botón de biblioteca no encontrado');
+        return;
+    }
+    
+    // Verificar si está en biblioteca
+    isInLibrary = await verificarBiblioteca(currentGameData.idSteam);
+    updateLibraryButton();
+    
+    // Agregar event listener
+    btn.onclick = toggleLibrary;
 }
+
+function updateLibraryButton() {
+    const btn = document.getElementById('btnLibrary');
+    if (!btn) return;
+
+    if (isInLibrary) {
+        btn.classList.add('active');
+        btn.title = 'Quitar de biblioteca';
+        btn.querySelector('i').className = 'fas fa-bookmark';
+    } else {
+        btn.classList.remove('active');
+        btn.title = 'Agregar a biblioteca';
+        btn.querySelector('i').className = 'far fa-bookmark';
+    }
+}
+
+async function toggleLibrary() {
+    if (!currentGameData) return;
+    
+    const userId = getUserId();
+    if (!userId) {
+        showAlert('Debes iniciar sesión para agregar a biblioteca', 'warning');
+        return;
+    }
+
+    const btn = document.getElementById('btnLibrary');
+    btn.disabled = true;
+
+    try {
+        if (isInLibrary) {
+            // ELIMINAR de biblioteca
+            const success = await eliminarBiblioteca(currentGameData.idSteam);
+            if (success) {
+                isInLibrary = false;
+                showAlert('Eliminado de biblioteca', 'success');
+            }
+        } else {
+            // AGREGAR a biblioteca
+            const success = await agregarBiblioteca(currentGameData);
+            if (success) {
+                isInLibrary = true;
+                showAlert('¡Agregado a biblioteca! 📚', 'success');
+            }
+        }
+        updateLibraryButton();
+    } catch (error) {
+        showAlert('Error al actualizar biblioteca', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function verificarBiblioteca(idSteam) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/check/${idSteam}`);
+        const result = await response.json();
+        return result.isBiblioteca || false;
+    } catch (error) {
+        console.error('Error al verificar biblioteca:', error);
+        return false;
+    }
+}
+
+async function agregarBiblioteca(gameData) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`${API_BASE_URL}/biblioteca`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                idSteam: gameData.idSteam,
+                nombre: gameData.nombre,
+                portada: gameData.imagenes?.portada?.original || 
+                        gameData.imagenes?.portada?.steamHeader || 
+                        null,
+                generos: gameData.generos || [],
+                plataformas: gameData.plataformas || []
+            })
+        });
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            if (result.error && result.error.includes('ya está en biblioteca')) {
+                isInLibrary = true;
+                updateLibraryButton();
+                showAlert('Este juego ya está en tu biblioteca', 'info');
+                return true;
+            }
+            showAlert(result.error || 'Error al agregar a biblioteca', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error al agregar a biblioteca:', error);
+        showAlert('Error de conexión', 'error');
+        return false;
+    }
+}
+
+async function eliminarBiblioteca(idSteam) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/${idSteam}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            showAlert(result.error || 'Error al eliminar de biblioteca', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error al eliminar de biblioteca:', error);
+        showAlert('Error de conexión', 'error');
+        return false;
+    }
+}
+
+
+function getUserId() {
+    var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
+    if (!userId)
+    showAlert('Usuario no logueado. Iniciar sesión.', 'error');
+    return userId;
+}
+
 
 // Initialize
 initializeJuego();

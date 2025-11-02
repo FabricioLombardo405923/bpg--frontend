@@ -1,10 +1,6 @@
 // Configuración de la API
-window.API_BASE_URL = (function() {
-    const isProd = window.location.hostname !== 'localhost';
-    return isProd 
-        ? 'https://api-bpg.vercel.app/api'
-        : 'http://localhost:3000/api';
-})();
+window.API_BASE_URL = 'http://localhost:3000/api';
+
 
 // Configuración de páginas
 const pages = {
@@ -22,9 +18,9 @@ const pages = {
     },
     biblioteca: {
         html: 'pages/biblioteca/biblioteca.html',
-        // css: 'pages/biblioteca/biblioteca.css',
-        // js: 'pages/biblioteca/biblioteca.js',
-        // init: 'initializeBiblioteca'
+        css: 'pages/biblioteca/biblioteca.css',
+        js: 'pages/biblioteca/biblioteca.js',
+        init: 'initializeBiblioteca'
     },
     perfil: {
         html: 'pages/perfil/perfil.html',

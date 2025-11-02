@@ -1,8 +1,8 @@
-// Estado de favoritos
-const favoritosState = {
+// Estado de biblioteca
+const bibliotecaState = {
     userId: null,
-    favoritos: [],
-    filteredFavoritos: [],
+    biblioteca: [],
+    filteredBiblioteca: [],
     isLoading: false,
     searchQuery: '',
     sortBy: 'recent'
@@ -12,54 +12,54 @@ const favoritosState = {
 // INICIALIZACIÓN
 // ============================================
 
-async function initializeFavoritos() {
+async function initializeBiblioteca() {
   // Obtener userId de Firebase/sessionStorage
-    favoritosState.userId = getUserId();
+    bibliotecaState.userId = getUserId();
     
-    if (!favoritosState.userId) {
-        mostrarError('Debes iniciar sesión para ver tus favoritos');
+    if (!bibliotecaState.userId) {
+        mostrarError('Debes iniciar sesión para ver tu biblioteca');
         return;
     }
 
-    // Cargar favoritos
-    await cargarFavoritos();
+    // Cargar biblioteca
+    await cargarBiblioteca();
 
     // Setup event listeners
-    setupFavoritosEventListeners();
+    setupBibliotecaEventListeners();
 }
 
 // ============================================
 // CARGA DE DATOS
 // ============================================
 
-async function cargarFavoritos() {
-    if (favoritosState.isLoading) return;
+async function cargarBiblioteca() {
+    if (bibliotecaState.isLoading) return;
 
-    favoritosState.isLoading = true;
+    bibliotecaState.isLoading = true;
     mostrarLoader(true);
 
     try {
-        const response = await fetch(`${API_BASE_URL}/favoritos/${favoritosState.userId}`);
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${bibliotecaState.userId}`);
         const result = await response.json();
 
         if (!result.success) {
-        throw new Error(result.error || 'Error al cargar favoritos');
+        throw new Error(result.error || 'Error al cargar biblioteca');
         }
 
-        favoritosState.favoritos = result.data || [];
-        favoritosState.filteredFavoritos = [...favoritosState.favoritos];
+        bibliotecaState.biblioteca = result.data || [];
+        bibliotecaState.filteredBiblioteca = [...bibliotecaState.biblioteca];
 
         // Aplicar ordenamiento y búsqueda actuales
         aplicarFiltros();
         
         // Renderizar
-        renderFavoritos();
+        renderBiblioteca();
 
     } catch (error) {
-        console.error('Error al cargar favoritos:', error);
-        mostrarError('Error al cargar favoritos');
+        console.error('Error al cargar biblioteca:', error);
+        mostrarError('Error al cargar biblioteca');
     } finally {
-        favoritosState.isLoading = false;
+        bibliotecaState.isLoading = false;
         mostrarLoader(false);
     }
 }
@@ -68,15 +68,15 @@ async function cargarFavoritos() {
 // AGREGAR/ELIMINAR FAVORITOS
 // ============================================
 
-async function agregarFavorito(gameData) {
+async function agregarBiblioteca(gameData) {
     try {
-        const response = await fetch(`${API_BASE_URL}/favoritos`, {
+        const response = await fetch(`${API_BASE_URL}/biblioteca`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({
-            userId: favoritosState.userId,
+            userId: bibliotecaState.userId,
             idSteam: gameData.idSteam,
             nombre: gameData.nombre,
             portada: gameData.imagenes?.portada?.original || gameData.imagenes?.portada?.steamHeader,
@@ -88,58 +88,58 @@ async function agregarFavorito(gameData) {
         const result = await response.json();
 
         if (!result.success) {
-        throw new Error(result.error || 'Error al agregar favorito');
+        throw new Error(result.error || 'Error al agregar biblioteca');
         }
 
         // Actualizar estado local
-        favoritosState.favoritos.push(result.data);
+        bibliotecaState.biblioteca.push(result.data);
         aplicarFiltros();
-        renderFavoritos();
+        renderBiblioteca();
 
-        mostrarNotificacion('Juego agregado a favoritos', 'success');
+        mostrarNotificacion('Juego agregado a biblioteca', 'success');
         return true;
 
     } catch (error) {
-        console.error('Error al agregar favorito:', error);
+        console.error('Error al agregar a biblioteca:', error);
         mostrarNotificacion(error.message, 'error');
         return false;
     }
 }
 
-async function eliminarFavorito(idSteam) {
+async function eliminarBiblioteca(idSteam) {
     try {
-        const response = await fetch(`${API_BASE_URL}/favoritos/${favoritosState.userId}/${idSteam}`, {
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${bibliotecaState.userId}/${idSteam}`, {
         method: 'DELETE'
         });
 
         const result = await response.json();
 
         if (!result.success) {
-        throw new Error(result.error || 'Error al eliminar favorito');
+        throw new Error(result.error || 'Error al eliminar biblioteca');
         }
 
         // Actualizar estado local
-        favoritosState.favoritos = favoritosState.favoritos.filter(f => f.idSteam !== idSteam);
+        bibliotecaState.biblioteca = bibliotecaState.biblioteca.filter(f => f.idSteam !== idSteam);
         aplicarFiltros();
-        renderFavoritos();
+        renderBiblioteca();
 
-        mostrarNotificacion('Juego eliminado de favoritos', 'success');
+        mostrarNotificacion('Juego eliminado de biblioteca', 'success');
         return true;
 
     } catch (error) {
-        console.error('Error al eliminar favorito:', error);
-        mostrarNotificacion('Error al eliminar favorito', 'error');
+        console.error('Error al eliminar biblioteca:', error);
+        mostrarNotificacion('Error al eliminar biblioteca', 'error');
         return false;
     }
 }
 
-async function verificarFavorito(idSteam) {
+async function verificarBiblioteca(idSteam) {
     try {
-        const response = await fetch(`${API_BASE_URL}/favoritos/${favoritosState.userId}/check/${idSteam}`);
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${bibliotecaState.userId}/check/${idSteam}`);
         const result = await response.json();
-        return result.isFavorite;
+        return result.isBiblioteca;
     } catch (error) {
-        console.error('Error al verificar favorito:', error);
+        console.error('Error al verificar biblioteca:', error);
         return false;
     }
 }
@@ -149,11 +149,11 @@ async function verificarFavorito(idSteam) {
 // ============================================
 
 function aplicarFiltros() {
-    let filtered = [...favoritosState.favoritos];
+    let filtered = [...bibliotecaState.biblioteca];
 
     // Búsqueda
-    if (favoritosState.searchQuery) {
-        const query = favoritosState.searchQuery.toLowerCase();
+    if (bibliotecaState.searchQuery) {
+        const query = bibliotecaState.searchQuery.toLowerCase();
         filtered = filtered.filter(f => 
         f.nombre.toLowerCase().includes(query) ||
         (f.generos && f.generos.some(g => g.toLowerCase().includes(query)))
@@ -161,7 +161,7 @@ function aplicarFiltros() {
     }
 
     // Ordenamiento
-    switch (favoritosState.sortBy) {
+    switch (bibliotecaState.sortBy) {
         case 'recent':
         filtered.sort((a, b) => new Date(b.fec_alt) - new Date(a.fec_alt));
         break;
@@ -176,31 +176,31 @@ function aplicarFiltros() {
         break;
     }
 
-    favoritosState.filteredFavoritos = filtered;
+    bibliotecaState.filteredBiblioteca = filtered;
 }
 
 // ============================================
 // RENDERIZADO
 // ============================================
 
-function renderFavoritos() {
-    const grid = document.getElementById('favoritosGrid');
+function renderBiblioteca() {
+    const grid = document.getElementById('bibliotecaGrid');
     const emptyState = document.getElementById('emptyState');
-    const countEl = document.getElementById('favoritosCount');
+    const countEl = document.getElementById('bibliotecaCount');
 
     // Actualizar contador
-    countEl.textContent = favoritosState.favoritos.length;
+    countEl.textContent = bibliotecaState.biblioteca.length;
 
     // Limpiar grid
     grid.innerHTML = '';
 
-    // Verificar si hay favoritos
-    if (favoritosState.filteredFavoritos.length === 0) {
+    // Verificar si hay biblioteca
+    if (bibliotecaState.filteredBiblioteca.length === 0) {
         grid.style.display = 'none';
         emptyState.style.display = 'flex';
         
         // Cambiar mensaje si es por búsqueda
-        if (favoritosState.searchQuery) {
+        if (bibliotecaState.searchQuery) {
         emptyState.querySelector('h3').textContent = 'No se encontraron resultados';
         emptyState.querySelector('p').textContent = 'Intenta con otro término de búsqueda';
         emptyState.querySelector('button').style.display = 'none';
@@ -212,30 +212,30 @@ function renderFavoritos() {
     grid.style.display = 'grid';
     emptyState.style.display = 'none';
 
-    // Renderizar cada favorito
-    favoritosState.filteredFavoritos.forEach(favorito => {
-        const card = crearFavoritoCard(favorito);
+    // Renderizar cada biblioteca
+    bibliotecaState.filteredBiblioteca.forEach(biblioteca => {
+        const card = crearBibliotecaCard(biblioteca);
         grid.appendChild(card);
     });
 }
 
-function crearFavoritoCard(favorito) {
-    const template = document.getElementById('favorito-card-template');
+function crearBibliotecaCard(biblioteca) {
+    const template = document.getElementById('biblioteca-card-template');
     const card = template.content.cloneNode(true);
 
     // Imagen
-    const img = card.querySelector('.favorito-image');
-    img.src = favorito.portada || 'https://via.placeholder.com/460x215?text=Sin+Imagen';
-    img.alt = favorito.nombre;
+    const img = card.querySelector('.biblioteca-image');
+    img.src = biblioteca.portada || 'https://via.placeholder.com/460x215?text=Sin+Imagen';
+    img.alt = biblioteca.nombre;
     img.onerror = () => { img.src = 'https://via.placeholder.com/460x215?text=Sin+Imagen'; };
 
     // Título
-    card.querySelector('.favorito-title').textContent = favorito.nombre;
+    card.querySelector('.biblioteca-title').textContent = biblioteca.nombre;
 
     // Géneros
-    const generosEl = card.querySelector('.favorito-generos');
-    if (favorito.generos && favorito.generos.length > 0) {
-        generosEl.innerHTML = favorito.generos
+    const generosEl = card.querySelector('.biblioteca-generos');
+    if (biblioteca.generos && biblioteca.generos.length > 0) {
+        generosEl.innerHTML = biblioteca.generos
         .slice(0, 3)
         .map(g => `<span class="genre-tag">${g}</span>`)
         .join('');
@@ -244,9 +244,9 @@ function crearFavoritoCard(favorito) {
     }
 
     // Plataformas
-    const plataformasEl = card.querySelector('.favorito-plataformas');
-    if (favorito.plataformas && favorito.plataformas.length > 0) {
-        plataformasEl.innerHTML = favorito.plataformas
+    const plataformasEl = card.querySelector('.biblioteca-plataformas');
+    if (biblioteca.plataformas && biblioteca.plataformas.length > 0) {
+        plataformasEl.innerHTML = biblioteca.plataformas
         .slice(0, 4)
         .map(p => `<span class="plataforma-icon">${getPlatformIcon(p.toLowerCase())}</span>`)
         .join('');
@@ -255,23 +255,23 @@ function crearFavoritoCard(favorito) {
     }
 
     // Botón eliminar
-    const btnRemove = card.querySelector('.btn-remove-favorite');
+    const btnRemove = card.querySelector('.btn-remove-biblioteca');
     btnRemove.onclick = async (e) => {
         e.stopPropagation();
-        if (confirm(`¿Eliminar "${favorito.nombre}" de favoritos?`)) {
-        await eliminarFavorito(favorito.idSteam);
+        if (confirm(`¿Eliminar "${biblioteca.nombre}" de biblioteca?`)) {
+        await eliminarBiblioteca(biblioteca.idSteam);
         }
     };
 
     // Botón ver detalles
     const btnDetails = card.querySelector('.btn-ver-detalles');
-    btnDetails.onclick = () => navigateToGame(favorito.idSteam);
+    btnDetails.onclick = () => navigateToGame(biblioteca.idSteam);
 
     // Click en card
-    const cardEl = card.querySelector('.favorito-card');
+    const cardEl = card.querySelector('.biblioteca-card');
     cardEl.onclick = (e) => {
         if (!e.target.closest('button')) {
-        navigateToGame(favorito.idSteam);
+        navigateToGame(biblioteca.idSteam);
         }
     };
 
@@ -282,24 +282,24 @@ function crearFavoritoCard(favorito) {
 // EVENT LISTENERS
 // ============================================
 
-function setupFavoritosEventListeners() {
+function setupBibliotecaEventListeners() {
   // Búsqueda
-    const searchInput = document.getElementById('searchFavoritos');
+    const searchInput = document.getElementById('searchBiblioteca');
     if (searchInput) {
         searchInput.addEventListener('input', (e) => {
-        favoritosState.searchQuery = e.target.value;
+        bibliotecaState.searchQuery = e.target.value;
         aplicarFiltros();
-        renderFavoritos();
+        renderBiblioteca();
         });
     }
 
     // Ordenamiento
-    const sortSelect = document.getElementById('sortFavoritos');
+    const sortSelect = document.getElementById('sortBiblioteca');
     if (sortSelect) {
         sortSelect.addEventListener('change', (e) => {
-        favoritosState.sortBy = e.target.value;
+        bibliotecaState.sortBy = e.target.value;
         aplicarFiltros();
-        renderFavoritos();
+        renderBiblioteca();
         });
     }
 }
@@ -307,6 +307,7 @@ function setupFavoritosEventListeners() {
 // ============================================
 // UTILIDADES
 // ============================================
+
 
 function getUserId() {
     var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
@@ -322,14 +323,14 @@ function navigateToGame(gameId) {
 }
 
 function mostrarLoader(show) {
-    const loader = document.getElementById('favoritosLoader');
+    const loader = document.getElementById('bibliotecaLoader');
     if (loader) {
         loader.style.display = show ? 'flex' : 'none';
     }
 }
 
 function mostrarError(mensaje) {
-    const grid = document.getElementById('favoritosGrid');
+    const grid = document.getElementById('bibliotecaGrid');
     if (grid) {
         grid.innerHTML = `
         <div class="error-message" style="grid-column: 1/-1;">
@@ -367,4 +368,4 @@ function getPlatformIcon(slug) {
 // INICIAR
 // ============================================
 
-initializeFavoritos();
+initializeBiblioteca();

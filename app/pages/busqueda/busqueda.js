@@ -37,8 +37,7 @@ async function cargarResultados() {
     const container = document.getElementById('resultadosContainer');
     container.innerHTML = '';
 
-    const API_BASE = 'http://localhost:3000/api';
-    const url = `${API_BASE}/games/search?q=${encodeURIComponent(searchState.query)}&page=${searchState.pageNumber}&pageSize=${searchState.pageSize}&ordenarPor=${searchState.ordering}`;
+    const url = `${API_BASE_URL}/games/search?q=${encodeURIComponent(searchState.query)}&page=${searchState.pageNumber}&pageSize=${searchState.pageSize}&ordenarPor=${searchState.ordering}`;
     
     try {
         const response = await fetch(url);
@@ -174,9 +173,10 @@ function crearResultadoCard(game) {
     // Botón biblioteca
     const btnLibrary = card.querySelector('.btn-quick-library');
     if (btnLibrary) {
-        btnLibrary.onclick = (e) => {
+        const btnLibrary = card.querySelector('.btn-quick-library');
+        btnLibrary.onclick = async (e) => {
             e.stopPropagation();
-            showNotification('Sistema de biblioteca próximamente', 'info');
+            await toggleQuickLibrary(btnLibrary, game);
         };
     } else {
         console.warn('No se encontró .btn-quick-library en la card:', card);
@@ -184,6 +184,7 @@ function crearResultadoCard(game) {
 
 
     checkAndUpdateFavoriteButton(btnFavorite, game.idSteam);
+    checkAndUpdateLibraryButton(btnLibrary, game.idSteam);
 
     const btnDetalles = card.querySelector('.btn-ver-detalles');
     const itemContainer = card.querySelector('.resultado-item-horizontal');
@@ -284,7 +285,7 @@ async function toggleQuickFavorite(btn, gameData) {
             if (success) {
                 btn.classList.add('active');
                 icon.className = 'fas fa-heart';
-                showAlert('¡Agregado a favoritos! ❤️', 'success');
+                showAlert('¡Agregado a favoritos!', 'success');
             }
         }
     } catch (error) {
@@ -314,7 +315,7 @@ async function checkAndUpdateFavoriteButton(btn, idSteam) {
 async function verificarFavorito(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`http://localhost:3000/api/favoritos/${userId}/check/${idSteam}`);
+        const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/check/${idSteam}`);
         const result = await response.json();
         return result.isFavorite || false;
     } catch (error) {
@@ -327,7 +328,7 @@ async function verificarFavorito(idSteam) {
 async function agregarFavorito(gameData) {
     try {
         const userId = getUserId();
-        const response = await fetch('http://localhost:3000/api/favoritos', {
+        const response = await fetch(`${API_BASE_URL}/favoritos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -361,7 +362,7 @@ async function agregarFavorito(gameData) {
 async function eliminarFavorito(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`http://localhost:3000/api/favoritos/${userId}/${idSteam}`, {
+        const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/${idSteam}`, {
             method: 'DELETE'
         });
 
@@ -379,10 +380,136 @@ async function eliminarFavorito(idSteam) {
         return false;
     }
 }
+//=============================================
+// BIBLIOTECA EN BÚSQUEDA
+//=============================================
 
-// Obtener userId
+async function toggleQuickLibrary(btn, gameData) {
+    const userId = getUserId();
+    
+    if (!userId) {
+        showAlert('Debes iniciar sesión para agregar a biblioteca', 'warning');
+        return;
+    }
+
+    btn.disabled = true;
+    const icon = btn.querySelector('i');
+    const wasActive = btn.classList.contains('active');
+
+    try {
+        if (wasActive) {
+            // ELIMINAR de biblioteca
+            const success = await eliminarBiblioteca(gameData.idSteam);
+            if (success) {
+                btn.classList.remove('active');
+                icon.className = 'far fa-bookmark';
+                showAlert('Eliminado de biblioteca', 'success');
+            }
+        } else {
+            // AGREGAR a biblioteca
+            const success = await agregarBiblioteca(gameData);
+            if (success) {
+                btn.classList.add('active');
+                icon.className = 'fas fa-bookmark';
+                showAlert('¡Agregado a biblioteca!', 'success');
+            }
+        }
+    } catch (error) {
+        showAlert('Error al actualizar biblioteca', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+async function checkAndUpdateLibraryButton(btn, idSteam) {
+    const userId = getUserId();
+    if (!userId) return;
+
+    try {
+        const isInLibrary = await verificarBiblioteca(idSteam);
+        if (isInLibrary) {
+            btn.classList.add('active');
+            btn.querySelector('i').className = 'fas fa-bookmark';
+        }
+    } catch (error) {
+        console.error('Error al verificar biblioteca:', error);
+    }
+}
+
+async function verificarBiblioteca(idSteam) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/check/${idSteam}`);
+        const result = await response.json();
+        return result.isBiblioteca || false;
+    } catch (error) {
+        console.error('Error al verificar biblioteca:', error);
+        return false;
+    }
+}
+
+async function agregarBiblioteca(gameData) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`${API_BASE_URL}/biblioteca`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                userId: userId,
+                idSteam: gameData.idSteam,
+                nombre: gameData.nombre,
+                portada: gameData.imagenes?.portada?.original || 
+                        gameData.imagenes?.portada?.steamHeader || 
+                        null,
+                generos: gameData.generos || [],
+                plataformas: gameData.plataformas || []
+            })
+        });
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            if (result.error && result.error.includes('ya está en biblioteca')) {
+                showAlert('Este juego ya está en tu biblioteca', 'info');
+                return true;
+            }
+            showAlert(result.error || 'Error al agregar a biblioteca', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error al agregar a biblioteca:', error);
+        showAlert('Error de conexión', 'error');
+        return false;
+    }
+}
+
+async function eliminarBiblioteca(idSteam) {
+    try {
+        const userId = getUserId();
+        const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/${idSteam}`, {
+            method: 'DELETE'
+        });
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            showAlert(result.error || 'Error al eliminar de biblioteca', 'error');
+            return false;
+        }
+        
+        return true;
+    } catch (error) {
+        console.error('Error al eliminar de biblioteca:', error);
+        showAlert('Error de conexión', 'error');
+        return false;
+    }
+}
+
 function getUserId() {
-    return sessionStorage.getItem('userId') || 
-           localStorage.getItem('userId') || 
-           'demo-user-123';
+    var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
+    if (!userId)
+        showAlert('Usuario no logueado. Iniciar sesión.', 'error');
+    return userId;
 }

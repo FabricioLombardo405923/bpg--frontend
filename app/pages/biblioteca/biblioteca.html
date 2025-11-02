@@ -1,18 +1,88 @@
-<div class="error-container" style="
-            padding: 4rem 2rem; 
-            text-align: center; 
-            color: var(--color-danger);
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        ">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">😕</div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Pagina sin contenido</h2>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                <button onclick="loadPage('home')" class="btn btn-secondary">
-                    <i class="fas fa-home"></i> Ir al Inicio
-                </button>
-            </div>
+<div class="biblioteca-container">
+    <!-- Header -->
+    <div class="biblioteca-header">
+        <div class="header-content">
+        <div class="header-icon">
+            <i class="fa fa-bookmark" aria-hidden="true"></i>
+        </div>
+        <div class="header-text">
+            <h2 class="section-title">Mi Biblioteca</h2>
+            <p class="biblioteca-subtitle">
+            <span id="bibliotecaCount">0</span> juegos guardados
+            </p>
+        </div>
+        </div>
+    </div>
+
+    <!-- Filtros y ordenamiento -->
+    <div class="biblioteca-controls">
+        <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input 
+            type="text" 
+            id="searchBiblioteca" 
+            placeholder="Buscar en biblioteca..."
+            autocomplete="off"
+        >
+        </div>
+        
+        <div class="sort-controls">
+        <label for="sortBiblioteca">Ordenar por:</label>
+        <select id="sortBiblioteca">
+            <option value="recent">Más recientes</option>
+            <option value="oldest">Más antiguos</option>
+            <option value="name-asc">Nombre (A-Z)</option>
+            <option value="name-desc">Nombre (Z-A)</option>
+        </select>
+        </div>
+    </div>
+
+    <!-- Grid de biblioteca -->
+    <div id="bibliotecaGrid" class="biblioteca-grid"></div>
+
+    <!-- Estado vacío -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">
+        <i class="fa fa-times" aria-hidden="true"></i>
+        </div>
+        <h3>No tienes juegos en biblioteca</h3>
+        <p>Empieza a guardar tus juegos en biblioteca para acceder rápidamente a ellos</p>
+        <button class="btn btn-primary" onclick="loadPage('home')">
+        <i class="fas fa-compass"></i>
+        Explorar Juegos
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div id="bibliotecaLoader" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Cargando biblioteca...</p>
+    </div>
 </div>
+
+<!-- Template para card de biblioteca -->
+<template id="biblioteca-card-template">
+    <div class="biblioteca-card">
+        <div class="biblioteca-image-container">
+        <img class="biblioteca-image" loading="lazy" alt="Juego">
+        <div class="biblioteca-overlay">
+            <button class="btn-icon btn-remove-biblioteca" title="Quitar de biblioteca">
+            <i class="fa fa-times" aria-hidden="true"></i>
+            </button>
+        </div>
+        </div>
+        <div class="biblioteca-content">
+        <h3 class="biblioteca-title"></h3>
+        <div class="biblioteca-meta">
+            <div class="biblioteca-generos"></div>
+            <div class="biblioteca-plataformas"></div>
+        </div>
+        <div class="biblioteca-footer">
+            <button class="btn btn-sm btn-primary btn-ver-detalles">
+            <i class="fas fa-info-circle"></i>
+            Ver Detalles
+            </button>
+        </div>
+        </div>
+    </div>
+</template>

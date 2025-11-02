@@ -414,3 +414,149 @@
         max-width: 240px;
     }
 }
+
+/* ========================================
+   BOTONES QUICK ACTIONS - HERO
+   ======================================== */
+/* Botones quick actions en hero */
+.hero-quick-actions {
+    position: absolute;
+    top: 1rem;
+    right: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    z-index: 15; /* Mayor que los botones prev/next que tienen z-index: 10 */
+}
+
+.btn-hero-action {
+    width: 44px;
+    height: 44px;
+    border-radius: 10px;
+    border: none;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+.btn-hero-action:hover {
+    transform: scale(1.1);
+}
+
+.btn-hero-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-hero-favorite:hover {
+    background: rgba(239, 68, 68, 0.9);
+}
+
+.btn-hero-favorite.active {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.btn-hero-library:hover {
+    background: rgba(59, 130, 246, 0.9);
+}
+
+.btn-hero-library.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .btn-hero-action {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
+/* ========================================
+   BOTONES QUICK ACTIONS - CARDS
+   ======================================== */
+
+.game-image {
+    position: relative;
+}
+
+.card-quick-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    z-index: 10;
+}
+
+.game-card:hover .card-quick-actions {
+    opacity: 1;
+}
+
+.btn-card-action {
+    width: 36px;
+    height: 36px;
+    border-radius: 8px;
+    border: none;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(10px);
+    color: white;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.btn-card-action:hover {
+    transform: scale(1.1);
+}
+
+.btn-card-action:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-card-favorite:hover {
+    background: rgba(239, 68, 68, 0.9);
+}
+
+.btn-card-favorite.active {
+    background: linear-gradient(135deg, #ef4444, #dc2626);
+}
+
+.btn-card-library:hover {
+    background: rgba(59, 130, 246, 0.9);
+}
+
+.btn-card-library.active {
+    background: linear-gradient(135deg, #3b82f6, #2563eb);
+}
+
+/* Responsive - Mostrar siempre en móvil */
+@media (max-width: 768px) {
+    .card-quick-actions {
+        opacity: 1;
+    }
+    
+    .btn-card-action {
+        width: 32px;
+        height: 32px;
+        font-size: 1rem;
+    }
+    
+    .btn-hero-action {
+        width: 40px;
+        height: 40px;
+        font-size: 1.1rem;
+    }
+}
