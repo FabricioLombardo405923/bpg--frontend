@@ -24,7 +24,6 @@
 
   // Inicializar cuando Firebase esté listo
   waitForAuth(() => {
-    console.log('🔐 Inicializando sistema de autenticación...');
     
     const userName = document.querySelector(".user-name");
     const userMenu = document.querySelector(".user-menu");
@@ -52,7 +51,6 @@
     // OBSERVADOR DE ESTADO DE AUTENTICACIÓN
     // =================================================================
     window.onAuthStateChanged(window.auth, (user) => {
-      console.log('👤 Estado de autenticación:', user ? 'logueado' : 'deslogueado');
       
       if (user) {
         // Usuario logueado
@@ -94,6 +92,6 @@
       }
     };
 
-    console.log('✅ Sistema de autenticación inicializado');
+   
   });
 })();

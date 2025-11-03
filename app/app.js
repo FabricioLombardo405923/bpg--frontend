@@ -53,6 +53,11 @@ const pages = {
      html: 'pages/register/register.html', 
      js:'pages/register/register.js',
      init: 'initializeRegister' 
+    },
+    "reset-password": { 
+     html: 'pages/reset-password/reset-password.html', 
+     js: 'pages/reset-password/reset-password.js',
+      init: 'initializeResetPassword'
     }
 };
 
