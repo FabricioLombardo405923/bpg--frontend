@@ -28,9 +28,9 @@ const pages = {
     },
     perfil: {
         html: 'pages/perfil/perfil.html',
-        // css: 'pages/perfil/perfil.css',
-        // js: 'pages/perfil/perfil.js',
-        // init: 'initializePerfil'
+         css: 'pages/perfil/perfil.css',
+         js: 'pages/perfil/perfil.js',
+         init: 'initializePerfil'
     },
     juego: {
         html: 'pages/juego/juego.html',

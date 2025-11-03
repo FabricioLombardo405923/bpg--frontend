@@ -50,33 +50,63 @@
     // =================================================================
     // OBSERVADOR DE ESTADO DE AUTENTICACIÓN
     // =================================================================
-    window.onAuthStateChanged(window.auth, (user) => {
-      
-      if (user) {
-        // Usuario logueado
-        if (userName) userName.textContent = user.displayName || user.email;
-        if (loginBtn) loginBtn.style.display = "none";
-        if (profileBtn) profileBtn.style.display = "block";
-        if (logoutBtn) logoutBtn.style.display = "block";
+window.onAuthStateChanged(window.auth, (user) => {
+  const avatarBtn = document.querySelector(".user-avatar-btn");
+  const userName = document.querySelector(".user-name");
+  const loginBtn = document.getElementById("login-btn");
+  const logoutBtn = document.getElementById("logout-btn");
+  const profileBtn = document.getElementById("profile-btn");
 
-        // Redirigir solo si está en páginas de autenticación
-        const urlParams = new URLSearchParams(window.location.search);
-        const currentPage = urlParams.get('page');
-        
-        if (currentPage === "login" || currentPage === "register") {
-          showNotification(`¡Bienvenido ${user.displayName || user.email}! 👋`, "success");
-          setTimeout(() => {
-            loadPage("home");
-          }, 500);
-        }
+  if (user) {
+    // Usuario logueado
+    if (loginBtn) loginBtn.style.display = "none";
+    if (profileBtn) profileBtn.style.display = "block";
+    if (logoutBtn) logoutBtn.style.display = "block";
+
+    const name = user.displayName || user.email;
+    const photo = user.photoURL;
+
+    if (avatarBtn) {
+      if (photo) {
+        // ✅ Mostrar foto si existe
+        avatarBtn.innerHTML = `
+          <img src="${photo}" 
+               alt="Avatar"
+               style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;">
+          <span class="user-name">${name}</span>
+          <i class="fas fa-caret-down"></i>
+        `;
       } else {
-        // Usuario deslogueado
-        if (userName) userName.textContent = "";
-        if (loginBtn) loginBtn.style.display = "block";
-        if (profileBtn) profileBtn.style.display = "none";
-        if (logoutBtn) logoutBtn.style.display = "none";
+        // 👤 Si no hay foto, mostrar icono por defecto
+        avatarBtn.innerHTML = `
+          👤 <span class="user-name">${name}</span>
+          <i class="fas fa-caret-down"></i>
+        `;
       }
-    });
+    }
+
+    // Si está en login o register, redirigir al home
+    const urlParams = new URLSearchParams(window.location.search);
+    const currentPage = urlParams.get('page');
+    if (currentPage === "login" || currentPage === "register") {
+      showNotification(`¡Bienvenido ${name}! 👋`, "success");
+      setTimeout(() => loadPage("home"), 500);
+    }
+
+  } else {
+    // Usuario deslogueado
+    if (loginBtn) loginBtn.style.display = "block";
+    if (profileBtn) profileBtn.style.display = "none";
+    if (logoutBtn) logoutBtn.style.display = "none";
+    if (avatarBtn) {
+      avatarBtn.innerHTML = `
+        👤 <span class="user-name"></span>
+        <i class="fas fa-caret-down"></i>
+      `;
+    }
+   }
+   });
+
 
     // =================================================================
     // FUNCIÓN DE LOGOUT GLOBAL

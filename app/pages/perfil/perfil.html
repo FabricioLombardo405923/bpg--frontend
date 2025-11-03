@@ -1,18 +1,23 @@
-<div class="error-container" style="
-            padding: 4rem 2rem; 
-            text-align: center; 
-            color: var(--color-danger);
-            min-height: 60vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-        ">
-            <div style="font-size: 4rem; margin-bottom: 1rem;">😕</div>
-            <h2 style="font-size: 1.5rem; margin-bottom: 1rem;">Pagina sin contenido</h2>
-            <div style="display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;">
-                <button onclick="loadPage('home')" class="btn btn-secondary">
-                    <i class="fas fa-home"></i> Ir al Inicio
-                </button>
-            </div>
-</div>
+<section class="perfil-section" style="max-width:500px;margin:2rem auto;text-align:center;">
+  <h2>Mi Perfil</h2>
+
+  <div class="perfil-container" style="display:flex;flex-direction:column;align-items:center;gap:1rem;margin-top:1rem;">
+    <img id="perfil-foto" 
+         src="https://cdn-icons-png.flaticon.com/512/149/149071.png" 
+         alt="Foto de perfil"
+         style="width:120px;height:120px;border-radius:50%;object-fit:cover;">
+
+    <input type="file" id="foto-input" accept="image/*" style="display:none;">
+    <button id="cambiar-foto" class="btn btn-secondary">Cambiar foto</button>
+
+    <form id="perfil-form" style="width:100%;display:flex;flex-direction:column;gap:1rem;margin-top:1rem;">
+      <input type="text" id="perfil-nombre" placeholder="Nombre" required style="padding:0.5rem;">
+      <input type="email" id="perfil-email" placeholder="Email" required style="padding:0.5rem; color:#f0f0f0; " disabled>
+      <input type="password" id="perfil-password" placeholder="Nueva contraseña (opcional)" style="padding:0.5rem;">
+       <p style="margin-top:0.5rem;">
+      <button type="submit" class="btn btn-primary">Guardar cambios</button>
+     <button id="volver-inicio" class="btn btn-secondary" style="margin-top:1rem;">Volver al inicio</button>
+
+    </form>
+  </div>
+</section>
