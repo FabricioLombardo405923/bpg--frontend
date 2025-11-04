@@ -71,71 +71,38 @@ function mostrarSugerencias(query) {
     }
     
     // Hacer fetch de sugerencias
-    /*
-    fetch(`${API_BASE_URL}/juegos/buscar?query=${encodeURIComponent(query)}&pageSize=5&pageNumber=0&ordering=-rating`)
-        .then(res => res.json())
-        .then(result => {
-            if (result.success && result.data.length > 0) {
-                suggestionsBox.innerHTML = result.data.map(game => `
-                    <div class="suggestion-item" data-game-id="${game.id}">
-                        <img src="${game.background_image || 'https://via.placeholder.com/50'}" 
-                             alt="${game.name}"
-                             onerror="this.src='https://via.placeholder.com/50'">
-                        <div class="suggestion-info">
-                            <span class="suggestion-title">${game.name}</span>
-                            <span class="suggestion-rating">${game.rating ? '⭐ ' + game.rating : ''}</span>
-                        </div>
+    fetch(`${API_BASE_URL}/games/autocomplete?q=${encodeURIComponent(query)}`)
+    .then(res => res.json())
+    .then(result => {
+        if (result.success && result.data.length > 0) {
+            suggestionsBox.innerHTML = result.data.map(game => `
+                <div class="suggestion-item" data-game-id="${game.idSteam}">
+                    <img src="${game.imagenPortada.small || game.imagenPortada.steam ||  'https://via.placeholder.com/150x200.png?text=No+Image'}" 
+                            alt="${game.nombre}">
+                    <div class="suggestion-info">
+                        <span class="suggestion-title">${game.nombre}</span>
                     </div>
-                `).join('');
-                
-                // Agregar event listeners a cada sugerencia
-                suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        const gameId = item.getAttribute('data-game-id');
-                        navigateAJuego(gameId);
-                    });
-                });
-                
-                suggestionsBox.style.display = 'block';
-            } else {
-                ocultarSugerencias();
-            }
-        })
-        .catch(() => {
-            ocultarSugerencias();
-        });*/
-        fetch(`${API_BASE_URL}/games/autocomplete?q=${encodeURIComponent(query)}`)
-        .then(res => res.json())
-        .then(result => {
-            if (result.success && result.data.length > 0) {
-                suggestionsBox.innerHTML = result.data.map(game => `
-                    <div class="suggestion-item" data-game-id="${game.idSteam}">
-                        <img src="${game.imagenPortada.small || game.imagenPortada.steam ||  'https://via.placeholder.com/150x200.png?text=No+Image'}" 
-                                alt="${game.nombre}">
-                        <div class="suggestion-info">
-                            <span class="suggestion-title">${game.nombre}</span>
-                        </div>
-                    </div>
-                `).join('');
-                
-                // Agregar event listeners a cada sugerencia
-                suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
-                    item.addEventListener('click', () => {
-                        //const gameId = item.getAttribute('data-game-id');
-                        const gameId = item.getAttribute('data-game-id');
+                </div>
+            `).join('');
+            
+            // Agregar event listeners a cada sugerencia
+            suggestionsBox.querySelectorAll('.suggestion-item').forEach(item => {
+                item.addEventListener('click', () => {
+                    //const gameId = item.getAttribute('data-game-id');
+                    const gameId = item.getAttribute('data-game-id');
 
-                        navigateAJuego(gameId);
-                    });
+                    navigateAJuego(gameId);
                 });
-                
-                suggestionsBox.style.display = 'block';
-            } else {
-                ocultarSugerencias();
-            }
-        })
-        .catch(() => {
+            });
+            
+            suggestionsBox.style.display = 'block';
+        } else {
             ocultarSugerencias();
-        });
+        }
+    })
+    .catch(() => {
+        ocultarSugerencias();
+    });
 }
 
 function ocultarSugerencias() {

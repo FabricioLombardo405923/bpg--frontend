@@ -1,7 +1,3 @@
-// =================================================================
-// PÁGINA DE RECUPERAR CONTRASEÑA
-// =================================================================
-
 window.initializeResetPassword = function() {
   const form = document.getElementById("reset-form");
   const msg = document.getElementById("reset-msg");
@@ -17,7 +13,7 @@ window.initializeResetPassword = function() {
       await sendPasswordResetEmail(window.auth, email);
       msg.style.color = "green";
       msg.textContent = "📩 Te enviamos un enlace para restablecer tu contraseña.";
-      showNotification("Correo de recuperación enviado", "success");
+      showAlert("Correo de recuperación enviado", "success");
     } catch (error) {
       let mensaje = "Ocurrió un error al enviar el correo.";
       switch (error.code) {
@@ -33,7 +29,7 @@ window.initializeResetPassword = function() {
       }
       msg.style.color = "red";
       msg.textContent = mensaje;
-      showNotification(mensaje, "danger");
+      showAlert(mensaje, "error");
     }
   });
 };

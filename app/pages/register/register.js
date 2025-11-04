@@ -1,7 +1,3 @@
-// =================================================================
-// INICIALIZACIÓN DE LA PÁGINA DE REGISTRO
-// =================================================================
-
 window.initializeRegister = function() {
   const form = document.getElementById("register-form");
   const errorMsg = document.getElementById("register-error");
@@ -42,7 +38,7 @@ window.initializeRegister = function() {
       // Guardar el nombre en el perfil del usuario
       await window.updateProfile(user, { displayName: name });
 
-      showAlert(`¡Cuenta creada con éxito! Bienvenido ${name} 👋`, "success");
+      showAlert(`¡Cuenta creada con éxito! Bienvenido ${name}`, "success");
       // onAuthStateChanged (en auth-handler.js) se encargará de redirigir
       
     } catch (error) {

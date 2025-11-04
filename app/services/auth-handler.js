@@ -1,8 +1,3 @@
-// =================================================================
-// MANEJADOR GLOBAL DE AUTENTICACIÓN
-// Este archivo debe cargarse DESPUÉS de Firebase y ANTES de app.js
-// =================================================================
-
 (function() {
   // Esperar a que Firebase esté disponible
   function waitForAuth(callback, maxAttempts = 50) {
@@ -50,59 +45,58 @@
     // =================================================================
     // OBSERVADOR DE ESTADO DE AUTENTICACIÓN
     // =================================================================
-window.onAuthStateChanged(window.auth, (user) => {
-  const avatarBtn = document.querySelector(".user-avatar-btn");
-  const userName = document.querySelector(".user-name");
-  const loginBtn = document.getElementById("login-btn");
-  const logoutBtn = document.getElementById("logout-btn");
-  const profileBtn = document.getElementById("profile-btn");
- 
-  if (user) {
-    // Usuario logueado
-    if (loginBtn) loginBtn.style.display = "none";
-    if (profileBtn) profileBtn.style.display = "block";
-    if (logoutBtn) logoutBtn.style.display = "block";
+  let yaRedirigido = false;
 
-    const name = user.displayName || user.email;
-    const photo = user.photoURL;
-   
-    if (avatarBtn) {
-      if (photo) {
-        // ✅ Mostrar foto si existe
+  window.onAuthStateChanged(window.auth, (user) => {
+    const avatarBtn = document.querySelector(".user-avatar-btn");
+    const userName = document.querySelector(".user-name");
+    const loginBtn = document.getElementById("login-btn");
+    const logoutBtn = document.getElementById("logout-btn");
+    const profileBtn = document.getElementById("profile-btn");
+  
+    if (user) {
+      if (loginBtn) loginBtn.style.display = "none";
+      if (profileBtn) profileBtn.style.display = "block";
+      if (logoutBtn) logoutBtn.style.display = "block";
+
+      const name = user.displayName || user.email;
+      const photo = user.photoURL;
+    
+      if (avatarBtn) {
+        if (photo) {
+          avatarBtn.innerHTML = `
+            <img src="${photo}" 
+                alt="Avatar"
+                style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;">
+            <span class="user-name">${name}</span>
+            <i class="fas fa-caret-down"></i>
+          `;
+        } else {
+          avatarBtn.innerHTML = `
+            👤 <span class="user-name">${name}</span>
+            <i class="fas fa-caret-down"></i>
+          `;
+        }
+      }
+
+      if (!yaRedirigido && window.location.href.includes("login")) {
+        yaRedirigido = true;
+        showAlert(`¡Bienvenido ${name}!`, "success");
+        setTimeout(() => loadPage("home"), 500);
+      }
+
+    } else {
+      if (loginBtn) loginBtn.style.display = "block";
+      if (profileBtn) profileBtn.style.display = "none";
+      if (logoutBtn) logoutBtn.style.display = "none";
+      if (avatarBtn) {
         avatarBtn.innerHTML = `
-          <img src="${photo}" 
-               alt="Avatar"
-               style="width:30px;height:30px;border-radius:50%;object-fit:cover;vertical-align:middle;">
-          <span class="user-name">${name}</span>
-          <i class="fas fa-caret-down"></i>
-        `;
-      } else {
-        // 👤 Si no hay foto, mostrar icono por defecto
-        avatarBtn.innerHTML = `
-          👤 <span class="user-name">${name}</span>
+          👤 <span class="user-name"></span>
           <i class="fas fa-caret-down"></i>
         `;
       }
     }
-
-     showAlert(`¡Bienvenido ${name}! 👋`, "success");
-     setTimeout(() => loadPage("home"), 500);
-
-
-
-  } else {
-    // Usuario deslogueado
-    if (loginBtn) loginBtn.style.display = "block";
-    if (profileBtn) profileBtn.style.display = "none";
-    if (logoutBtn) logoutBtn.style.display = "none";
-    if (avatarBtn) {
-      avatarBtn.innerHTML = `
-        👤 <span class="user-name"></span>
-        <i class="fas fa-caret-down"></i>
-      `;
-    }
-   }
-   });
+  });
 
 
     // =================================================================
@@ -111,14 +105,14 @@ window.onAuthStateChanged(window.auth, (user) => {
     window.logout = async function() {
       try {
         await window.signOut(window.auth);
-       showAlert("Sesión cerrada", "info");
+        //showAlert("Sesión cerrada", "info");
+        sessionStorage.removeItem('userId');
         loadPage("login");
       } catch (error) {
         console.error('Error al cerrar sesión:', error);
-        showAlert("Error al cerrar sesión", "danger");
+        showAlert("Error al cerrar sesión", "error");
       }
     };
 
-   
   });
 })();
