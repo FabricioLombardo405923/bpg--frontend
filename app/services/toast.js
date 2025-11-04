@@ -16,4 +16,5 @@ window.showAlert = function (message, type = 'success') {
         close: true,
         stopOnFocus: true
     }).showToast();
+
 };
