@@ -1,12 +1,8 @@
-// =================================================================
-// INICIALIZACIÓN DE LA PÁGINA DE LOGIN
-// =================================================================
-
 window.initializeLogin = function() {
   const form = document.getElementById("login-form");
   const errorMsg = document.getElementById("login-error");
   const googleBtn = document.getElementById("google-login");
- 
+
   // Login con email y contraseña
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
@@ -17,7 +13,8 @@ window.initializeLogin = function() {
 
     try {
       await window.signInWithEmailAndPassword(window.auth, email, password);
-      showAlert("Iniciando sesión...", "info");
+      //showAlert("Iniciando sesión...", "info");
+      sessionStorage.setItem('userId', window.auth.currentUser.uid);
       // onAuthStateChanged (en app.js) se encargará de redirigir
     } catch (error) {
       let mensaje = "Ocurrió un error al iniciar sesión.";
@@ -44,7 +41,7 @@ window.initializeLogin = function() {
       }
 
       errorMsg.textContent = mensaje;
-      showAlert(mensaje, "danger");
+      showAlert(mensaje, "error");
     }
   });
 
@@ -53,7 +50,8 @@ window.initializeLogin = function() {
     try {
       const provider = new window.GoogleAuthProvider();
       await window.signInWithPopup(window.auth, provider);
-      showAlert("Iniciando sesión con Google...", "info");
+      sessionStorage.setItem('userId', window.auth.currentUser.uid);
+      //showAlert("Iniciando sesión con Google...", "info");
       // onAuthStateChanged (en app.js) se encargará de redirigir
     } catch (error) {
       let mensaje = "Ocurrió un error al iniciar sesión con Google.";
@@ -71,7 +69,7 @@ window.initializeLogin = function() {
       }
 
       errorMsg.textContent = mensaje;
-      showAlert(mensaje, "danger");
+      showAlert(mensaje, "error");
     }
   });
 };

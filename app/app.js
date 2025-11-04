@@ -12,15 +12,15 @@ const pages = {
     },
     favoritos: {
         html: 'pages/favoritos/favoritos.html',
-        // css: 'pages/favoritos/favoritos.css',
-        // js: 'pages/favoritos/favoritos.js',
-        // init: 'initializeFavoritos'
+        css: 'pages/favoritos/favoritos.css',
+        js: 'pages/favoritos/favoritos.js',
+        init: 'initializeFavoritos'
     },
     biblioteca: {
         html: 'pages/biblioteca/biblioteca.html',
-        // css: 'pages/biblioteca/biblioteca.css',
-        // js: 'pages/biblioteca/biblioteca.js',
-        // init: 'initializeBiblioteca'
+        css: 'pages/biblioteca/biblioteca.css',
+        js: 'pages/biblioteca/biblioteca.js',
+        init: 'initializeBiblioteca'
     },
     perfil: {
         html: 'pages/perfil/perfil.html',
@@ -46,14 +46,14 @@ const pages = {
         init: 'initializeLogin'
     },
     register: { 
-     html: 'pages/register/register.html', 
-     js:'pages/register/register.js',
-     init: 'initializeRegister' 
+        html: 'pages/register/register.html', 
+        js:'pages/register/register.js',
+        init: 'initializeRegister' 
     },
     "reset-password": { 
-     html: 'pages/reset-password/reset-password.html', 
-     js: 'pages/reset-password/reset-password.js',
-      init: 'initializeResetPassword'
+        html: 'pages/reset-password/reset-password.html', 
+        js: 'pages/reset-password/reset-password.js',
+        init: 'initializeResetPassword'
     }
 };
 
