@@ -1,12 +1,10 @@
 function initAuthHandler() {
     // Verificar si Firebase está listo
     if (!window.auth || !window.onAuthStateChanged) {
-        //console.log('⏳ Esperando a que Firebase se inicialice...');
         setTimeout(initAuthHandler, 100);
         return;
     }
 
-    //console.log('✅ Firebase listo, configurando auth handler...');
     setupAuthObserver();
 }
 
@@ -14,23 +12,17 @@ function initAuthHandler() {
 // FUNCIÓN PARA ACTUALIZAR AVATAR EN NAVBAR
 // =================================================================
 
-/**
- * Actualizar el avatar del usuario en el navbar
- */
 async function updateUserAvatar(user) {
     try {
-        // Obtener perfil del backend
         const response = await fetch(`${window.API_BASE_URL}/usuarios/${user.uid}`);
         
         if (response.ok) {
             const result = await response.json();
             const profile = result.data;
             
-            // Si tiene avatar configurado, mostrarlo
             if (profile.avatar_style && profile.avatar_url) {
                 const avatarUrl = `https://api.dicebear.com/7.x/${profile.avatar_style}/svg?seed=${encodeURIComponent(profile.avatar_url)}`;
                 
-                // Actualizar el botón del navbar con la imagen
                 const userAvatarBtn = document.querySelector('.user-avatar-btn');
                 if (userAvatarBtn) {
                     userAvatarBtn.innerHTML = `
@@ -47,7 +39,6 @@ async function updateUserAvatar(user) {
                     `;
                 }
             } else {
-                // Si no tiene avatar, mostrar emoji por defecto
                 const userAvatarBtn = document.querySelector('.user-avatar-btn');
                 if (userAvatarBtn) {
                     const userName = userAvatarBtn.querySelector('.user-name');
@@ -59,7 +50,6 @@ async function updateUserAvatar(user) {
         }
     } catch (error) {
         console.log('⚠️ No se pudo cargar el avatar del usuario:', error);
-        // No es crítico, la app puede funcionar sin avatar
     }
 }
 
@@ -76,7 +66,6 @@ function setupAuthObserver() {
 
         if (user) {
             // ✅ Usuario autenticado
-           // console.log('👤 Usuario autenticado:', user.email);
             
             // Actualizar UI del navbar
             if (loginBtn) loginBtn.style.display = 'none';
@@ -84,23 +73,33 @@ function setupAuthObserver() {
             if (logoutBtn) logoutBtn.style.display = 'block';
             if (userNameSpan) userNameSpan.textContent = user.displayName || 'Usuario';
 
+            // Guardar userId en sessionStorage
+            sessionStorage.setItem('userId', user.uid);
+
             // Actualizar avatar desde el backend
             await updateUserAvatar(user);
 
-            // Si está en página de login/register, redirigir a home
+            // **CAMBIO IMPORTANTE**: Solo redirigir si estamos en páginas de auth
+            // NO redirigir si ya estamos en una página autenticada
             const urlParams = new URLSearchParams(window.location.search);
             const currentPage = urlParams.get('page');
             
+            // Solo redirigir desde páginas de autenticación al home
             if (currentPage === 'login' || currentPage === 'register' || currentPage === 'reset-password') {
                 loadPage('home');
             }
 
         } else {
+            // ❌ Usuario NO autenticado
+            
             // Actualizar UI del navbar
             if (loginBtn) loginBtn.style.display = 'block';
             if (profileBtn) profileBtn.style.display = 'none';
             if (logoutBtn) logoutBtn.style.display = 'none';
             if (userNameSpan) userNameSpan.textContent = '';
+
+            // Limpiar sessionStorage
+            sessionStorage.removeItem('userId');
 
             // Resetear el botón de avatar al estado por defecto
             const userAvatarBtn = document.querySelector('.user-avatar-btn');
@@ -109,10 +108,18 @@ function setupAuthObserver() {
                     👤 <span class="user-name"></span> <i class="fas fa-caret-down"></i>
                 `;
             }
+
+            // **CAMBIO IMPORTANTE**: Redirigir a login solo si estamos en páginas protegidas
+            const urlParams = new URLSearchParams(window.location.search);
+            const currentPage = urlParams.get('page');
+            const protectedPages = ['perfil', 'favoritos', 'biblioteca'];
+            
+            if (protectedPages.includes(currentPage)) {
+                showAlert('Debes iniciar sesión para acceder a esta página', 'warning');
+                loadPage('login');
+            }
         }
     });
-
-    //console.log('✅ Auth observer configurado');
 }
 
 // =================================================================
@@ -122,9 +129,14 @@ function setupAuthObserver() {
 window.logout = async function() {
     try {        
         await window.signOut(window.auth);
+        
+        // Limpiar sessionStorage
+        sessionStorage.removeItem('userId');
 
         // Redirigir a home
         loadPage('home');
+        
+        showAlert('Sesión cerrada correctamente', 'success');
         
     } catch (error) {
         console.error('❌ Error al cerrar sesión:', error);
@@ -143,12 +155,10 @@ document.addEventListener('click', (e) => {
     
     if (!userAvatarBtn || !userMenu) return;
 
-    // Si se hace click en el botón de usuario
     if (userAvatarBtn.contains(e.target)) {
         e.stopPropagation();
         userMenu.classList.toggle('show');
     } 
-    // Si se hace click fuera del menú, cerrarlo
     else if (!userMenu.contains(e.target)) {
         userMenu.classList.remove('show');
     }
@@ -158,7 +168,6 @@ document.addEventListener('click', (e) => {
 document.addEventListener('click', (e) => {
     const userMenu = document.querySelector('.user-menu');
     if (userMenu && userMenu.contains(e.target)) {
-        // Si se hizo click en un botón del menú
         if (e.target.tagName === 'BUTTON') {
             userMenu.classList.remove('show');
         }
@@ -169,11 +178,9 @@ document.addEventListener('click', (e) => {
 // INICIALIZACIÓN
 // =================================================================
 
-// Iniciar cuando el DOM esté listo
 if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', initAuthHandler);
 } else {
-    // El DOM ya está listo
     initAuthHandler();
 }
 

@@ -54,7 +54,11 @@ const PAISES = {
 // INICIALIZACIÓN
 // =================================================================
 
+// Agregar al inicio de perfil.js, reemplazando la función initializePerfil
+
 window.initializePerfil = async function() {
+    // Esperar a que Firebase esté listo y el usuario autenticado
+    await waitForAuth();
     
     // Verificar autenticación
     currentUser = window.auth.currentUser;
@@ -75,6 +79,38 @@ window.initializePerfil = async function() {
     await loadUserStats();
 };
 
+// Nueva función para esperar autenticación
+function waitForAuth() {
+    return new Promise((resolve) => {
+        // Si ya hay un usuario, resolver inmediatamente
+        if (window.auth && window.auth.currentUser) {
+            resolve();
+            return;
+        }
+
+        // Si no, esperar al observer
+        if (!window.auth || !window.onAuthStateChanged) {
+            // Firebase no está listo, esperar
+            const checkAuth = setInterval(() => {
+                if (window.auth && window.onAuthStateChanged) {
+                    clearInterval(checkAuth);
+                    
+                    // Configurar listener temporal
+                    const unsubscribe = window.onAuthStateChanged(window.auth, (user) => {
+                        unsubscribe(); // Desuscribirse después de la primera verificación
+                        resolve();
+                    });
+                }
+            }, 50);
+        } else {
+            // Firebase está listo, configurar listener temporal
+            const unsubscribe = window.onAuthStateChanged(window.auth, (user) => {
+                unsubscribe();
+                resolve();
+            });
+        }
+    });
+}
 // =================================================================
 // CARGA DE DATOS
 // =================================================================
