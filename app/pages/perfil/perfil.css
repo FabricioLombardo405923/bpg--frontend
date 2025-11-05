@@ -100,6 +100,8 @@
     gap: 1rem;
     margin-bottom: 2rem;
     border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
 }
 
 .tab-btn {
@@ -144,6 +146,8 @@
 .tab-content {
     display: none;
     animation: fadeIn 0.3s ease;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
 }
 
 .tab-content.active {
