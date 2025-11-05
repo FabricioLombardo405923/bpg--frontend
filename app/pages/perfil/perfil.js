@@ -1,15 +1,6 @@
-// =================================================================
-// VARIABLES GLOBALES
-// =================================================================
-
 let currentUser = null;
 let userProfile = null;
 let isEditMode = false;
-
-// Alias para showNotification
-const showNotification = window.showAlert || function(msg, type) {
-    console.log(`[${type}] ${msg}`);
-};
 
 // Estilos de avatares de DiceBear disponibles
 const AVATAR_STYLES = [
@@ -64,13 +55,12 @@ const PAISES = {
 // =================================================================
 
 window.initializePerfil = async function() {
-    console.log('🎮 Inicializando página de perfil...');
     
     // Verificar autenticación
     currentUser = window.auth.currentUser;
     
     if (!currentUser) {
-        showNotification('Debes iniciar sesión para ver tu perfil', 'error');
+        showAlert('Debes iniciar sesión para ver tu perfil', 'error');
         loadPage('login');
         return;
     }
@@ -92,16 +82,13 @@ window.initializePerfil = async function() {
 async function loadUserProfile() {
     try {
         showLoading(true);
-        
-        console.log('📡 Cargando perfil de usuario:', currentUser.uid);
-        
+                
         // Obtener perfil del backend
         const response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`);
         
         if (response.ok) {
             const result = await response.json();
             userProfile = result.data;
-            console.log('✅ Perfil cargado desde BD:', userProfile);
         } else if (response.status === 404) {
             // Usuario no existe en BD, crear perfil inicial
             console.log('⚠️ Usuario no encontrado en BD, creando perfil inicial...');
@@ -136,10 +123,10 @@ async function loadUserProfile() {
             renderProfile();
         } catch (renderError) {
             console.error('❌ Error renderizando perfil:', renderError);
-            showNotification('Error al cargar el perfil. Por favor, recarga la página.', 'error');
+            showAlert('Error al cargar el perfil. Por favor, recarga la página.', 'error');
         }
         
-        showNotification('Error al cargar algunos datos del perfil', 'warning');
+        showAlert('Error al cargar algunos datos del perfil', 'warning');
     } finally {
         showLoading(false);
     }
@@ -147,7 +134,6 @@ async function loadUserProfile() {
 
 async function createInitialProfile() {
     try {
-        console.log('📝 Creando perfil inicial para:', currentUser.uid);
         
         const initialData = {
             email: currentUser.email,
@@ -156,7 +142,6 @@ async function createInitialProfile() {
             avatar_style: 'avataaars'
         };
         
-        console.log('📤 Enviando datos:', initialData);
         
         const response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
             method: 'POST',
@@ -166,12 +151,10 @@ async function createInitialProfile() {
             body: JSON.stringify(initialData)
         });
         
-        console.log('📥 Respuesta del servidor:', response.status);
         
         if (response.ok) {
             const result = await response.json();
             userProfile = result.data;
-            console.log('✅ Perfil inicial creado:', userProfile);
             return true;
         } else {
             const errorText = await response.text();
@@ -330,7 +313,6 @@ async function saveProfile(formData) {
             biografia: formData.get('biografia') || null
         };
         
-        console.log('💾 Guardando perfil...', updates);
         
         // Intentar PATCH primero
         let response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
@@ -343,7 +325,6 @@ async function saveProfile(formData) {
         
         // Si no existe (404), crear con POST
         if (response.status === 404) {
-            console.log('⚠️ Usuario no existe, creando...');
             
             const createData = {
                 email: currentUser.email,
@@ -370,25 +351,23 @@ async function saveProfile(formData) {
         const result = await response.json();
         userProfile = result.data;
         
-        console.log('✅ Perfil guardado:', userProfile);
         
         // Actualizar displayName en Firebase si cambió
         if (updates.displayName !== currentUser.displayName) {
             await window.updateProfile(currentUser, {
                 displayName: updates.displayName
             });
-            console.log('✅ DisplayName actualizado en Firebase');
         }
         
         // Re-renderizar y salir del modo edición
         renderProfile();
         exitEditMode();
         
-        showNotification('¡Perfil actualizado correctamente! 🎉', 'success');
+        showAlert('¡Perfil actualizado!', 'success');
         
     } catch (error) {
         console.error('❌ Error guardando perfil:', error);
-        showNotification('Error al guardar el perfil: ' + error.message, 'error');
+        showAlert('Error al guardar el perfil: ' + error.message, 'error');
     } finally {
         showLoading(false);
     }
@@ -428,7 +407,6 @@ async function selectAvatar(avatarStyle) {
         // Generar un seed único basado en el email o usar uno aleatorio
         const seed = userProfile?.email || currentUser.email || `user-${Date.now()}`;
         
-        console.log('🎨 Cambiando avatar a:', avatarStyle);
         
         // Intentar PATCH primero
         let response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
@@ -444,7 +422,6 @@ async function selectAvatar(avatarStyle) {
         
         // Si no existe (404), crear con POST
         if (response.status === 404) {
-            console.log('⚠️ Usuario no existe, creando con avatar...');
             
             response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
                 method: 'POST',
@@ -468,9 +445,7 @@ async function selectAvatar(avatarStyle) {
         
         const result = await response.json();
         userProfile = result.data;
-        
-        console.log('✅ Avatar actualizado:', userProfile);
-        
+                
         // Actualizar vista
         const avatarDisplay = document.getElementById('avatar-display');
         const avatarUrl = getDiceBearUrl(avatarStyle, seed);
@@ -481,11 +456,11 @@ async function selectAvatar(avatarStyle) {
             await window.updateUserAvatar(currentUser);
         }
         
-        showNotification('¡Avatar actualizado! ✨', 'success');
+        showAlert('¡Avatar actualizado!', 'success');
         
     } catch (error) {
         console.error('❌ Error cambiando avatar:', error);
-        showNotification('Error al cambiar el avatar: ' + error.message, 'error');
+        showAlert('Error al cambiar el avatar: ' + error.message, 'error');
     } finally {
         showLoading(false);
     }
@@ -511,12 +486,12 @@ async function handlePasswordChange(e) {
     
     // Validar contraseñas
     if (newPassword !== confirmPassword) {
-        showNotification('Las contraseñas no coinciden', 'error');
+        showAlert('Las contraseñas no coinciden', 'error');
         return;
     }
     
     if (newPassword.length < 6) {
-        showNotification('La contraseña debe tener al menos 6 caracteres', 'error');
+        showAlert('La contraseña debe tener al menos 6 caracteres', 'error');
         return;
     }
     
@@ -526,7 +501,7 @@ async function handlePasswordChange(e) {
     );
     
     if (!isPasswordProvider) {
-        showNotification('No puedes cambiar la contraseña porque iniciaste sesión con un proveedor externo', 'warning');
+        showAlert('No puedes cambiar la contraseña porque iniciaste sesión con un proveedor externo', 'warning');
         return;
     }
     
@@ -538,7 +513,7 @@ async function handlePasswordChange(e) {
         // Limpiar formulario
         document.getElementById('change-password-form').reset();
         
-        showNotification('¡Contraseña actualizada correctamente! 🔒', 'success');
+        showAlert('¡Contraseña actualizada correctamente!', 'success');
         
     } catch (error) {
         console.error('Error cambiando contraseña:', error);
@@ -549,7 +524,7 @@ async function handlePasswordChange(e) {
             mensaje = 'Por seguridad, debes volver a iniciar sesión para cambiar tu contraseña';
         }
         
-        showNotification(mensaje, 'error');
+        showAlert(mensaje, 'error');
     } finally {
         showLoading(false);
     }
@@ -632,5 +607,3 @@ function showLoading(show) {
 
 // Exponer funciones globales necesarias
 window.closeAvatarModal = closeAvatarModal;
-
-console.log('✅ Módulo de perfil cargado');

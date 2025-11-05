@@ -1,19 +1,12 @@
-// =================================================================
-// AUTH HANDLER - MANEJO DE AUTENTICACIÓN
-// =================================================================
-
-console.log('🔐 Inicializando auth-handler...');
-
-// Esperar a que Firebase esté disponible
 function initAuthHandler() {
     // Verificar si Firebase está listo
     if (!window.auth || !window.onAuthStateChanged) {
-        console.log('⏳ Esperando a que Firebase se inicialice...');
+        //console.log('⏳ Esperando a que Firebase se inicialice...');
         setTimeout(initAuthHandler, 100);
         return;
     }
 
-    console.log('✅ Firebase listo, configurando auth handler...');
+    //console.log('✅ Firebase listo, configurando auth handler...');
     setupAuthObserver();
 }
 
@@ -83,7 +76,7 @@ function setupAuthObserver() {
 
         if (user) {
             // ✅ Usuario autenticado
-            console.log('👤 Usuario autenticado:', user.email);
+           // console.log('👤 Usuario autenticado:', user.email);
             
             // Actualizar UI del navbar
             if (loginBtn) loginBtn.style.display = 'none';
@@ -99,14 +92,10 @@ function setupAuthObserver() {
             const currentPage = urlParams.get('page');
             
             if (currentPage === 'login' || currentPage === 'register' || currentPage === 'reset-password') {
-                console.log('🏠 Redirigiendo a home...');
                 loadPage('home');
             }
 
         } else {
-            // 🚫 Usuario no autenticado
-            console.log('🚫 Usuario no autenticado');
-            
             // Actualizar UI del navbar
             if (loginBtn) loginBtn.style.display = 'block';
             if (profileBtn) profileBtn.style.display = 'none';
@@ -123,7 +112,7 @@ function setupAuthObserver() {
         }
     });
 
-    console.log('✅ Auth observer configurado');
+    //console.log('✅ Auth observer configurado');
 }
 
 // =================================================================
@@ -131,13 +120,9 @@ function setupAuthObserver() {
 // =================================================================
 
 window.logout = async function() {
-    try {
-        console.log('🚪 Cerrando sesión...');
-        
+    try {        
         await window.signOut(window.auth);
-        
-        showAlert('Sesión cerrada correctamente 👋', 'success');
-        
+
         // Redirigir a home
         loadPage('home');
         
