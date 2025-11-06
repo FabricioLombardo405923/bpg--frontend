@@ -82,10 +82,16 @@
             </ul>
             
             <!-- Usuario -->
-            <div class="nav-user" onclick="navigateToProfile()">
-                <div class="user-avatar">A</div>
-                <span class="user-name" style="display: none;">Alex_Gamer2024</span>
-                <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+            <div class="nav-user">
+                    <button class="user-avatar-btn">
+                        👤 <span class="user-name"></span> <i class="fas fa-caret-down"></i>
+                    </button>
+
+                    <div class="user-menu">
+                        <button onclick="loadPage('login')" id="login-btn">Iniciar sesión</button>
+                        <button onclick="navigateToProfile()" id="profile-btn" style="display:none;">Mi perfil</button>
+                        <button onclick="logout()" id="logout-btn" style="display:none;">Cerrar sesión</button>
+                    </div>
             </div>
         </div>
     </nav>
@@ -119,7 +125,11 @@
             </div>
         </div>
     </main>
+
+    <!-- Firebase -->
+    <script type="module" src="./firebaseConfig.js"></script>
     
+
     <!-- Services -->
     <script src="services/modalBase.js"></script>
     <link rel="stylesheet" href="services/pagination.css">
@@ -127,13 +137,16 @@
     <script src="services/search-handler.js"></script>
     <link rel="stylesheet" href="services/search-suggestions.css">
     <script src="services/toast.js"></script>
+    
 
     <!-- Modales -->
     <script src="modals/confirmacion/confirmacion.js"></script>
     <script src="modals/modals-init.js"></script>
 
+
     <!-- App principal -->
     <script src="app.js"></script>
+    <script src="services/auth-handler.js"></script>
 
 </body>
 </html>

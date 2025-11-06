@@ -24,9 +24,9 @@ const pages = {
     },
     perfil: {
         html: 'pages/perfil/perfil.html',
-        // css: 'pages/perfil/perfil.css',
-        // js: 'pages/perfil/perfil.js',
-        // init: 'initializePerfil'
+        css: 'pages/perfil/perfil.css',
+        js: 'pages/perfil/perfil.js',
+         init: 'initializePerfil'
     },
     juego: {
         html: 'pages/juego/juego.html',
@@ -39,6 +39,21 @@ const pages = {
         css: 'pages/busqueda/busqueda.css',
         js: 'pages/busqueda/busqueda.js',
         init: 'initializeBusqueda'
+    },
+    login: { 
+        html: 'pages/login/login.html', 
+        js:'pages/login/login.js',
+        init: 'initializeLogin'
+    },
+    register: { 
+        html: 'pages/register/register.html', 
+        js:'pages/register/register.js',
+        init: 'initializeRegister' 
+    },
+    "reset-password": { 
+        html: 'pages/reset-password/reset-password.html', 
+        js: 'pages/reset-password/reset-password.js',
+        init: 'initializeResetPassword'
     }
 };
 

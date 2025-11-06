@@ -1,0 +1,586 @@
+/* =================================================================
+   PERFIL - CONTAINER PRINCIPAL
+   ================================================================= */
+
+.perfil-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 2rem;
+    position: relative;
+}
+
+/* =================================================================
+   HEADER DEL PERFIL
+   ================================================================= */
+
+.perfil-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border-radius: 16px;
+    padding: 3rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+}
+
+.perfil-avatar-section {
+    display: flex;
+    align-items: center;
+    gap: 2rem;
+}
+
+.avatar-wrapper {
+    position: relative;
+}
+
+.avatar-circle {
+    width: 120px;
+    height: 120px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 4px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    transition: all 0.3s ease;
+    overflow: hidden;
+}
+
+.avatar-circle .avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.avatar-circle:hover {
+    transform: scale(1.05);
+    border-color: rgba(255, 255, 255, 0.5);
+}
+
+.avatar-edit-btn {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 3px solid var(--color-primary);
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.avatar-edit-btn:hover {
+    background: var(--color-accent-light);
+    transform: scale(1.1);
+}
+
+.perfil-info-header h1 {
+    color: white;
+    margin: 0 0 0.5rem 0;
+    font-size: 2rem;
+}
+
+.perfil-info-header p {
+    color: rgba(255, 255, 255, 0.8);
+    margin: 0;
+    font-size: 1rem;
+}
+
+/* =================================================================
+   TABS
+   ================================================================= */
+
+.perfil-tabs {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    border-bottom: 2px solid var(--border-color);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+}
+
+.tab-btn {
+    padding: 1rem 2rem;
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1rem;
+    cursor: pointer;
+    position: relative;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tab-btn:hover {
+    color: var(--color-primary);
+}
+
+.tab-btn.active {
+    color: var(--color-primary);
+    font-weight: 600;
+}
+
+.tab-btn.active::after {
+    content: '';
+    position: absolute;
+    bottom: -2px;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--color-primary);
+    border-radius: 3px 3px 0 0;
+}
+
+/* =================================================================
+   CONTENIDO DE TABS
+   ================================================================= */
+
+.tab-content {
+    display: none;
+    animation: fadeIn 0.3s ease;
+        box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
+
+}
+
+.tab-content.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* =================================================================
+   SECCIONES DEL PERFIL
+   ================================================================= */
+
+.perfil-section {
+    background: var(--card-bg);
+    border-radius: 12px;
+    padding: 2rem;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 2rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-header h2 {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+}
+
+/* =================================================================
+   VISTA DE INFORMACIÓN
+   ================================================================= */
+
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); 
+    gap: 1.5rem 2rem; 
+    align-items: start; 
+}
+
+.info-item {
+    padding: 1rem;
+    background: var(--bg-secondary);
+    border-radius: 8px;
+    border-left: 3px solid var(--color-primary);
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.info-item.full-width {
+    grid-column: span 2; 
+}
+
+.info-item label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.info-item p {
+    margin: 0;
+    color: var(--text-primary);
+    font-size: 1rem;
+    word-wrap: break-word;
+}
+
+/* =================================================================
+   FORMULARIO DE EDICIÓN
+   ================================================================= */
+
+.form-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1.5rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group.full-width {
+    grid-column: 1 / -1;
+}
+
+.form-group label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9rem;
+    color: var(--text-secondary);
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+    padding: 0.75rem;
+    background: var(--bg-secondary);
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    color: var(--text-primary);
+    font-size: 1rem;
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: var(--color-primary);
+    box-shadow: 0 0 0 3px rgba(124, 58, 237, 0.1);
+}
+
+.form-group textarea {
+    resize: vertical;
+    min-height: 100px;
+    font-family: inherit;
+}
+
+.char-counter {
+    display: block;
+    text-align: right;
+    color: var(--text-muted);
+    font-size: 0.8rem;
+    margin-top: 0.25rem;
+}
+
+/* =================================================================
+   ACCIONES DEL FORMULARIO
+   ================================================================= */
+
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid var(--border-color);
+}
+
+/* =================================================================
+   SEGURIDAD
+   ================================================================= */
+
+.security-section {
+    margin-bottom: 5rem;
+    padding-bottom: 2rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.security-section:last-child {
+    border-bottom: none;
+}
+
+.security-section h3 {
+    color: var(--text-primary);
+    margin-bottom: 1rem;
+}
+.security-section .info-item {
+    margin-bottom: 1.5rem; 
+}
+
+/* =================================================================
+   ESTADÍSTICAS
+   ================================================================= */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1.5rem;
+}
+
+.stat-card {
+    background: var(--bg-secondary);
+    border-radius: 12px;
+    padding: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: all 0.3s ease;
+    border: 2px solid transparent;
+}
+
+.stat-card:hover {
+    border-color: var(--color-primary);
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(124, 58, 237, 0.2);
+}
+
+.stat-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 12px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
+}
+
+.stat-content h3 {
+    margin: 0;
+    font-size: 2rem;
+    color: var(--text-primary);
+}
+
+.stat-content p {
+    margin: 0;
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+}
+
+/* =================================================================
+   LOADING OVERLAY
+   ================================================================= */
+
+.loading-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.loading-spinner {
+    width: 50px;
+    height: 50px;
+    border: 4px solid rgba(255, 255, 255, 0.2);
+    border-top-color: var(--color-primary);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 1rem;
+}
+
+.loading-overlay p {
+    color: white;
+    font-size: 1.1rem;
+}
+
+/* =================================================================
+   MODAL DE AVATAR
+   ================================================================= */
+
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10000;
+    padding: 1rem;
+}
+
+.modal-content {
+    background: var(--card-bg);
+    border-radius: 16px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 80vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: var(--text-primary);
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+}
+
+.modal-close:hover {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.modal-body {
+    padding: 1.5rem;
+    overflow-y: auto;
+}
+
+.emoji-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(60px, 1fr));
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.emoji-option {
+    aspect-ratio: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 2rem;
+    background: var(--bg-secondary);
+    border: 2px solid transparent;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.emoji-option:hover {
+    border-color: var(--color-primary);
+    transform: scale(1.1);
+}
+
+/* =================================================================
+   RESPONSIVE
+   ================================================================= */
+
+@media (max-width: 768px) {
+    .perfil-container {
+        padding: 1rem;
+    }
+
+    .perfil-header {
+        padding: 2rem 1rem;
+    }
+
+    .perfil-avatar-section {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .avatar-circle {
+        width: 100px;
+        height: 100px;
+        font-size: 2.5rem;
+    }
+
+    .perfil-info-header h1 {
+        font-size: 1.5rem;
+    }
+
+    .perfil-tabs {
+        gap: 0.5rem;
+    }
+
+    .tab-btn {
+        padding: 0.75rem 1rem;
+        font-size: 0.9rem;
+    }
+
+    .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .form-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .form-actions {
+        flex-direction: column-reverse;
+    }
+
+    .form-actions button {
+        width: 100%;
+    }
+
+    .stats-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .perfil-section {
+        padding: 1rem;
+    }
+
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .emoji-grid {
+        grid-template-columns: repeat(auto-fill, minmax(50px, 1fr));
+    }
+
+    .emoji-option {
+        font-size: 1.5rem;
+    }
+}
