@@ -13,14 +13,13 @@ import {
 
 // Configuración de Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyCr1Dq5PH1mXsq6t5hXhxyggiHYiWC6pD4",
-    authDomain: "bestpricegame-30c56.firebaseapp.com",
-    projectId: "bestpricegame-30c56",
-    storageBucket: "bestpricegame-30c56.appspot.com",
-    messagingSenderId: "481228266856",
-    appId: "1:481228266856:web:8916e81728695a8092cadd"
+    apiKey: "AIzaSyDw8O5W4T7qA65_TVfJQiP4vbKWB3MXIwc",
+    authDomain: "bestpricegame-16642.firebaseapp.com",
+    projectId: "bestpricegame-16642",
+    storageBucket: "bestpricegame-16642.firebasestorage.app",
+    messagingSenderId: "575667207886",
+    appId: "1:575667207886:web:33300d8d0cbceacd411a9f"
 };
-
 // Inicializar Firebase
 const app = initializeApp(firebaseConfig);
 const auth = getAuth(app);
