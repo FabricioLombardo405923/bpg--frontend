@@ -1,16 +1,11 @@
-const pageSize = 20;
 function getUserId() {
     var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
 
     return userId;
 }
 
-const API_URL_RECIENTES = //``
-'http://localhost:3000/api/games/deals/recent?pageSize=5';
-    //`http://localhost:3000/api/descuentos?pageSize=${pageSize}&pageNumber=0&idsTiendas=1,25`;
-const API_URL_POPULARES =//``
- `http://localhost:3000/api/games/deals/popular?pageSize=5`
-    //`http://localhost:3000/api/descuentos/populares?pageSize=${pageSize}&pageNumber=0&idsTiendas=1,25`;
+const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
+const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
 
 // Inicializar la página
 async function initializeHome() {

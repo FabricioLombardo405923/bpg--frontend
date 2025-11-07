@@ -1,5 +1,6 @@
 // Configuración de la API
-window.API_BASE_URL = 'http://localhost:3000/api';
+window.API_BASE_URL = 'https://bpg-backend.vercel.app/api';
+//window.API_BASE_URL = 'http://localhost:3000/api';
 
 
 // Configuración de páginas
