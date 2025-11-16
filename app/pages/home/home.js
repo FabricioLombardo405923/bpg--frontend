@@ -1,11 +1,11 @@
 function getUserId() {
-    var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
+    var userId = sessionStorage.getItem('userId') || null; 
 
     return userId;
 }
 
-const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
-const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
+const API_URL_RECIENTES = '';//`${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
+const API_URL_POPULARES = '';//`${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
 
 // Inicializar la página
 async function initializeHome() {
@@ -337,7 +337,7 @@ async function toggleQuickFavorite(btn, game) {
             if (success) {
                 btn.classList.add('active');
                 icon.className = 'fas fa-heart';
-                showAlert('¡Agregado a favoritos! ❤️', 'success');
+                showAlert('¡Agregado a favoritos!', 'success');
             }
         }
     } catch (error) {
@@ -453,7 +453,7 @@ async function toggleQuickLibrary(btn, game) {
             if (success) {
                 btn.classList.add('active');
                 icon.className = 'fas fa-bookmark';
-                showAlert('¡Agregado a biblioteca! 📚', 'success');
+                showAlert('¡Agregado a biblioteca!', 'success');
             }
         }
     } catch (error) {

@@ -1,7 +1,10 @@
 // Configuración de la API
-window.API_BASE_URL = 'https://bpg-backend.vercel.app/api';
-//window.API_BASE_URL = 'http://localhost:3000/api';
+const produccion =
+    window.location.href.startsWith("https://bestpricegame-30c56.web.app");
 
+window.API_BASE_URL = produccion
+    ? "https://bpg-backend.vercel.app/api"
+    : "http://localhost:3000/api";
 
 // Configuración de páginas
 const pages = {
@@ -27,7 +30,7 @@ const pages = {
         html: 'pages/perfil/perfil.html',
         css: 'pages/perfil/perfil.css',
         js: 'pages/perfil/perfil.js',
-         init: 'initializePerfil'
+        init: 'initializePerfil'
     },
     juego: {
         html: 'pages/juego/juego.html',
@@ -55,7 +58,13 @@ const pages = {
         html: 'pages/reset-password/reset-password.html', 
         js: 'pages/reset-password/reset-password.js',
         init: 'initializeResetPassword'
-    }
+    },
+    premium: { 
+        html: 'pages/premium/premium.html', 
+        js:'pages/premium/premium.js',
+        css: 'pages/premium/premium.css',
+        init: 'initializePremium' 
+    },
 };
 
 // Variables globales del sistema
