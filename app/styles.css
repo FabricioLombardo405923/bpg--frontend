@@ -2047,3 +2047,61 @@ RESPONSIVE - MOBILE (menos de 768px)
 }
 
 
+/* FOOTER */
+.footer {
+    width: 100%;
+    background: #2c2c2c;
+    padding: 20px 0;
+    text-align: center;
+    color: #666565;
+    margin-top: 40px;
+}
+
+.footer-links {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #6d6a6a;
+    margin: 0 15px;
+    text-decoration: none;
+    font-size: 15px;
+    transition: 0.3s;
+}
+
+.footer-links a:hover {
+    color: #7c3aed;
+}
+
+/* FAQ PAGE */
+.faq-container {
+    max-width: 800px;
+    margin: 40px auto;
+    padding: 20px;
+}
+
+.faq-container h1 {
+    font-size: 32px;
+    margin-bottom: 20px;
+}
+
+.faq-section {
+    margin-bottom: 30px;
+}
+
+.faq-section h2 {
+    font-size: 24px;
+    margin-bottom: 10px;
+    border-left: 4px solid #7c3aed;
+    padding-left: 10px;
+}
+
+.faq-item {
+    margin-bottom: 15px;
+}
+
+.faq-item span {
+    font-weight: bold;
+    display: block;
+    margin-bottom: 5px;
+}

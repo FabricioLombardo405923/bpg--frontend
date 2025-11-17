@@ -65,6 +65,18 @@ const pages = {
         css: 'pages/premium/premium.css',
         init: 'initializePremium' 
     },
+    preguntas: { 
+        html: 'pages/preguntas/preguntas.html', 
+        //js:'pages/preguntas/preguntas.js',
+        css: 'pages/preguntas/preguntas.css'
+        //init: 'initializePreguntas' 
+    },
+    terminos: { 
+        html: 'pages/terminos/terminos.html', 
+        //js:'pages/terminos/terminos.js',
+        css: 'pages/terminos/terminos.css'
+        //init: 'initializeTerminos' 
+    },
 };
 
 // Variables globales del sistema

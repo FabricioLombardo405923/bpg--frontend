@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Price Games</title>
-    
 
     <!-- Estilos -->
     <link rel="stylesheet" href="styles.css">
@@ -22,6 +21,7 @@
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="Best Price Games">
+
     <!-- Toastify -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
@@ -35,7 +35,6 @@
 
     <!-- Para navegador moderno con manifest -->
     <link rel="manifest" href="./favicon/site.webmanifest">
-
 </head>
 <body>
     <!-- NAVBAR PRINCIPAL -->
@@ -127,9 +126,16 @@
         </div>
     </main>
 
+    <footer class="footer">
+        <div class="footer-links">
+            <a class="nav-link" onclick="loadPage('preguntas')">Preguntas Frecuentes</a>
+            <a class="nav-link" onclick="loadPage('terminos')">Términos y Condiciones</a>
+        </div>
+        <p class="copyright">© 2025 Best Price Game. Todos los derechos reservados.</p>
+    </footer>
+
     <!-- Firebase -->
     <script type="module" src="./firebaseConfig.js"></script>
-    
 
     <!-- Services -->
     <script src="services/modalBase.js"></script>
@@ -138,12 +144,10 @@
     <script src="services/search-handler.js"></script>
     <link rel="stylesheet" href="services/search-suggestions.css">
     <script src="services/toast.js"></script>
-    
 
     <!-- Modales -->
     <script src="modals/confirmacion/confirmacion.js"></script>
     <script src="modals/modals-init.js"></script>
-
 
     <!-- App principal -->
     <script src="app.js"></script>
