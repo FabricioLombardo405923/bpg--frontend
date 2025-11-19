@@ -1,11 +1,10 @@
 function getUserId() {
     var userId = sessionStorage.getItem('userId') || null; 
-
     return userId;
 }
 
-const API_URL_RECIENTES = '';//`${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
-const API_URL_POPULARES = '';//`${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
+const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
+const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
 
 // Inicializar la página
 async function initializeHome() {
@@ -179,7 +178,7 @@ function crearHeroCard(game) {
     return card;
 }
 
-// --- CREAR GAME CARD ---
+// --- CREAR GAME CARD (SIN botón de alerta individual) ---
 function crearGameCard(game) {
     const template = document.getElementById('card-template');
     const card = template.content.cloneNode(true);
@@ -297,7 +296,7 @@ if (document.readyState === 'loading') {
 }
 
 //=============================================
-// FAVORITOS Y BIBLIOTECA
+// FAVORITOS Y BIBLIOTECA CON NOTIFICACIONES AUTOMÁTICAS
 //=============================================
 
 // Convertir game object a formato para API
@@ -311,7 +310,7 @@ function gameToApiFormat(game) {
     };
 }
 
-// ========== FAVORITOS ==========
+// ========== FAVORITOS CON NOTIFICACIONES ==========
 
 async function toggleQuickFavorite(btn, game) {
     const userId = getUserId();
@@ -337,13 +336,57 @@ async function toggleQuickFavorite(btn, game) {
             if (success) {
                 btn.classList.add('active');
                 icon.className = 'fas fa-heart';
-                showAlert('¡Agregado a favoritos!', 'success');
+                showAlert('¡Agregado a favoritos! Recibirás emails cuando haya ofertas', 'success');
+                
+                // CREAR PREFERENCIA DE NOTIFICACIÓN AUTOMÁTICA
+                await crearPreferenciaAutomatica(game, userId);
             }
         }
     } catch (error) {
         showAlert('Error al actualizar favoritos', 'error');
     } finally {
         btn.disabled = false;
+    }
+}
+
+// NUEVA FUNCIÓN: Crear alerta de EMAIL automática al agregar a favoritos
+async function crearPreferenciaAutomatica(game, userId) {
+    try {
+        // Configuración por defecto: 10% descuento mínimo, sin límite de precio
+        // Solo envía EMAIL cuando hay descuentos, NO notificaciones in-app
+        const response = await fetch(
+            `${window.API_BASE_URL}/notificaciones/preferences`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userId,
+                    gameData: {
+                        idSteam: game.gameID,
+                        nombre: game.title,
+                        portada: game.thumbOriginal || game.steamHeader || game.thumb
+                    },
+                    preferences: {
+                        descuentoMinimo: 10,  // 10% descuento mínimo
+                        precioMaximo: null,   // Sin límite de precio
+                        notificarPorEmail: true,  // EMAIL activado
+                        notificarInApp: false     // Notificaciones in-app DESACTIVADAS
+                    }
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log('✅ Alerta de email configurada para:', game.title);
+        } else {
+            console.warn('⚠️ No se pudo configurar alerta de email:', result.error);
+        }
+
+    } catch (error) {
+        console.error('Error configurando alerta de email:', error);
+        // No mostramos error al usuario, es una acción secundaria
     }
 }
 
@@ -365,7 +408,7 @@ async function checkAndUpdateFavoriteButton(btn, idSteam) {
 async function verificarFavorito(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/check/${idSteam}`);
+        const response = await fetch(`${window.API_BASE_URL}/favoritos/${userId}/check/${idSteam}`);
         const result = await response.json();
         return result.isFavorite || false;
     } catch (error) {
@@ -377,7 +420,7 @@ async function verificarFavorito(idSteam) {
 async function agregarFavorito(gameData) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE_URL}/favoritos`, {
+        const response = await fetch(`${window.API_BASE_URL}/favoritos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -408,7 +451,7 @@ async function agregarFavorito(gameData) {
 async function eliminarFavorito(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/${idSteam}`, {
+        const response = await fetch(`${window.API_BASE_URL}/favoritos/${userId}/${idSteam}`, {
             method: 'DELETE'
         });
 
@@ -481,7 +524,7 @@ async function checkAndUpdateLibraryButton(btn, idSteam) {
 async function verificarBiblioteca(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/check/${idSteam}`);
+        const response = await fetch(`${window.API_BASE_URL}/biblioteca/${userId}/check/${idSteam}`);
         const result = await response.json();
         return result.isBiblioteca || false;
     } catch (error) {
@@ -493,7 +536,7 @@ async function verificarBiblioteca(idSteam) {
 async function agregarBiblioteca(gameData) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE_URL}/biblioteca`, {
+        const response = await fetch(`${window.API_BASE_URL}/biblioteca`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({
@@ -524,7 +567,7 @@ async function agregarBiblioteca(gameData) {
 async function eliminarBiblioteca(idSteam) {
     try {
         const userId = getUserId();
-        const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/${idSteam}`, {
+        const response = await fetch(`${window.API_BASE_URL}/biblioteca/${userId}/${idSteam}`, {
             method: 'DELETE'
         });
 

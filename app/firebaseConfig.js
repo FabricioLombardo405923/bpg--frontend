@@ -35,5 +35,3 @@ window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.updateProfile = updateProfile;
 window.updatePassword = updatePassword;
 
-
-console.log("🔥 Firebase inicializado");
