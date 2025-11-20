@@ -7,15 +7,15 @@ class ModalBase {
     this.currentResolve = null;
   }
 
-  // Cargar el HTML del modal si no está cargado
+  // Cargar HTML del modal
   async loadHTML() {
     if (this.isLoaded) return;
-    
+
     try {
       const response = await fetch(this.htmlPath);
       const html = await response.text();
       document.body.insertAdjacentHTML('beforeend', html);
-      
+
       this.modal = document.getElementById(this.modalId);
       this.setupBaseEvents();
       this.isLoaded = true;
@@ -24,22 +24,21 @@ class ModalBase {
     }
   }
 
-  // Configurar eventos básicos (cerrar, ESC, click fuera)
+  // Eventos básicos: cerrar, esc, click fuera
   setupBaseEvents() {
-    // Botón X para cerrar
     const closeBtn = this.modal.querySelector('.close');
     if (closeBtn) {
       closeBtn.addEventListener('click', () => this.close(null));
     }
 
-    // Click fuera del modal
+    // Click fuera
     this.modal.addEventListener('click', (e) => {
       if (e.target === this.modal) {
         this.close(null);
       }
     });
 
-    // ESC para cerrar
+    // ESC
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape' && this.isOpen()) {
         this.close(null);
@@ -50,14 +49,17 @@ class ModalBase {
   // Mostrar modal
   async show(data = {}) {
     await this.loadHTML();
-    
-    // Configurar contenido específico del modal
+
     this.setupContent(data);
-    
-    // Mostrar
-    this.modal.style.display = 'block';
-    
-    // Retornar promesa que se resuelve cuando el modal se cierra
+
+    // Mostrar modal 
+    this.modal.style.display = 'flex';
+
+    // Forzar recálculo para centrar 
+    requestAnimationFrame(() => {
+      this.modal.classList.add("modal-visible");
+    });
+
     return new Promise((resolve) => {
       this.currentResolve = resolve;
     });
@@ -67,8 +69,9 @@ class ModalBase {
   close(result = null) {
     if (this.modal) {
       this.modal.style.display = 'none';
+      this.modal.classList.remove("modal-visible");
     }
-    
+
     if (this.currentResolve) {
       this.currentResolve(result);
       this.currentResolve = null;
@@ -77,12 +80,9 @@ class ModalBase {
 
   // Verificar si está abierto
   isOpen() {
-    return this.modal && this.modal.style.display === 'block';
+    return this.modal && this.modal.style.display === 'flex';
   }
 
-  // Método abstracto - debe ser implementado por cada modal específico
-  setupContent(data) {
-    // Override en cada modal específico
-  }
+  // Método a sobrescribir por cada modal
+  setupContent(data) {}
 }
-

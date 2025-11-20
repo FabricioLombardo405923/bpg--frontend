@@ -76,7 +76,7 @@ window.initializePerfil = async function() {
     await loadUserProfile();
     
     // Cargar estadísticas
-    await loadUserStats();
+    //await loadUserStats();
 };
 
 // Nueva función para esperar autenticación
@@ -280,26 +280,26 @@ function getProviderName(providerId) {
 // ESTADÍSTICAS
 // =================================================================
 
-async function loadUserStats() {
-    try {
-        // Calcular días desde creación
-        const creationDate = new Date(currentUser.metadata.creationTime);
-        const today = new Date();
-        const diffTime = Math.abs(today - creationDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+// async function loadUserStats() {
+//     try {
+//         // Calcular días desde creación
+//         const creationDate = new Date(currentUser.metadata.creationTime);
+//         const today = new Date();
+//         const diffTime = Math.abs(today - creationDate);
+//         const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
         
-        document.getElementById('stat-dias').textContent = diffDays;
+//         document.getElementById('stat-dias').textContent = diffDays;
         
-        // Aquí puedes agregar llamadas a tu backend para obtener más estadísticas
-        // Por ahora usamos valores por defecto
-        document.getElementById('stat-favoritos').textContent = '0';
-        document.getElementById('stat-biblioteca').textContent = '0';
-        document.getElementById('stat-reviews').textContent = '0';
+//         // Aquí puedes agregar llamadas a tu backend para obtener más estadísticas
+//         // Por ahora usamos valores por defecto
+//         document.getElementById('stat-favoritos').textContent = '0';
+//         document.getElementById('stat-biblioteca').textContent = '0';
+//         document.getElementById('stat-reviews').textContent = '0';
         
-    } catch (error) {
-        console.error('Error cargando estadísticas:', error);
-    }
-}
+//     } catch (error) {
+//         console.error('Error cargando estadísticas:', error);
+//     }
+// }
 
 // =================================================================
 // EDICIÓN DE PERFIL
@@ -640,6 +640,51 @@ function showLoading(show) {
     const overlay = document.getElementById('profile-loading');
     overlay.style.display = show ? 'flex' : 'none';
 }
+
+// ================================================================
+// ELIMINAR CUENTA
+// ================================================================
+window.deleteAccount = async function () {
+    const user = auth.currentUser;
+
+    if (!user) {
+        showAlert("No hay usuario autenticado", "danger");
+        return;
+    }
+
+    // Mostrar modal de confirmación
+    const modal = new ConfirmModal();
+    const confirmed = await modal.confirm(
+        "Eliminar cuenta",
+        "¿Estás seguro? Esta acción no se puede deshacer."
+    );
+
+    if (!confirmed) return;
+
+    try {
+        const response = await fetch(`${window.API_BASE_URL}/usuarios/${sessionStorage.getItem('userId')}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) throw new Error("Error al eliminar los datos del servidor");
+
+        await window.deleteUser(user);
+
+        sessionStorage.removeItem("userId");
+        loadPage("home");
+
+        showAlert("Cuenta eliminada correctamente", "success");
+
+    } catch (error) {
+        console.error("❌ Error al eliminar cuenta:", error);
+
+        if (error.code === "auth/requires-recent-login") {
+            showAlert("Debes volver a iniciar sesión para eliminar tu cuenta.", "warning");
+        } else {
+            showAlert("Error eliminando la cuenta", "error");
+        }
+    }
+};
 
 // Exponer funciones globales necesarias
 window.closeAvatarModal = closeAvatarModal;
