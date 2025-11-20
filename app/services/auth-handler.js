@@ -115,7 +115,7 @@ function setupAuthObserver() {
             const protectedPages = ['perfil', 'favoritos', 'biblioteca'];
             
             if (protectedPages.includes(currentPage)) {
-                showAlert('Debes iniciar sesión para acceder a esta página', 'warning');
+                //showAlert('Debes iniciar sesión para acceder a esta página', 'warning');
                 loadPage('login');
             }
         }

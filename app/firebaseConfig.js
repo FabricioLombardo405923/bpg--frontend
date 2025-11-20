@@ -8,7 +8,8 @@ import {
     signInWithPopup,
     createUserWithEmailAndPassword,
     updateProfile,
-    updatePassword
+    updatePassword,
+    deleteUser
 } from "https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js";
 
 // Configuración de Firebase
@@ -34,6 +35,6 @@ window.signInWithPopup = signInWithPopup;
 window.createUserWithEmailAndPassword = createUserWithEmailAndPassword;
 window.updateProfile = updateProfile;
 window.updatePassword = updatePassword;
-
+window.deleteUser = deleteUser;
 
 console.log("🔥 Firebase inicializado");
