@@ -336,7 +336,7 @@ async function toggleQuickFavorite(btn, game) {
             if (success) {
                 btn.classList.add('active');
                 icon.className = 'fas fa-heart';
-                showAlert('¡Agregado a favoritos! Recibirás emails cuando haya ofertas', 'success');
+                showAlert('¡Agregado a favoritos! Recibirás notificaciones de ofertas', 'success');
                 
                 // CREAR PREFERENCIA DE NOTIFICACIÓN AUTOMÁTICA
                 await crearPreferenciaAutomatica(game, userId);
