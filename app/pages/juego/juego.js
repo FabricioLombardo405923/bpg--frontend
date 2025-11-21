@@ -767,6 +767,93 @@ function getUserId() {
     return userId;
 }
 
+//=============================================
+// FAVORITOS CON PREFERENCIAS AUTOMÁTICAS
+//=============================================
+
+async function toggleFavorite() {
+    if (!currentGameData) return;
+    
+    const userId = getUserId();
+    if (!userId) {
+        showAlert('Debes iniciar sesión para agregar favoritos', 'warning');
+        return;
+    }
+
+    const btn = document.getElementById('btnFavorite');
+    btn.disabled = true;
+
+    try {
+        if (isFavorite) {
+            // ELIMINAR de favoritos
+            const success = await eliminarFavorito(currentGameData.idSteam);
+            if (success) {
+                isFavorite = false;
+                showAlert('Eliminado de favoritos', 'success');
+            }
+        } else {
+            // AGREGAR a favoritos
+            const success = await agregarFavorito(currentGameData);
+            if (success) {
+                isFavorite = true;
+                showAlert('¡Agregado a favoritos!', 'success');
+                
+                // ⭐ CREAR PREFERENCIA AUTOMÁTICA (silencioso en background)
+                await crearPreferenciaAutomatica(currentGameData, userId);
+            }
+        }
+        updateFavoriteButton();
+    } catch (error) {
+        showAlert('Error al actualizar favoritos', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+/**
+ * Crea una preferencia de notificación automática al agregar a favoritos
+ * Configuración por defecto: 10% descuento mínimo, solo email
+ */
+async function crearPreferenciaAutomatica(gameData, userId) {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/notificaciones/preferences`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userId,
+                    gameData: {
+                        idSteam: gameData.idSteam,
+                        nombre: gameData.nombre,
+                        portada: gameData.imagenes?.portada?.original || 
+                                gameData.imagenes?.portada?.steamHeader || 
+                                null
+                    },
+                    preferences: {
+                        descuentoMinimo: 10,
+                        precioMaximo: null,
+                        notificarPorEmail: true,
+                        notificarInApp: false
+                    }
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log('✅ Alerta de email configurada para:', gameData.nombre);
+        } else {
+            console.warn('⚠️ No se pudo configurar alerta de email:', result.error);
+        }
+
+    } catch (error) {
+        console.error('Error configurando alerta de email:', error);
+        // No mostramos error al usuario, es una acción secundaria
+    }
+}
+
 
 // Initialize
 initializeJuego();

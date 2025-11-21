@@ -511,3 +511,93 @@ function getUserId() {
     var userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null; 
     return userId;
 }
+
+// ============================================
+// FUNCIONES DE FAVORITOS EN BÚSQUEDA CON PREFERENCIAS AUTOMÁTICAS
+// ============================================
+
+async function toggleQuickFavorite(btn, gameData) {
+    const userId = getUserId();
+    
+    if (!userId) {
+        showAlert('Debes iniciar sesión para agregar favoritos', 'warning');
+        return;
+    }
+
+    // Deshabilitar botón mientras procesa
+    btn.disabled = true;
+    const icon = btn.querySelector('i');
+    const wasActive = btn.classList.contains('active');
+
+    try {
+        if (wasActive) {
+            // ELIMINAR de favoritos
+            const success = await eliminarFavorito(gameData.idSteam);
+            if (success) {
+                btn.classList.remove('active');
+                icon.className = 'far fa-heart';
+                showAlert('Eliminado de favoritos', 'success');
+            }
+        } else {
+            // AGREGAR a favoritos
+            const success = await agregarFavorito(gameData);
+            if (success) {
+                btn.classList.add('active');
+                icon.className = 'fas fa-heart';
+                showAlert('¡Agregado a favoritos!', 'success');
+                
+                // CREAR PREFERENCIA AUTOMÁTICA (silencioso en background)
+                await crearPreferenciaAutomatica(gameData, userId);
+            }
+        }
+    } catch (error) {
+        showAlert('Error al actualizar favoritos', 'error');
+    } finally {
+        btn.disabled = false;
+    }
+}
+
+/**
+ * Crea una preferencia de notificación automática al agregar a favoritos
+ * Configuración por defecto: 10% descuento mínimo, solo email
+ */
+async function crearPreferenciaAutomatica(gameData, userId) {
+    try {
+        const response = await fetch(
+            `${API_BASE_URL}/notificaciones/preferences`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userId,
+                    gameData: {
+                        idSteam: gameData.idSteam,
+                        nombre: gameData.nombre,
+                        portada: gameData.imagenes?.portada?.original || 
+                                gameData.imagenes?.portada?.steamHeader || 
+                                null
+                    },
+                    preferences: {
+                        descuentoMinimo: 10,
+                        precioMaximo: null,
+                        notificarPorEmail: true,
+                        notificarInApp: false
+                    }
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log('Alerta de email configurada para:', gameData.nombre);
+        } else {
+            console.warn('No se pudo configurar alerta de email:', result.error);
+        }
+
+    } catch (error) {
+        console.error('Error configurando alerta de email:', error);
+        // No mostramos error al usuario, es una acción secundaria
+    }
+}
+
