@@ -17,7 +17,6 @@ class NotificationPreferenceModal {
   }
 
   createModal() {
-    // Si ya existe, no crear de nuevo
     if (document.getElementById('notification-preference-modal')) return;
 
     const modalHTML = `
@@ -34,12 +33,42 @@ class NotificationPreferenceModal {
               <img id="pref-game-image" src="" alt="Juego" class="pref-game-image">
               <div class="pref-game-details">
                 <h4 id="pref-game-title"></h4>
-                <p class="text-muted">Configura cuándo quieres recibir notificaciones de ofertas</p>
+                <p class="text-muted">Configura cuándo y cómo quieres recibir notificaciones</p>
               </div>
             </div>
 
             <!-- Formulario -->
             <form id="preference-form">
+              
+              <!-- Canales de Notificación -->
+              <div class="form-section">
+                <h4 class="form-section-title">
+                  <i class="fas fa-bell"></i> Canales de Notificación
+                </h4>
+                
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="pref-notify-email" name="notifyEmail" checked>
+                    <span class="checkbox-custom"></span>
+                    <div class="checkbox-content">
+                      <strong>📧 Email</strong>
+                      <small>Recibe notificaciones por correo electrónico</small>
+                    </div>
+                  </label>
+                </div>
+                
+                <div class="form-group checkbox-group">
+                  <label class="checkbox-label">
+                    <input type="checkbox" id="pref-notify-inapp" name="notifyInApp">
+                    <span class="checkbox-custom"></span>
+                    <div class="checkbox-content">
+                      <strong>🔔 In-App</strong>
+                      <small>Notificaciones dentro de la aplicación</small>
+                    </div>
+                  </label>
+                </div>
+              </div>
+
               <!-- Descuento mínimo -->
               <div class="form-group">
                 <label for="pref-discount">
@@ -113,7 +142,6 @@ class NotificationPreferenceModal {
     document.body.insertAdjacentHTML('beforeend', modalHTML);
     this.modal = document.getElementById('notification-preference-modal');
 
-    // Agregar estilos
     this.addStyles();
   }
 
@@ -123,141 +151,98 @@ class NotificationPreferenceModal {
     const style = document.createElement('style');
     style.id = 'preference-modal-styles';
     style.textContent = `
-      .preference-game-info {
-        display: flex;
-        gap: 1rem;
+      /* ... estilos existentes ... */
+
+      .form-section {
         margin-bottom: 2rem;
-        padding: 1rem;
+        padding: 1.5rem;
         background: rgba(124, 58, 237, 0.05);
         border-radius: 8px;
-        border-left: 3px solid var(--color-primary);
+        border: 1px solid rgba(124, 58, 237, 0.2);
       }
 
-      .pref-game-image {
-        width: 80px;
-        height: 80px;
-        object-fit: cover;
-        border-radius: 6px;
-        flex-shrink: 0;
-      }
-
-      .pref-game-details h4 {
-        margin: 0 0 0.5rem 0;
-        color: var(--text-primary);
-      }
-
-      .form-group {
-        margin-bottom: 1.5rem;
-      }
-
-      .form-group label {
-        display: block;
-        margin-bottom: 0.5rem;
-        font-weight: 500;
-        color: var(--text-primary);
-      }
-
-      .form-group label i {
-        color: var(--color-primary);
-        margin-right: 0.5rem;
-      }
-
-      .form-input {
-        width: 100%;
-        padding: 0.75rem;
-        border: 1px solid var(--border-color);
-        border-radius: 6px;
-        background: var(--bg-secondary);
+      .form-section-title {
+        margin: 0 0 1rem 0;
         color: var(--text-primary);
         font-size: 1rem;
-        transition: border-color 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
       }
 
-      .form-input:focus {
-        outline: none;
+      .checkbox-group {
+        margin-bottom: 1rem;
+      }
+
+      .checkbox-group:last-child {
+        margin-bottom: 0;
+      }
+
+      .checkbox-label {
+        display: flex;
+        align-items: flex-start;
+        gap: 1rem;
+        cursor: pointer;
+        padding: 1rem;
+        background: var(--bg-secondary);
+        border: 2px solid var(--border-color);
+        border-radius: 8px;
+        transition: all 0.2s;
+      }
+
+      .checkbox-label:hover {
+        border-color: var(--color-primary);
+        background: rgba(124, 58, 237, 0.05);
+      }
+
+      .checkbox-label input[type="checkbox"] {
+        display: none;
+      }
+
+      .checkbox-custom {
+        flex-shrink: 0;
+        width: 24px;
+        height: 24px;
+        border: 2px solid var(--border-color);
+        border-radius: 6px;
+        position: relative;
+        transition: all 0.2s;
+        margin-top: 2px;
+      }
+
+      .checkbox-label input[type="checkbox"]:checked + .checkbox-custom {
+        background: var(--color-primary);
         border-color: var(--color-primary);
       }
 
-      .input-with-suffix,
-      .input-with-prefix {
-        position: relative;
-        display: flex;
-        align-items: center;
-      }
-
-      .input-with-suffix .form-input {
-        padding-right: 3rem;
-      }
-
-      .input-with-prefix .form-input {
-        padding-left: 3rem;
-      }
-
-      .input-suffix,
-      .input-prefix {
+      .checkbox-label input[type="checkbox"]:checked + .checkbox-custom:after {
+        content: "✓";
         position: absolute;
-        color: var(--text-secondary);
-        font-weight: 600;
-        pointer-events: none;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        color: white;
+        font-weight: bold;
+        font-size: 16px;
       }
 
-      .input-suffix {
-        right: 1rem;
+      .checkbox-content {
+        flex: 1;
       }
 
-      .input-prefix {
-        left: 1rem;
-      }
-
-      .form-help {
+      .checkbox-content strong {
         display: block;
-        margin-top: 0.5rem;
+        color: var(--text-primary);
+        margin-bottom: 0.25rem;
+      }
+
+      .checkbox-content small {
         color: var(--text-muted);
         font-size: 0.85rem;
       }
-
-      .preference-example {
-        margin-top: 2rem;
-        padding: 1rem;
-        background: rgba(52, 211, 153, 0.1);
-        border-radius: 8px;
-        border-left: 3px solid #34d399;
-        display: flex;
-        gap: 1rem;
-      }
-
-      .example-icon {
-        flex-shrink: 0;
-        width: 40px;
-        height: 40px;
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        background: rgba(52, 211, 153, 0.2);
-        border-radius: 50%;
-        color: #34d399;
-      }
-
-      .example-text strong {
-        display: block;
-        margin-bottom: 0.5rem;
-        color: var(--text-primary);
-      }
-
-      .example-text p {
-        margin: 0;
-        color: var(--text-secondary);
-        font-size: 0.9rem;
-      }
-
-      #example-discount,
-      #example-price {
-        font-weight: 600;
-        color: var(--color-primary);
-      }
     `;
     document.head.appendChild(style);
-  }
+}
 
   attachEventListeners() {
     // Cerrar modal
@@ -383,68 +368,88 @@ class NotificationPreferenceModal {
   async savePreference() {
     const discountInput = document.getElementById('pref-discount');
     const priceInput = document.getElementById('pref-price');
+    const emailCheckbox = document.getElementById('pref-notify-email');
+    const inappCheckbox = document.getElementById('pref-notify-inapp');
 
     const discount = parseInt(discountInput.value);
     const price = priceInput.value ? parseFloat(priceInput.value) : null;
+    const notifyEmail = emailCheckbox.checked;
+    const notifyInApp = inappCheckbox.checked;
 
     // Validaciones
     if (!discount || discount < 1 || discount > 99) {
-      showAlert('El descuento debe estar entre 1% y 99%', 'warning');
-      discountInput.focus();
-      return;
+        showAlert('El descuento debe estar entre 1% y 99%', 'warning');
+        discountInput.focus();
+        return;
     }
 
     if (price !== null && price < 0) {
-      showAlert('El precio no puede ser negativo', 'warning');
-      priceInput.focus();
-      return;
+        showAlert('El precio no puede ser negativo', 'warning');
+        priceInput.focus();
+        return;
     }
 
-    // Deshabilitar botón mientras guarda
+    if (!notifyEmail && !notifyInApp) {
+        showAlert('Debes seleccionar al menos un canal de notificación', 'warning');
+        return;
+    }
+
     const saveBtn = document.getElementById('pref-save-btn');
     const originalHTML = saveBtn.innerHTML;
     saveBtn.disabled = true;
     saveBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Guardando...';
 
     try {
-      const response = await fetch(
-        `${window.API_BASE_URL}/notificaciones/preferences`,
-        {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            userId: this.currentUserId,
-            gameData: {
-              idSteam: this.currentGame.idSteam || this.currentGame.gameID,
-              nombre: this.currentGame.nombre || this.currentGame.title,
-              portada: this.currentGame.portada || this.currentGame.thumbOriginal
-            },
-            preferences: {
-              descuentoMinimo: discount,
-              precioMaximo: price ? Math.round(price * 100) : null
+        const response = await fetch(
+            `${window.API_BASE_URL}/notificaciones/preferences`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: this.currentUserId,
+                    gameData: {
+                        idSteam: this.currentGame.idSteam || this.currentGame.gameID,
+                        nombre: this.currentGame.nombre || this.currentGame.title,
+                        portada: this.currentGame.portada || this.currentGame.thumbOriginal
+                    },
+                    preferences: {
+                        descuentoMinimo: discount,
+                        precioMaximo: price ? Math.round(price * 100) : null,
+                        notificarPorEmail: notifyEmail,   
+                        notificarInApp: notifyInApp        
+                    }
+                })
             }
-          })
+        );
+
+        const result = await response.json(); // ✅ Solo UNA vez
+
+        if (!result.success) {
+            throw new Error(result.error || 'Error al guardar preferencia');
         }
-      );
 
-      const result = await response.json();
+        // Mensaje personalizado según canales seleccionados
+        let successMessage = '✨ ¡Alerta configurada!';
+        if (notifyEmail && notifyInApp) {
+            successMessage += ' Recibirás notificaciones por email y en la app.';
+        } else if (notifyEmail) {
+            successMessage += ' Recibirás notificaciones por email cuando haya ofertas que cumplan tus condiciones.';
+        } else if (notifyInApp) {
+            successMessage += ' Recibirás notificaciones en la app cuando haya ofertas que cumplan tus condiciones.';
+        }
 
-      if (!result.success) {
-        throw new Error(result.error || 'Error al guardar preferencia');
-      }
-
-      showAlert('✨ ¡Alerta configurada! Te notificaremos cuando haya ofertas que cumplan tus condiciones', 'success');
-      this.close();
+        showAlert(successMessage, 'success');
+        this.close();
 
     } catch (error) {
-      console.error('Error guardando preferencia:', error);
-      showAlert(error.message, 'error');
-      
+        console.error('Error guardando preferencia:', error);
+        showAlert(error.message || 'Error al guardar la alerta', 'error');
+        
     } finally {
-      saveBtn.disabled = false;
-      saveBtn.innerHTML = originalHTML;
+        saveBtn.disabled = false;
+        saveBtn.innerHTML = originalHTML;
     }
-  }
+}
 }
 
 // Instancia global
