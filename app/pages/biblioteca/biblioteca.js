@@ -71,24 +71,41 @@ async function cargarBiblioteca() {
 async function agregarBiblioteca(gameData) {
     try {
         const response = await fetch(`${API_BASE_URL}/biblioteca`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            userId: bibliotecaState.userId,
-            idSteam: gameData.idSteam,
-            nombre: gameData.nombre,
-            portada: gameData.imagenes?.portada?.original || gameData.imagenes?.portada?.steamHeader,
-            generos: gameData.generos || [],
-            plataformas: gameData.plataformas || []
-        })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: bibliotecaState.userId,
+                idSteam: gameData.idSteam,
+                nombre: gameData.nombre,
+                portada: gameData.imagenes?.portada?.original || gameData.imagenes?.portada?.steamHeader,
+                generos: gameData.generos || [],
+                plataformas: gameData.plataformas || []
+            })
         });
 
         const result = await response.json();
 
         if (!result.success) {
-        throw new Error(result.error || 'Error al agregar biblioteca');
+         
+            if (result.error && result.error.includes('límite')) {
+                // Mostrar modal Premium si existe
+                if (typeof mostrarModalPremium === 'function') {
+                    mostrarModalPremium(result.error);
+                } else {
+                    showAlert(result.error, 'warning');
+                    
+                    // Opcional: Redirigir a Premium después de 2 segundos
+                    setTimeout(() => {
+                        if (confirm('¿Quieres ver los planes Premium?')) {
+                            loadPage('premium');
+                        }
+                    }, 1500);
+                }
+                return false;
+            }
+            throw new Error(result.error || 'Error al agregar biblioteca');
         }
 
         // Actualizar estado local
@@ -96,12 +113,12 @@ async function agregarBiblioteca(gameData) {
         aplicarFiltros();
         renderBiblioteca();
 
-        mostrarNotificacion('Juego agregado a biblioteca', 'success');
+        showAlert('Juego agregado a biblioteca', 'success');
         return true;
 
     } catch (error) {
         console.error('Error al agregar a biblioteca:', error);
-        mostrarNotificacion(error.message, 'error');
+        showAlert(error.message, 'error');
         return false;
     }
 }
