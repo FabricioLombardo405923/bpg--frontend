@@ -1,19 +1,24 @@
 window.initializeResetPassword = function() {
   const form = document.getElementById("reset-form");
-  const msg = document.getElementById("reset-msg");
+  const successMsg = document.getElementById("reset-success");
+  const errorMsg = document.getElementById("reset-error");
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
-    msg.textContent = "";
+
+    // Limpiar mensajes previos
+    successMsg.textContent = "";
+    errorMsg.textContent = "";
 
     const email = document.getElementById("reset-email").value;
 
     try {
       const { sendPasswordResetEmail } = await import("https://www.gstatic.com/firebasejs/11.0.1/firebase-auth.js");
       await sendPasswordResetEmail(window.auth, email);
-      msg.style.color = "green";
-      msg.textContent = "📩 Te enviamos un enlace para restablecer tu contraseña.";
+
+      successMsg.textContent = "Te enviamos un enlace para restablecer tu contraseña.";
       showAlert("Correo de recuperación enviado", "success");
+
     } catch (error) {
       let mensaje = "Ocurrió un error al enviar el correo.";
       switch (error.code) {
@@ -27,8 +32,8 @@ window.initializeResetPassword = function() {
           mensaje = "Error de conexión. Intentá nuevamente.";
           break;
       }
-      msg.style.color = "red";
-      msg.textContent = mensaje;
+
+      errorMsg.textContent = mensaje;
       showAlert(mensaje, "error");
     }
   });

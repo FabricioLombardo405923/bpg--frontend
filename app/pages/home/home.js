@@ -4,8 +4,8 @@ function getUserId() {
     return userId;
 }
 
-const API_URL_RECIENTES = '';//`${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
-const API_URL_POPULARES = '';//`${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
+const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
+const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
 
 // Inicializar la página
 async function initializeHome() {
