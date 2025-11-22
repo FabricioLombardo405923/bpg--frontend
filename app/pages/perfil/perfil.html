@@ -38,7 +38,6 @@
         
         <!-- TAB: Información Personal -->
         <div class="tab-content active" id="tab-info">
-            <div class="perfil-section">
                 <div class="section-header">
                     <h2>Información Personal</h2>
                     <button class="btn btn-primary" id="edit-profile-btn">
@@ -155,12 +154,10 @@
                         </div>
                     </form>
                 </div>
-            </div>
         </div>
 
         <!-- TAB: Seguridad -->
         <div class="tab-content" id="tab-seguridad">
-            <div class="perfil-section">
                 <h2>Seguridad de la Cuenta</h2>
                 
                 <div class="security-section">
@@ -188,14 +185,15 @@
                                 required
                             >
                         </div>
+                        <br>
                         <button type="submit" class="btn btn-primary">
                             <i class="fas fa-key"></i>
                             Cambiar Contraseña
                         </button>
                     </form>
-                </div>
+            
+                    <br>
 
-                <div class="security-section">
                     <h3>Información de la Cuenta</h3>
                     <div class="info-item">
                         <label>Proveedor de Autenticación</label>
@@ -206,58 +204,9 @@
                         <p id="creation-date">-</p>
                     </div>
                 </div>
-            </div>
+
         </div>
 
-        <!-- TAB: Estadísticas -->
- <!--       <div class="tab-content" id="tab-estadisticas">
-            <div class="perfil-section">
-                <h2>Tus Estadísticas</h2>
-                
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-heart"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="stat-favoritos">0</h3>
-                            <p>Favoritos</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-book"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="stat-biblioteca">0</h3>
-                            <p>Juegos en Biblioteca</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-calendar"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="stat-dias">0</h3>
-                            <p>Días con nosotros</p>
-                        </div>
-                    </div>
-
-                    <div class="stat-card">
-                        <div class="stat-icon">
-                            <i class="fas fa-star"></i>
-                        </div>
-                        <div class="stat-content">
-                            <h3 id="stat-reviews">0</h3>
-                            <p>Reviews Escritas</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div> -->
 
     <!-- Loading Overlay -->
     <div id="profile-loading" class="loading-overlay" style="display: none;">
@@ -265,7 +214,16 @@
         <p>Guardando cambios...</p>
     </div>
 </div>
+    <div class="delete-account-section">
+        <h3><i class="fa fa-trash"></i> Eliminar cuenta</h3>
+        <p class="delete-text">
+            Esta acción es <strong>permanente</strong> y no podrás recuperar tu información luego de eliminarla.
+        </p>
+        <button id="delete-account-btn" class="btn-delete-account"  onclick="deleteAccount()">
+            Eliminar cuenta
+        </button>
 
+    </div>
 <!-- Modal para cambiar avatar -->
 <div id="avatar-modal" class="modal" style="display: none;">
     <div class="modal-content">

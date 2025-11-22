@@ -47,16 +47,19 @@ const pages = {
     login: { 
         html: 'pages/login/login.html', 
         js:'pages/login/login.js',
+        css: 'pages/login/login.css',
         init: 'initializeLogin'
     },
     register: { 
         html: 'pages/register/register.html', 
         js:'pages/register/register.js',
+        css:'pages/register/register.css',
         init: 'initializeRegister' 
     },
     "reset-password": { 
         html: 'pages/reset-password/reset-password.html', 
         js: 'pages/reset-password/reset-password.js',
+        css: 'pages/reset-password/reset-password.css',
         init: 'initializeResetPassword'
     },
     premium: { 
@@ -618,3 +621,33 @@ function getIconByType(type) {
     };
     return icons[type] || 'info-circle';
 }
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById("cookie-banner");
+    const consent = localStorage.getItem("aceptar_legales");
+
+    // Solo mostrar si nunca aceptó/declinó
+    if (consent === null) {
+        banner.classList.remove("hidden");
+    }
+
+    // ACEPTAR
+    document.getElementById("cookie-accept").onclick = () => {
+        localStorage.setItem("aceptar_legales", "true");
+        banner.classList.add("hidden");
+    };
+
+    // RECHAZAR
+    document.getElementById("cookie-decline").onclick = () => {
+        localStorage.setItem("aceptar_legales", "false");
+        banner.classList.add("hidden");
+    };
+
+    // ABRIR TÉRMINOS
+    document.getElementById("cookie-terms-link").onclick = (e) => {
+        e.preventDefault();
+        loadPage("terminos");
+    };
+});
+

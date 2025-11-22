@@ -2,37 +2,12 @@ let currentUser = null;
 let userProfile = null;
 let isEditMode = false;
 
-// Estilos de avatares de DiceBear disponibles
-const AVATAR_STYLES = [
-    { id: 'adventurer', name: 'Aventurero' },
-    { id: 'adventurer-neutral', name: 'Aventurero Neutral' },
-    { id: 'avataaars', name: 'Avataaars' },
-    { id: 'avataaars-neutral', name: 'Avataaars Neutral' },
-    { id: 'big-ears', name: 'Orejas Grandes' },
-    { id: 'big-ears-neutral', name: 'Orejas Grandes Neutral' },
-    { id: 'big-smile', name: 'Gran Sonrisa' },
-    { id: 'bottts', name: 'Robots' },
-    { id: 'bottts-neutral', name: 'Robots Neutral' },
-    { id: 'croodles', name: 'Croodles' },
-    { id: 'croodles-neutral', name: 'Croodles Neutral' },
-    { id: 'fun-emoji', name: 'Emoji Divertido' },
-    { id: 'icons', name: 'Iconos' },
-    { id: 'identicon', name: 'Identicon' },
-    { id: 'lorelei', name: 'Lorelei' },
-    { id: 'lorelei-neutral', name: 'Lorelei Neutral' },
-    { id: 'micah', name: 'Micah' },
-    { id: 'miniavs', name: 'Mini Avatares' },
-    { id: 'notionists', name: 'Notionists' },
-    { id: 'notionists-neutral', name: 'Notionists Neutral' },
-    { id: 'open-peeps', name: 'Open Peeps' },
-    { id: 'personas', name: 'Personas' },
-    { id: 'pixel-art', name: 'Pixel Art' },
-    { id: 'pixel-art-neutral', name: 'Pixel Art Neutral' }
-];
+// Solo usamos Fun Emoji de DiceBear
+const AVATAR_STYLE = 'fun-emoji';
 
 // Función para generar URL de DiceBear
-function getDiceBearUrl(style, seed) {
-    return `https://api.dicebear.com/7.x/${style}/svg?seed=${encodeURIComponent(seed)}`;
+function getDiceBearUrl(seed) {
+    return `https://api.dicebear.com/7.x/${AVATAR_STYLE}/svg?seed=${encodeURIComponent(seed)}`;
 }
 
 // Mapeo de códigos de país a nombres
@@ -53,41 +28,27 @@ const PAISES = {
 // =================================================================
 // INICIALIZACIÓN
 // =================================================================
-
-// Agregar al inicio de perfil.js, reemplazando la función initializePerfil
-
 window.initializePerfil = async function() {
-    // Esperar a que Firebase esté listo y el usuario autenticado
     await waitForAuth();
     
-    // Verificar autenticación
     currentUser = window.auth.currentUser;
-    
     if (!currentUser) {
         showAlert('Debes iniciar sesión para ver tu perfil', 'error');
         loadPage('login');
         return;
     }
-
-    // Configurar event listeners
+    
     setupEventListeners();
-    
-    // Cargar datos del perfil
     await loadUserProfile();
-    
-    // Cargar estadísticas
-    await loadUserStats();
 };
 
-// Nueva función para esperar autenticación
 function waitForAuth() {
     return new Promise((resolve) => {
-        // Si ya hay un usuario, resolver inmediatamente
         if (window.auth && window.auth.currentUser) {
             resolve();
             return;
         }
-
+        
         // Si no, esperar al observer
         if (!window.auth || !window.onAuthStateChanged) {
             // Firebase no está listo, esperar
@@ -111,15 +72,14 @@ function waitForAuth() {
         }
     });
 }
+
 // =================================================================
 // CARGA DE DATOS
 // =================================================================
-
 async function loadUserProfile() {
     try {
         showLoading(true);
-                
-        // Obtener perfil del backend
+        
         const response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`);
         
         if (response.ok) {
@@ -147,7 +107,6 @@ async function loadUserProfile() {
         
         // Renderizar perfil
         renderProfile();
-        
     } catch (error) {
         console.error('❌ Error cargando perfil:', error);
         
@@ -161,7 +120,6 @@ async function loadUserProfile() {
             console.error('❌ Error renderizando perfil:', renderError);
             showAlert('Error al cargar el perfil. Por favor, recarga la página.', 'error');
         }
-        
         showAlert('Error al cargar algunos datos del perfil', 'warning');
     } finally {
         showLoading(false);
@@ -170,14 +128,15 @@ async function loadUserProfile() {
 
 async function createInitialProfile() {
     try {
+        // Generar seed aleatorio para el avatar inicial
+        const seed = generateRandomSeed();
         
         const initialData = {
             email: currentUser.email,
             displayName: currentUser.displayName || 'Usuario',
-            avatar_url: currentUser.email || 'default',
-            avatar_style: 'avataaars'
+            avatar_url: seed,
+            avatar_style: AVATAR_STYLE
         };
-        
         
         const response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
             method: 'POST',
@@ -186,7 +145,6 @@ async function createInitialProfile() {
             },
             body: JSON.stringify(initialData)
         });
-        
         
         if (response.ok) {
             const result = await response.json();
@@ -208,8 +166,8 @@ function displayFirebaseData() {
     userProfile = {
         displayName: currentUser.displayName || 'Usuario',
         email: currentUser.email,
-        avatar_url: currentUser.email || 'default',
-        avatar_style: 'avataaars',
+        avatar_url: seed,
+        avatar_style: AVATAR_STYLE,
         telefono: null,
         nacionalidad: null,
         biografia: null
@@ -220,7 +178,6 @@ function displayFirebaseData() {
 // =================================================================
 // RENDERIZADO
 // =================================================================
-
 function renderProfile() {
     // VALIDACIÓN: Verificar que userProfile existe
     if (!userProfile) {
@@ -232,13 +189,10 @@ function renderProfile() {
     document.getElementById('perfil-display-name').textContent = userProfile.displayName || 'Usuario';
     document.getElementById('perfil-email').textContent = userProfile.email || currentUser.email || 'Sin email';
     
-    // Avatar - Usar DiceBear
+    // Avatar
     const avatarDisplay = document.getElementById('avatar-display');
-    const style = userProfile.avatar_style || 'avataaars';
-    const seed = userProfile.avatar_url || userProfile.email || currentUser.email || 'default';
-    
-    // Crear imagen de DiceBear
-    const avatarUrl = getDiceBearUrl(style, seed);
+    const seed = userProfile.avatar_url || generateRandomSeed();
+    const avatarUrl = getDiceBearUrl(seed);
     avatarDisplay.innerHTML = `<img src="${avatarUrl}" alt="Avatar" class="avatar-img">`;
     
     // Vista de información
@@ -277,34 +231,8 @@ function getProviderName(providerId) {
 }
 
 // =================================================================
-// ESTADÍSTICAS
-// =================================================================
-
-async function loadUserStats() {
-    try {
-        // Calcular días desde creación
-        const creationDate = new Date(currentUser.metadata.creationTime);
-        const today = new Date();
-        const diffTime = Math.abs(today - creationDate);
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        
-        document.getElementById('stat-dias').textContent = diffDays;
-        
-        // Aquí puedes agregar llamadas a tu backend para obtener más estadísticas
-        // Por ahora usamos valores por defecto
-        document.getElementById('stat-favoritos').textContent = '0';
-        document.getElementById('stat-biblioteca').textContent = '0';
-        document.getElementById('stat-reviews').textContent = '0';
-        
-    } catch (error) {
-        console.error('Error cargando estadísticas:', error);
-    }
-}
-
-// =================================================================
 // EDICIÓN DE PERFIL
 // =================================================================
-
 function enterEditMode() {
     isEditMode = true;
     
@@ -361,11 +289,10 @@ async function saveProfile(formData) {
         
         // Si no existe (404), crear con POST
         if (response.status === 404) {
-            
             const createData = {
                 email: currentUser.email,
-                avatar_url: userProfile?.avatar_url || currentUser.email || 'default',
-                avatar_style: userProfile?.avatar_style || 'avataaars',
+                avatar_url: userProfile?.avatar_url || generateRandomSeed(),
+                avatar_style: AVATAR_STYLE,
                 ...updates
             };
             
@@ -398,9 +325,7 @@ async function saveProfile(formData) {
         // Re-renderizar y salir del modo edición
         renderProfile();
         exitEditMode();
-        
         showAlert('¡Perfil actualizado!', 'success');
-        
     } catch (error) {
         console.error('❌ Error guardando perfil:', error);
         showAlert('Error al guardar el perfil: ' + error.message, 'error');
@@ -412,53 +337,60 @@ async function saveProfile(formData) {
 // =================================================================
 // CAMBIO DE AVATAR
 // =================================================================
+function generateRandomSeed() {
+    // Genera un seed aleatorio único
+    return `emoji-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+}
 
 function generateEmojiGrid() {
     const grid = document.getElementById('emoji-grid');
     grid.innerHTML = '';
     
-    AVATAR_STYLES.forEach(style => {
+    // Generar 12 opciones aleatorias de Fun Emoji
+    for (let i = 0; i < 12; i++) {
+        const seed = generateRandomSeed();
         const option = document.createElement('div');
         option.className = 'avatar-option';
-        option.onclick = () => selectAvatar(style.id);
+        option.onclick = () => selectAvatar(seed);
         
-        // Generar preview del avatar
-        const seed = userProfile?.email || currentUser.email || 'preview';
-        const avatarUrl = getDiceBearUrl(style.id, seed);
+        const avatarUrl = getDiceBearUrl(seed);
         
         option.innerHTML = `
-            <img src="${avatarUrl}" alt="${style.name}" class="avatar-preview">
-            <span class="avatar-label">${style.name}</span>
+            <img src="${avatarUrl}" alt="Emoji ${i+1}" class="avatar-preview">
         `;
         
         grid.appendChild(option);
-    });
+    }
+    
+    // Agregar botón para generar más opciones
+    const refreshBtn = document.createElement('div');
+    refreshBtn.className = 'avatar-option avatar-refresh';
+    refreshBtn.onclick = generateEmojiGrid;
+    refreshBtn.innerHTML = `
+        <i class="fas fa-sync-alt"></i>
+        <span class="avatar-label">Más opciones</span>
+    `;
+    grid.appendChild(refreshBtn);
 }
 
-async function selectAvatar(avatarStyle) {
+async function selectAvatar(seed) {
     try {
         showLoading(true);
         closeAvatarModal();
         
-        // Generar un seed único basado en el email o usar uno aleatorio
-        const seed = userProfile?.email || currentUser.email || `user-${Date.now()}`;
-        
-        
-        // Intentar PATCH primero
         let response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
             method: 'PATCH',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ 
+            body: JSON.stringify({
                 avatar_url: seed,
-                avatar_style: avatarStyle
+                avatar_style: AVATAR_STYLE
             })
         });
         
         // Si no existe (404), crear con POST
         if (response.status === 404) {
-            
             response = await fetch(`${window.API_BASE_URL}/usuarios/${currentUser.uid}`, {
                 method: 'POST',
                 headers: {
@@ -468,7 +400,7 @@ async function selectAvatar(avatarStyle) {
                     email: currentUser.email,
                     displayName: currentUser.displayName || 'Usuario',
                     avatar_url: seed,
-                    avatar_style: avatarStyle
+                    avatar_style: AVATAR_STYLE
                 })
             });
         }
@@ -481,10 +413,10 @@ async function selectAvatar(avatarStyle) {
         
         const result = await response.json();
         userProfile = result.data;
-                
+        
         // Actualizar vista
         const avatarDisplay = document.getElementById('avatar-display');
-        const avatarUrl = getDiceBearUrl(avatarStyle, seed);
+        const avatarUrl = getDiceBearUrl(seed);
         avatarDisplay.innerHTML = `<img src="${avatarUrl}" alt="Avatar" class="avatar-img">`;
         
         // Actualizar avatar en navbar
@@ -493,7 +425,6 @@ async function selectAvatar(avatarStyle) {
         }
         
         showAlert('¡Avatar actualizado!', 'success');
-        
     } catch (error) {
         console.error('❌ Error cambiando avatar:', error);
         showAlert('Error al cambiar el avatar: ' + error.message, 'error');
@@ -513,7 +444,6 @@ function closeAvatarModal() {
 // =================================================================
 // CAMBIO DE CONTRASEÑA
 // =================================================================
-
 async function handlePasswordChange(e) {
     e.preventDefault();
     
@@ -543,17 +473,13 @@ async function handlePasswordChange(e) {
     
     try {
         showLoading(true);
-        
         await window.updatePassword(currentUser, newPassword);
         
         // Limpiar formulario
         document.getElementById('change-password-form').reset();
-        
         showAlert('¡Contraseña actualizada correctamente!', 'success');
-        
     } catch (error) {
         console.error('Error cambiando contraseña:', error);
-        
         let mensaje = 'Error al cambiar la contraseña';
         
         if (error.code === 'auth/requires-recent-login') {
@@ -569,7 +495,6 @@ async function handlePasswordChange(e) {
 // =================================================================
 // NAVEGACIÓN DE TABS
 // =================================================================
-
 function switchTab(tabName) {
     // Desactivar todos los tabs y contenidos
     document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
@@ -583,7 +508,6 @@ function switchTab(tabName) {
 // =================================================================
 // EVENT LISTENERS
 // =================================================================
-
 function setupEventListeners() {
     // Botón editar perfil
     document.getElementById('edit-profile-btn').addEventListener('click', enterEditMode);
@@ -629,7 +553,6 @@ function setupEventListeners() {
 // =================================================================
 // UTILIDADES
 // =================================================================
-
 function updateCharCounter() {
     const bioTextarea = document.getElementById('edit-biografia');
     const counter = document.getElementById('bio-count');
@@ -638,8 +561,54 @@ function updateCharCounter() {
 
 function showLoading(show) {
     const overlay = document.getElementById('profile-loading');
-    overlay.style.display = show ? 'flex' : 'none';
+    if (overlay) {
+        overlay.style.display = show ? 'flex' : 'none';
+    }
 }
 
-// Exponer funciones globales necesarias
+// ================================================================
+// ELIMINAR CUENTA
+// ================================================================
+window.deleteAccount = async function () {
+    const user = auth.currentUser;
+    if (!user) {
+        showAlert("No hay usuario autenticado", "danger");
+        return;
+    }
+    
+    // Mostrar modal de confirmación
+    const modal = new ConfirmModal();
+    const confirmed = await modal.confirm(
+        "Eliminar cuenta",
+        "¿Estás seguro? Esta acción no se puede deshacer."
+    );
+    
+    if (!confirmed) return;
+    
+    try {
+        showLoading(true);
+        
+        const response = await fetch(`${window.API_BASE_URL}/usuarios/${sessionStorage.getItem('userId')}`, {
+            method: "DELETE"
+        });
+        
+        if (!response.ok) throw new Error("Error al eliminar los datos del servidor");
+        
+        await window.deleteUser(user);
+        sessionStorage.removeItem("userId");
+        loadPage("home");
+        showAlert("Cuenta eliminada correctamente", "success");
+    } catch (error) {
+        console.error("❌ Error al eliminar cuenta:", error);
+        if (error.code === "auth/requires-recent-login") {
+            showAlert("Debes volver a iniciar sesión para eliminar tu cuenta.", "warning");
+        } else {
+            showAlert("Error eliminando la cuenta", "error");
+        }
+    } finally {
+        showLoading(false);
+    }
+};
+
+// Exponer funciones globales
 window.closeAvatarModal = closeAvatarModal;
