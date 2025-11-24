@@ -13,7 +13,6 @@ const favoritosState = {
 // ============================================
 
 async function initializeFavoritos() {
-  // Obtener userId de Firebase/sessionStorage
     favoritosState.userId = getUserId();
     
     if (!favoritosState.userId) {
@@ -21,11 +20,32 @@ async function initializeFavoritos() {
         return;
     }
 
+    // Verificar si es premium
+    await verificarEstadoPremium();
+
     // Cargar favoritos
     await cargarFavoritos();
 
     // Setup event listeners
     setupFavoritosEventListeners();
+}
+
+async function verificarEstadoPremium() {
+    try {
+        const response = await fetch(`${API_BASE_URL}/usuarios/${favoritosState.userId}/premium`);
+        const result = await response.json();
+        
+        favoritosState.isPremium = result.premium === 1;
+        
+        // Mostrar límite si no es premium
+        const limitEl = document.getElementById('favoritosLimit');
+        if (limitEl && !favoritosState.isPremium) {
+            limitEl.style.display = 'inline';
+        }
+    } catch (error) {
+        console.error('Error verificando estado premium:', error);
+        favoritosState.isPremium = false;
+    }
 }
 
 // ============================================
@@ -71,24 +91,40 @@ async function cargarFavoritos() {
 async function agregarFavorito(gameData) {
     try {
         const response = await fetch(`${API_BASE_URL}/favoritos`, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({
-            userId: favoritosState.userId,
-            idSteam: gameData.idSteam,
-            nombre: gameData.nombre,
-            portada: gameData.imagenes?.portada?.original || gameData.imagenes?.portada?.steamHeader,
-            generos: gameData.generos || [],
-            plataformas: gameData.plataformas || []
-        })
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                userId: favoritosState.userId,
+                idSteam: gameData.idSteam,
+                nombre: gameData.nombre,
+                portada: gameData.imagenes?.portada?.original || gameData.imagenes?.portada?.steamHeader,
+                generos: gameData.generos || [],
+                plataformas: gameData.plataformas || []
+            })
         });
 
         const result = await response.json();
 
         if (!result.success) {
-        throw new Error(result.error || 'Error al agregar favorito');
+            if (result.error && result.error.includes('límite')) {
+                // Mostrar modal Premium si existe
+                if (typeof mostrarModalPremium === 'function') {
+                    mostrarModalPremium(result.error);
+                } else {
+                    showAlert(result.error, 'warning');
+                    
+                    // Opcional: Redirigir a Premium después de 2 segundos
+                    setTimeout(() => {
+                        if (confirm('¿Quieres ver los planes Premium?')) {
+                            loadPage('premium');
+                        }
+                    }, 1500);
+                }
+                return false;
+            }
+            throw new Error(result.error || 'Error al agregar favorito');
         }
 
         // Actualizar estado local
@@ -96,12 +132,12 @@ async function agregarFavorito(gameData) {
         aplicarFiltros();
         renderFavoritos();
 
-        mostrarNotificacion('Juego agregado a favoritos', 'success');
+        showAlert('Juego agregado a favoritos', 'success');
         return true;
 
     } catch (error) {
         console.error('Error al agregar favorito:', error);
-        mostrarNotificacion(error.message, 'error');
+        showAlert(error.message, 'error');
         return false;
     }
 }

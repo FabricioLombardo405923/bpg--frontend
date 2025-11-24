@@ -520,6 +520,7 @@ async function toggleFavorite() {
             if (success) {
                 isFavorite = true;
                 showAlert('¡Agregado a favoritos!', 'success');
+                await crearPreferenciaAutomatica(game, userId);
             }
         }
         updateFavoriteButton();
@@ -527,6 +528,46 @@ async function toggleFavorite() {
         showAlert('Error al actualizar favoritos', 'error');
     } finally {
         btn.disabled = false;
+    }
+}
+
+async function crearPreferenciaAutomatica(game, userId) {
+    try {
+        // Configuración por defecto: 10% descuento mínimo, sin límite de precio
+        // Solo envía EMAIL cuando hay descuentos, NO notificaciones in-app
+        const response = await fetch(
+            `${window.API_BASE_URL}/notificaciones/preferences`,
+            {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    userId: userId,
+                    gameData: {
+                        idSteam: game.gameID,
+                        nombre: game.title,
+                        portada: game.thumbOriginal || game.steamHeader || game.thumb
+                    },
+                    preferences: {
+                        descuentoMinimo: 10,  // 10% descuento mínimo
+                        precioMaximo: null,   // Sin límite de precio
+                        notificarPorEmail: true,  // EMAIL activado
+                        notificarInApp: false     // Notificaciones in-app DESACTIVADAS
+                    }
+                })
+            }
+        );
+
+        const result = await response.json();
+
+        if (result.success) {
+            console.log('✅ Alerta de email configurada para:', game.title);
+        } else {
+            console.warn('⚠️ No se pudo configurar alerta de email:', result.error);
+        }
+
+    } catch (error) {
+        console.error('Error configurando alerta de email:', error);
+        // No mostramos error al usuario, es una acción secundaria
     }
 }
 
