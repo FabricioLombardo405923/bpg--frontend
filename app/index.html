@@ -45,6 +45,11 @@
                 <div class="nav-logo">🎮</div>
                 <h1>BPG</h1>
             </div>
+            
+            <!-- Botón menú móvil -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
 
             
             <!-- Búsqueda (Desktop y Mobile) -->
@@ -96,9 +101,6 @@
         </div>
     </nav>
     <!-- MENÚ MÓVIL -->
-    <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
-        <i class="fas fa-bars"></i>
-    </button>
     <div class="mobile-overlay" id="mobile-overlay"></div>
 
     <div class="mobile-nav" id="mobile-nav">
@@ -111,29 +113,24 @@
                 <i class="fas fa-times"></i>
             </button>
         </div>
-            <div class="mobile-user-section">
-            <button onclick="loadPage('login')" id="mobile-login-btn" class="mobile-user-btn">
-                <i class="fas fa-sign-in-alt"></i>
-                <span>Iniciar sesión</span>
-            </button>
-            <button onclick="navigateToProfile()" id="mobile-profile-btn" class="mobile-user-btn" style="display:none;">
-                <i class="fas fa-user"></i>
-                <span>Mi perfil</span>
-            </button>
-            <button onclick="loadPage('premium')" id="mobile-premium-btn" class="mobile-user-btn">
-                <i class="fas fa-crown"></i>
-                <span>Premium</span>
-            </button>
-            <button onclick="logout()" id="mobile-logout-btn" class="mobile-user-btn" style="display:none;">
-                <i class="fas fa-sign-out-alt"></i>
-                <span>Cerrar sesión</span>
-            </button>
-        </div>
+        
         <ul class="mobile-nav-menu">
             <li class="mobile-nav-item">
                 <button class="mobile-nav-btn" data-page="home">
                     <i class="fas fa-home"></i>
                     <span>Inicio</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="loadPage('login')" id="mobile-login-btn" class="mobile-nav-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar sesión</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="navigateToProfile()" id="mobile-profile-btn" class="mobile-nav-btn" style="display:none;">
+                    <i class="fas fa-user"></i>
+                    <span>Mi perfil</span>
                 </button>
             </li>
             <li class="mobile-nav-item">
@@ -148,8 +145,21 @@
                     <span>Biblioteca</span>
                 </button>
             </li>
+            <li class="mobile-nav-item">
+                <button onclick="loadPage('premium')" id="mobile-premium-btn" class="mobile-nav-btn">
+                    <i class="fas fa-crown"></i>
+                    <span>Premium</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="logout()" id="mobile-logout-btn" class="mobile-nav-btn" style="display:none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </li>
         </ul>
     </div>
+
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
         <div id="content-container">

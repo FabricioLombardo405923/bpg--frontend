@@ -573,34 +573,30 @@ RESPONSIVE - MOBILE (menos de 768px)
 /* MENÚ MÓVIL */
 /* ============================================= */
 
-/* Menu hamburguesa*/
+/* Botón hamburguesa - Dentro del navbar */
 .mobile-menu-toggle {
     display: none;
-    position: fixed;
-    top: 1rem;
-    right: 1rem;
-    z-index: 10000;
-    background: var(--bg-secondary);
-    border: 1px solid rgba(124, 58, 237, 0.3);
+    background: none;
+    border: none;
     color: var(--text-primary);
     font-size: 1.5rem;
     cursor: pointer;
-    padding: 0.75rem;
+    padding: var(--spacing-sm);
     border-radius: var(--radius-md);
     transition: all var(--transition-normal);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+    margin-left: auto;
 }
 
 .mobile-menu-toggle:hover {
     background: rgba(124, 58, 237, 0.15);
-    border-color: var(--color-primary);
+    color: var(--color-primary);
 }
 
 .mobile-menu-toggle:active {
     transform: scale(0.95);
 }
 
-/* Overlay - Oculto por defecto */
+/* Overlay */
 .mobile-overlay {
     display: none;
     position: fixed;
@@ -621,7 +617,7 @@ RESPONSIVE - MOBILE (menos de 768px)
     visibility: visible;
 }
 
-/* Menú lateral - Oculto por defecto */
+/* Menú lateral */
 .mobile-nav {
     display: none;
     position: fixed;
@@ -716,45 +712,6 @@ RESPONSIVE - MOBILE (menos de 768px)
 
 .mobile-nav-btn:hover,
 .mobile-nav-btn.active {
-    background: rgba(124, 58, 237, 0.15);
-    color: var(--color-primary);
-}
-
-/* Sección de usuario */
-.mobile-user-section {
-    margin-top: var(--spacing-xl);
-}
-
-.mobile-user-divider {
-    height: 1px;
-    background: rgba(124, 58, 237, 0.2);
-    margin-bottom: var(--spacing-md);
-}
-
-.mobile-user-btn {
-    width: 100%;
-    text-align: left;
-    padding: var(--spacing-md);
-    background: transparent;
-    border: none;
-    color: var(--text-secondary);
-    font-size: 1rem;
-    border-radius: var(--radius-md);
-    cursor: pointer;
-    transition: all var(--transition-normal);
-    display: flex;
-    align-items: center;
-    gap: var(--spacing-md);
-    margin-bottom: var(--spacing-xs);
-}
-
-.mobile-user-btn i {
-    width: 20px;
-    text-align: center;
-    font-size: 1.1rem;
-}
-
-.mobile-user-btn:hover {
     background: rgba(124, 58, 237, 0.15);
     color: var(--color-primary);
 }

@@ -16,7 +16,7 @@
   width: 80px;
   height: 80px;
   margin: 0 auto 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: linear-gradient(135deg, #66eadf 0%, #8000ff 100%);
   border-radius: 50%;
   display: flex;
   align-items: center;
@@ -94,7 +94,7 @@
 
 .btn-cancel {
   margin-left: auto;
-  background: #ff4d4d;
+  background: #ff0000 !important;
   border: none;
   padding: 0.6rem 1rem;
   border-radius: 6px;
@@ -108,7 +108,6 @@
   transform: translateY(-3px);
   background: #e63b3b;
 }
-
 
 
 /* Móvil */
@@ -319,7 +318,7 @@
 .btn-premium {
   width: 100%;
   padding: 1rem;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background: #3498db;
   color: white;
   border: none;
   border-radius: 8px;
