@@ -93,7 +93,8 @@ let mobileMenuOpen = false;
 // =================================================================
 
 // Cargar CSS dinámicamente
-function loadCSS(href) {
+// Cargar CSS dinámicamente
+function loadCSS(href, isPageStyle = true) {
     return new Promise((resolve, reject) => {
         if (loadedStyles.has(href)) {
             resolve();
@@ -103,16 +104,34 @@ function loadCSS(href) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = href;
+        
+        // Marcar estilos de página para poder eliminarlos después
+        if (isPageStyle) {
+            link.setAttribute('data-page-style', 'true');
+        }
+        
         link.onload = () => {
             loadedStyles.add(href);
             resolve();
         };
         link.onerror = () => {
             console.warn(`⚠️ No se pudo cargar CSS: ${href}`);
-            resolve(); // No fallar por CSS faltante
+            resolve();
         };
         document.head.appendChild(link);
     });
+}
+
+// Limpiar estilos de página
+function cleanupPageStyles() {
+    // Remover todos los estilos de página anteriores
+    const pageStyles = document.querySelectorAll('link[data-page-style="true"]');
+    pageStyles.forEach(link => {
+        link.remove();
+    });
+    
+    // Limpiar el Set de estilos cargados
+    loadedStyles.clear();
 }
 
 // Cargar JavaScript dinámicamente
@@ -207,6 +226,7 @@ async function loadPage(pageName, params = {}) {
         // Limpiar página anterior
         if (currentPage) {
             cleanupPageScripts(currentPage);
+            cleanupPageStyles();
         }
 
         // Mostrar loading
