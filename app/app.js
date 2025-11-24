@@ -93,7 +93,8 @@ let mobileMenuOpen = false;
 // =================================================================
 
 // Cargar CSS dinámicamente
-function loadCSS(href) {
+// Cargar CSS dinámicamente
+function loadCSS(href, isPageStyle = true) {
     return new Promise((resolve, reject) => {
         if (loadedStyles.has(href)) {
             resolve();
@@ -103,16 +104,34 @@ function loadCSS(href) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = href;
+        
+        // Marcar estilos de página para poder eliminarlos después
+        if (isPageStyle) {
+            link.setAttribute('data-page-style', 'true');
+        }
+        
         link.onload = () => {
             loadedStyles.add(href);
             resolve();
         };
         link.onerror = () => {
             console.warn(`⚠️ No se pudo cargar CSS: ${href}`);
-            resolve(); // No fallar por CSS faltante
+            resolve();
         };
         document.head.appendChild(link);
     });
+}
+
+// Limpiar estilos de página
+function cleanupPageStyles() {
+    // Remover todos los estilos de página anteriores
+    const pageStyles = document.querySelectorAll('link[data-page-style="true"]');
+    pageStyles.forEach(link => {
+        link.remove();
+    });
+    
+    // Limpiar el Set de estilos cargados
+    loadedStyles.clear();
 }
 
 // Cargar JavaScript dinámicamente
@@ -207,6 +226,7 @@ async function loadPage(pageName, params = {}) {
         // Limpiar página anterior
         if (currentPage) {
             cleanupPageScripts(currentPage);
+            cleanupPageStyles();
         }
 
         // Mostrar loading
@@ -431,9 +451,6 @@ function closeMobileMenu() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🎮 Inicializando Best Price Games...');
 
-    // Crear menú móvil si no existe
-    //createMobileMenu();
-
     // Event listeners para navegación
     setupNavigationListeners();
 
@@ -482,64 +499,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // =================================================================
 // FUNCIONES DE SETUP
 // =================================================================
-
-function createMobileMenu() {
-    // Crear botón hamburguesa si no existe
-    if (!document.querySelector('.mobile-menu-toggle')) {
-        const navbar = document.querySelector('.navbar .nav-container');
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'mobile-menu-toggle';
-        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-        toggleBtn.onclick = toggleMobileMenu;
-        navbar.appendChild(toggleBtn);
-    }
-
-    // Crear menú móvil si no existe
-    if (!document.getElementById('mobile-nav')) {
-        const mobileNav = document.createElement('div');
-        mobileNav.id = 'mobile-nav';
-        mobileNav.className = 'mobile-nav';
-        mobileNav.innerHTML = `
-            <div class="mobile-nav-header">
-                <div class="nav-brand">
-                    <h1>BPG</h1>
-                </div>
-                <button onclick="closeMobileMenu()" class="mobile-menu-toggle">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <ul class="mobile-nav-menu">
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="home">
-                        <i class="fas fa-home"></i> Inicio
-                    </button>
-                </li>
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="favoritos">
-                        <i class="fas fa-heart"></i> Favoritos
-                    </button>
-                </li>
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="biblioteca">
-                        <i class="fas fa-book"></i> Biblioteca
-                    </button>
-                </li>
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="perfil">
-                        <i class="fas fa-user"></i> Perfil
-                    </button>
-                </li>
-            </ul>
-        `;
-        document.body.appendChild(mobileNav);
-
-        // Crear overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'mobile-overlay';
-        overlay.className = 'mobile-overlay';
-        document.body.appendChild(overlay);
-    }
-} 
 
 function setupNavigationListeners() {
     // Event listeners para botones de navegación (desktop y móvil)

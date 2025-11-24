@@ -72,6 +72,16 @@ function setupAuthObserver() {
             if (profileBtn) profileBtn.style.display = 'block';
             if (logoutBtn) logoutBtn.style.display = 'block';
             if (userNameSpan) userNameSpan.textContent = user.displayName || 'Usuario';
+            
+            // Actualizar botones del menú móvil
+            const mobileLoginBtn = document.getElementById('mobile-login-btn');
+            const mobileProfileBtn = document.getElementById('mobile-profile-btn');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            
+            if (mobileLoginBtn) mobileLoginBtn.style.display = 'none';
+            if (mobileProfileBtn) mobileProfileBtn.style.display = 'flex';
+            if (mobileLogoutBtn) mobileLogoutBtn.style.display = 'flex';
+
 
             // Guardar userId en sessionStorage
             sessionStorage.setItem('userId', user.uid);
@@ -97,6 +107,16 @@ function setupAuthObserver() {
             if (profileBtn) profileBtn.style.display = 'none';
             if (logoutBtn) logoutBtn.style.display = 'none';
             if (userNameSpan) userNameSpan.textContent = '';
+            
+            // Actualizar botones del menú móvil
+            const mobileLoginBtn = document.getElementById('mobile-login-btn');
+            const mobileProfileBtn = document.getElementById('mobile-profile-btn');
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn');
+            
+            if (mobileLoginBtn) mobileLoginBtn.style.display = 'flex';
+            if (mobileProfileBtn) mobileProfileBtn.style.display = 'none';
+            if (mobileLogoutBtn) mobileLogoutBtn.style.display = 'none';
+
 
             // Limpiar sessionStorage
             sessionStorage.removeItem('userId');

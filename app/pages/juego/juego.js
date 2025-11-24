@@ -5,8 +5,6 @@ const gameState = {
     gameData: null
 };
 
-const API_BASE_URL = 'http://localhost:3000/api';
-
 let currentGameData = null;
 let isFavorite = false;
 let isInLibrary = false;
@@ -68,7 +66,7 @@ function renderTitle() {
     const section = template.content.cloneNode(true);
     const game = gameState.gameData;
 
-    // CORRECCIÓN: Crear el wrapper con los botones
+    // Crear el wrapper con los botones
     const titleHeader = document.createElement('div');
     titleHeader.className = 'title-header';
     
@@ -521,7 +519,7 @@ async function toggleFavorite() {
             const success = await agregarFavorito(currentGameData);
             if (success) {
                 isFavorite = true;
-                showAlert('¡Agregado a favoritos! ❤️', 'success');
+                showAlert('¡Agregado a favoritos!', 'success');
             }
         }
         updateFavoriteButton();
@@ -672,7 +670,7 @@ async function toggleLibrary() {
             const success = await agregarBiblioteca(currentGameData);
             if (success) {
                 isInLibrary = true;
-                showAlert('¡Agregado a biblioteca! 📚', 'success');
+                showAlert('¡Agregado a biblioteca!', 'success');
             }
         }
         updateLibraryButton();

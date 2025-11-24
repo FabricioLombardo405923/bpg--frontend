@@ -1,11 +1,11 @@
-function getUserId() {
+function getUserid() {
     var userId = sessionStorage.getItem('userId') || null; 
-
     return userId;
 }
 
 const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
-const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
+const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=12`;
+const API_URL_POPULARES_RECOMENDADOS = `${window.API_BASE_URL}/games/popular?pageSize=8`;
 
 // Inicializar la página
 async function initializeHome() {
@@ -63,7 +63,7 @@ function handleImageError(img, game) {
 async function cargarPopulares() {
     const container = document.getElementById('heroCarousel');
     container.innerHTML = '<p class="loading-msg">Cargando juegos populares...</p>';
-    
+
     try {
         const res = await fetch(API_URL_POPULARES);
         const { success, data } = await res.json();
@@ -77,7 +77,7 @@ async function cargarPopulares() {
             const game = mapearJuego(juego);
             container.appendChild(crearHeroCard(game));
         });
-        
+
         initHeroCarousel();
     } catch (error) {
         console.error('Error cargando populares:', error);
@@ -85,13 +85,14 @@ async function cargarPopulares() {
     }
 }
 
+
 // --- CARGAR RECOMENDADOS (Grid list) ---
 async function cargarRecomendados() {
     const container = document.getElementById('gamesList');
     container.innerHTML = '<p class="loading-msg">Cargando recomendados...</p>';
     
     try {
-        const res = await fetch(API_URL_POPULARES);
+        const res = await fetch(API_URL_POPULARES_RECOMENDADOS);
         const { success, data } = await res.json();
         
         if (!success || !data?.juegos?.length) {
@@ -108,6 +109,7 @@ async function cargarRecomendados() {
         container.innerHTML = '<p class="error-msg">Error al cargar recomendados.</p>';
     }
 }
+
 
 // --- CARGAR RECIENTES (Carousel inferior) ---
 async function cargarRecientes() {
@@ -314,7 +316,7 @@ function gameToApiFormat(game) {
 // ========== FAVORITOS ==========
 
 async function toggleQuickFavorite(btn, game) {
-    const userId = getUserId();
+    const userId = getUserid();
     if (!userId) {
         showAlert('Debes iniciar sesión para agregar favoritos', 'warning');
         return;
@@ -348,7 +350,7 @@ async function toggleQuickFavorite(btn, game) {
 }
 
 async function checkAndUpdateFavoriteButton(btn, idSteam) {
-    const userId = getUserId();
+    const userId = getUserid();
     if (!userId) return;
 
     try {
@@ -364,7 +366,7 @@ async function checkAndUpdateFavoriteButton(btn, idSteam) {
 
 async function verificarFavorito(idSteam) {
     try {
-        const userId = getUserId();
+        const userId = getUserid();
         const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/check/${idSteam}`);
         const result = await response.json();
         return result.isFavorite || false;
@@ -376,7 +378,7 @@ async function verificarFavorito(idSteam) {
 
 async function agregarFavorito(gameData) {
     try {
-        const userId = getUserId();
+        const userId = getUserid();
         const response = await fetch(`${API_BASE_URL}/favoritos`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -407,7 +409,7 @@ async function agregarFavorito(gameData) {
 
 async function eliminarFavorito(idSteam) {
     try {
-        const userId = getUserId();
+        const userId = getUserid();
         const response = await fetch(`${API_BASE_URL}/favoritos/${userId}/${idSteam}`, {
             method: 'DELETE'
         });
@@ -430,7 +432,7 @@ async function eliminarFavorito(idSteam) {
 // ========== BIBLIOTECA ==========
 
 async function toggleQuickLibrary(btn, game) {
-    const userId = getUserId();
+    const userId = getUserid();
     if (!userId) {
         showAlert('Debes iniciar sesión para agregar a biblioteca', 'warning');
         return;
@@ -464,7 +466,7 @@ async function toggleQuickLibrary(btn, game) {
 }
 
 async function checkAndUpdateLibraryButton(btn, idSteam) {
-    const userId = getUserId();
+    const userId = getUserid();
     if (!userId) return;
 
     try {
@@ -480,7 +482,7 @@ async function checkAndUpdateLibraryButton(btn, idSteam) {
 
 async function verificarBiblioteca(idSteam) {
     try {
-        const userId = getUserId();
+        const userId = getUserid();
         const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/check/${idSteam}`);
         const result = await response.json();
         return result.isBiblioteca || false;
@@ -492,7 +494,7 @@ async function verificarBiblioteca(idSteam) {
 
 async function agregarBiblioteca(gameData) {
     try {
-        const userId = getUserId();
+        const userId = getUserid();
         const response = await fetch(`${API_BASE_URL}/biblioteca`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -523,7 +525,7 @@ async function agregarBiblioteca(gameData) {
 
 async function eliminarBiblioteca(idSteam) {
     try {
-        const userId = getUserId();
+        const userId = getUserid();
         const response = await fetch(`${API_BASE_URL}/biblioteca/${userId}/${idSteam}`, {
             method: 'DELETE'
         });

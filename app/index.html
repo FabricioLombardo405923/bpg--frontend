@@ -45,6 +45,11 @@
                 <div class="nav-logo">🎮</div>
                 <h1>BPG</h1>
             </div>
+            
+            <!-- Botón menú móvil -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
 
             
             <!-- Búsqueda (Desktop y Mobile) -->
@@ -87,14 +92,73 @@
                     </button>
 
                     <div class="user-menu">
-                        <button onclick="loadPage('login')" id="login-btn">Iniciar sesión</button>
-                        <button onclick="navigateToProfile()" id="profile-btn" style="display:none;">Mi perfil</button>
-                        <button onclick="loadPage('premium')" id="premium-btn" style="display:block;">Premium</button>
-                        <button onclick="logout()" id="logout-btn" style="display:none;">Cerrar sesión</button>
+                        <button onclick="loadPage('login')" id="login-btn"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</button>
+                        <button onclick="navigateToProfile()" id="profile-btn" style="display:none;"><i class="fas fa-user"></i> Mi perfil</button>
+                        <button onclick="loadPage('premium')" id="premium-btn" style="display:block;"><i class="fas fa-crown"></i> Premium</button>
+                        <button onclick="logout()" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
                     </div>
             </div>
         </div>
     </nav>
+    <!-- MENÚ MÓVIL -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
+    <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-header">
+            <div class="nav-brand">
+                <div class="nav-logo">🎮</div>
+                <h1>BPG</h1>
+            </div>
+            <button onclick="closeMobileMenu()" class="mobile-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <ul class="mobile-nav-menu">
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="loadPage('login')" id="mobile-login-btn" class="mobile-nav-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar sesión</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="navigateToProfile()" id="mobile-profile-btn" class="mobile-nav-btn" style="display:none;">
+                    <i class="fas fa-user"></i>
+                    <span>Mi perfil</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="favoritos">
+                    <i class="fas fa-heart"></i>
+                    <span>Favoritos</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="biblioteca">
+                    <i class="fas fa-book"></i>
+                    <span>Biblioteca</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="loadPage('premium')" id="mobile-premium-btn" class="mobile-nav-btn">
+                    <i class="fas fa-crown"></i>
+                    <span>Premium</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="logout()" id="mobile-logout-btn" class="mobile-nav-btn" style="display:none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </li>
+        </ul>
+    </div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
@@ -125,7 +189,7 @@
             </div>
         </div>
     </main>
-
+    <!-- COOKIE -->
     <div id="cookie-banner" class="cookie-banner hidden">
         <div class="cookie-text">
             ¿Confirma estar de acuerdo con nuestos <a href="#" id="cookie-terms-link">términos y condiciones</a> y aceptas las cookies?
@@ -136,7 +200,7 @@
             <button class="btn-decline" id="cookie-decline">Rechazar</button>
         </div>
     </div>
-
+    <!-- FOOTER -->
     <footer class="footer">
         <div class="footer-links">
             <a class="nav-link" onclick="loadPage('preguntas')">Preguntas Frecuentes</a>
