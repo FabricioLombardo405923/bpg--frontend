@@ -7,6 +7,30 @@ function getUserId() {
 const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
 const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
 
+let cachePopulares = null;       
+let cachePopularesPromise = null; 
+
+async function obtenerPopulares() {
+    if (cachePopulares) return cachePopulares;
+
+    if (cachePopularesPromise) return cachePopularesPromise;
+
+    cachePopularesPromise = fetch(API_URL_POPULARES)
+        .then(res => res.json())
+        .then(({ success, data }) => {
+            if (!success || !data?.juegos?.length) {
+                throw new Error("No se encontraron juegos populares");
+            }
+            cachePopulares = data.juegos;
+            return cachePopulares;
+        })
+        .finally(() => {
+            cachePopularesPromise = null;
+        });
+
+    return cachePopularesPromise;
+}
+
 // Inicializar la página
 async function initializeHome() {
     await Promise.all([
@@ -63,21 +87,16 @@ function handleImageError(img, game) {
 async function cargarPopulares() {
     const container = document.getElementById('heroCarousel');
     container.innerHTML = '<p class="loading-msg">Cargando juegos populares...</p>';
-    
+
     try {
-        const res = await fetch(API_URL_POPULARES);
-        const { success, data } = await res.json();
-        
-        if (!success || !data?.juegos?.length) {
-            throw new Error('No se encontraron juegos');
-        }
-        
+        const juegos = await obtenerPopulares();
+
         container.innerHTML = '';
-        data.juegos.forEach(juego => {
+        juegos.forEach(juego => {
             const game = mapearJuego(juego);
             container.appendChild(crearHeroCard(game));
         });
-        
+
         initHeroCarousel();
     } catch (error) {
         console.error('Error cargando populares:', error);
@@ -85,21 +104,17 @@ async function cargarPopulares() {
     }
 }
 
+
 // --- CARGAR RECOMENDADOS (Grid list) ---
 async function cargarRecomendados() {
     const container = document.getElementById('gamesList');
     container.innerHTML = '<p class="loading-msg">Cargando recomendados...</p>';
-    
+
     try {
-        const res = await fetch(API_URL_POPULARES);
-        const { success, data } = await res.json();
-        
-        if (!success || !data?.juegos?.length) {
-            throw new Error('No se encontraron juegos');
-        }
-        
+        const juegos = await obtenerPopulares();
+
         container.innerHTML = '';
-        data.juegos.forEach(juego => {
+        juegos.forEach(juego => {
             const game = mapearJuego(juego);
             container.appendChild(crearGameCard(game));
         });
@@ -108,6 +123,7 @@ async function cargarRecomendados() {
         container.innerHTML = '<p class="error-msg">Error al cargar recomendados.</p>';
     }
 }
+
 
 // --- CARGAR RECIENTES (Carousel inferior) ---
 async function cargarRecientes() {
