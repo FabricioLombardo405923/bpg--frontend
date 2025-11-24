@@ -30,7 +30,7 @@
 
 /* Header */
 .modal-confirm-header {
-    background: rgb(64, 0, 173);
+    background: #1174b6;
     padding: 15px;
     color: white;
     display: flex;
@@ -72,7 +72,7 @@
 }
 
 .btn-confirm {
-    background: rgb(47, 0, 129);
+    background: #1174b6;
     color: #fff;
 }
 

@@ -5,31 +5,8 @@ function getUserId() {
 }
 
 const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
-const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=10`;
-
-let cachePopulares = null;       
-let cachePopularesPromise = null; 
-
-async function obtenerPopulares() {
-    if (cachePopulares) return cachePopulares;
-
-    if (cachePopularesPromise) return cachePopularesPromise;
-
-    cachePopularesPromise = fetch(API_URL_POPULARES)
-        .then(res => res.json())
-        .then(({ success, data }) => {
-            if (!success || !data?.juegos?.length) {
-                throw new Error("No se encontraron juegos populares");
-            }
-            cachePopulares = data.juegos;
-            return cachePopulares;
-        })
-        .finally(() => {
-            cachePopularesPromise = null;
-        });
-
-    return cachePopularesPromise;
-}
+const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=12`;
+const API_URL_POPULARES_RECOMENDADOS = `${window.API_BASE_URL}/games/popular?pageSize=8`;
 
 // Inicializar la página
 async function initializeHome() {
@@ -89,10 +66,15 @@ async function cargarPopulares() {
     container.innerHTML = '<p class="loading-msg">Cargando juegos populares...</p>';
 
     try {
-        const juegos = await obtenerPopulares();
-
+        const res = await fetch(API_URL_POPULARES);
+        const { success, data } = await res.json();
+        
+        if (!success || !data?.juegos?.length) {
+            throw new Error('No se encontraron juegos');
+        }
+        
         container.innerHTML = '';
-        juegos.forEach(juego => {
+        data.juegos.forEach(juego => {
             const game = mapearJuego(juego);
             container.appendChild(crearHeroCard(game));
         });
@@ -109,12 +91,17 @@ async function cargarPopulares() {
 async function cargarRecomendados() {
     const container = document.getElementById('gamesList');
     container.innerHTML = '<p class="loading-msg">Cargando recomendados...</p>';
-
+    
     try {
-        const juegos = await obtenerPopulares();
-
+        const res = await fetch(API_URL_POPULARES_RECOMENDADOS);
+        const { success, data } = await res.json();
+        
+        if (!success || !data?.juegos?.length) {
+            throw new Error('No se encontraron juegos');
+        }
+        
         container.innerHTML = '';
-        juegos.forEach(juego => {
+        data.juegos.forEach(juego => {
             const game = mapearJuego(juego);
             container.appendChild(crearGameCard(game));
         });
