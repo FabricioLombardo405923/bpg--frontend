@@ -1,9 +1,7 @@
-
-
 .game-page {
-    max-width: 1200px;
+    padding: 20px;
+    max-width: 1400px;
     margin: 0 auto;
-    padding: 2rem;
 }
 
 /* Loading State */
@@ -169,7 +167,15 @@
     gap: 10px;
     color: #b794f6;
 }
-
+@media (max-width: 799px) {
+    .section-title {
+        font-size: 1.8rem;        /* Más chico para que no rompa layout */
+        gap: 6px;                 /* Reduce separación */
+        margin-bottom: 16px;      /* Menos espacio vertical */
+        color: #c9a8ff;           /* Un poco más claro para mejorar contraste en pantallas chicas */
+        line-height: 1.2;         /* Evita que salte de línea raro */
+    }
+}
 .purchase-options {
     display: grid;
     gap: 15px;
@@ -263,9 +269,6 @@
     color: #d0d0d0;
 }
 
-.description-content p {
-    margin-bottom: 15px;
-}
 
 /* Features Section */
 .features-section {
@@ -511,4 +514,103 @@
         height: 44px;
         font-size: 1.2rem;
     }
+}
+
+
+/* Estilos para el contenido de la descripción */
+.description-content {
+  width: 100%;
+  overflow: hidden; /* Evita que el contenido se salga */
+}
+
+/* Controlar imágenes dentro de la descripción */
+.description-content img,
+.description-content .bb_img {
+  max-width: 100% !important;
+  height: auto !important;
+  width: auto !important;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Controlar videos dentro de la descripción */
+.description-content video,
+.description-content .bb_img[autoplay] {
+  max-width: 100% !important;
+  height: auto !important;
+  width: 100% !important;
+  display: block;
+  margin: 1rem auto;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Contenedores de imágenes/videos de Steam */
+.description-content .bb_img_ctn {
+  max-width: 100%;
+  display: block;
+  margin: 1rem 0;
+  overflow: hidden;
+}
+
+/* Párrafos dentro de la descripción */
+.description-content p,
+.description-content .bb_paragraph {
+  margin: 0.75rem 0;
+  line-height: 1.6;
+  word-wrap: break-word;
+  overflow-wrap: break-word;
+}
+
+/* Encabezados en la descripción */
+.description-content h1 {
+  font-size: 1.5rem;
+  margin: 1.5rem 0 1rem 0;
+  font-weight: 600;
+}
+
+/* Listas en la descripción */
+.description-content ul,
+.description-content ol {
+  margin: 1rem 0;
+  padding-left: 2rem;
+}
+
+.description-content li {
+  margin: 0.5rem 0;
+  line-height: 1.6;
+}
+
+/* Responsive: ajustes adicionales para móviles */
+@media (max-width: 768px) {
+  .description-content img,
+  .description-content video,
+  .description-content .bb_img {
+    margin: 0.75rem auto;
+    border-radius: 6px;
+  }
+  
+  .description-content h1 {
+    font-size: 1.25rem;
+  }
+  
+  .description-content p,
+  .description-content .bb_paragraph {
+    font-size: 0.95rem;
+  }
+}
+
+/* Para pantallas muy pequeñas */
+@media (max-width: 480px) {
+  .description-content {
+    padding: 0 0.5rem;
+  }
+  
+  .description-content img,
+  .description-content video {
+    margin: 0.5rem auto;
+    border-radius: 4px;
+  }
 }
