@@ -15,34 +15,33 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- PWA Meta tags -->
-    <meta name="theme-color" content="#7c3aed">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Best Price Games">
 
     <!-- Toastify -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 
     <!-- FAVICON -->
-    <!-- Favicon clásico -->
-    <link rel="icon" href="./favicon/favicon.ico" type="image/x-icon">
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BPG" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
 
-    <!-- Para dispositivos Apple -->
-    <link rel="apple-touch-icon" href="./favicon/favicon.ico">
-
-    <!-- Para navegador moderno con manifest -->
-    <link rel="manifest" href="./favicon/site.webmanifest">
 </head>
 <body>
     <!-- NAVBAR PRINCIPAL -->
     <nav class="navbar">
         <div class="nav-container">
             <!-- Brand/Logo -->
-            <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
+            <!-- <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
                 <div class="nav-logo">🎮</div>
+                <h1>BPG</h1>
+            </div> -->
+            <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
+                <div class="nav-logo">
+                    <img src="favicon/LogoBlancoSinFondo.png" alt="logo">
+                </div>
                 <h1>BPG</h1>
             </div>
             
@@ -105,8 +104,14 @@
 
     <div class="mobile-nav" id="mobile-nav">
         <div class="mobile-nav-header">
-            <div class="nav-brand">
+            <!-- <div class="nav-brand">
                 <div class="nav-logo">🎮</div>
+                <h1>BPG</h1>
+            </div> -->
+            <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
+                <div class="nav-logo">
+                    <img src="favicon/LogoBlancoSinFondo.png" alt="logo">
+                </div>
                 <h1>BPG</h1>
             </div>
             <button onclick="closeMobileMenu()" class="mobile-close-btn">
