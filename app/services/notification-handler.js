@@ -1,5 +1,3 @@
-// notification-handler.js
-// Manejador de notificaciones para el frontend
 
 class NotificationHandler {
   constructor() {
