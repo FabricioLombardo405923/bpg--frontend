@@ -64,8 +64,19 @@ function realizarBusqueda() {
 }
 
 function navigateAJuego(gameId) {
+    const oldGameId = sessionStorage.getItem('gameID');
     sessionStorage.setItem('gameID', `${gameId}`);
-    loadgamePage('juego');
+    
+    const params = new URLSearchParams(window.location.search);
+    const isJuego = params.get('page') === 'juego';
+
+    if (isJuego) {
+        if (typeof initializeJuego === 'function') {
+            initializeJuego();
+        }
+    } else {
+        loadPage('juego');
+    }
 }
 
 // Sistema de sugerencias de búsqueda
