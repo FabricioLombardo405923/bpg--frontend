@@ -13,34 +13,35 @@ const premiumState = {
 async function initializePremium() {
   premiumState.userId = getUserId();
 
-  if (!premiumState.userId) {
-    showAlert('Debes iniciar sesión para acceder a Premium', 'warning');
-    setTimeout(() => {
-      if (typeof loadPage === 'function') {
-        loadPage('login');
-      } else {
-        window.location.href = '/app?page=login';
-      }
-    }, 1500);
-    return;
-  }
-
   // Verificar si venimos de un pago
   const urlParams = new URLSearchParams(window.location.search);
   const paymentStatus = urlParams.get('payment_status');
   const collectionId = urlParams.get('collection_id');
   const paymentId = urlParams.get('payment_id');
 
-  // Si hay parámetros de pago, procesarlos primero
+  // Si hay parámetros de pago, procesarlos primero (requiere login)
   if (paymentStatus || collectionId || paymentId) {
+    if (!premiumState.userId) {
+      showAlert('Debes iniciar sesión para procesar el pago', 'warning');
+      setTimeout(() => {
+        if (typeof loadPage === 'function') {
+          loadPage('login');
+        } else {
+          window.location.href = '/app?page=login';
+        }
+      }, 1500);
+      return;
+    }
     await procesarRetornoPago(urlParams);
   }
 
-  // Cargar datos
-  await Promise.all([
-    cargarPlanes(),
-    verificarEstadoPremium()
-  ]);
+  // Cargar planes 
+  await cargarPlanes();
+
+  // Solo verificar estado premium si está logueado
+  if (premiumState.userId) {
+    await verificarEstadoPremium();
+  }
 
   // Renderizar UI
   renderizarUI();
@@ -58,13 +59,6 @@ async function procesarRetornoPago(urlParams) {
   const collectionStatus = urlParams.get('collection_status');
   const paymentId = urlParams.get('payment_id');
   const externalReference = urlParams.get('external_reference');
-
-  // console.log('📥 Procesando retorno de pago:', {
-  //   paymentStatus,
-  //   collectionId,
-  //   collectionStatus,
-  //   paymentId
-  // });
 
   mostrarLoader(true);
   premiumState.isProcessingPayment = true;
@@ -178,6 +172,19 @@ async function verificarEstadoPremium() {
 // CREAR SUSCRIPCIÓN
 // ============================================
 async function crearSuscripcion(planType) {
+  // Verificar login cuando intenta seleccionar un plan
+  if (!premiumState.userId) {
+    showAlert('Debes iniciar sesión para contratar un plan', 'warning');
+    setTimeout(() => {
+      if (typeof loadPage === 'function') {
+        loadPage('login');
+      } else {
+        window.location.href = '/app?page=login';
+      }
+    }, 1500);
+    return;
+  }
+
   if (premiumState.isLoading || premiumState.isProcessingPayment) {
     showAlert('Ya hay una operación en proceso', 'warning');
     return;
@@ -219,8 +226,6 @@ async function crearSuscripcion(planType) {
     if (!result.success) {
       throw new Error(result.error);
     }
-
-    //console.log('✅ Preferencia creada:', result.data);
 
     const checkoutUrl = result.data.init_point || result.data.sandbox_init_point;
 
@@ -310,6 +315,7 @@ function mostrarHeaderCorrecto() {
     }
   }
 }
+
 function renderizarEstadoPremium() {
   const statusContainer = document.getElementById('premiumStatus');
   if (!statusContainer) return;
@@ -343,7 +349,6 @@ function renderizarEstadoPremium() {
   statusContainer.style.display = 'flex';
 }
 
-
 function renderizarPlanes() {
   const planCards = document.querySelectorAll('.plan-card');
   
@@ -367,6 +372,7 @@ function renderizarPlanes() {
         card.classList.remove('plan-current');
       }
     } else {
+      // Usuario no logueado o sin premium - mostrar botón normal
       btn.textContent = 'Seleccionar Plan';
       btn.disabled = false;
       btn.classList.remove('btn-disabled');
@@ -430,11 +436,6 @@ function setupFAQListeners() {
 // ============================================
 function getUserId() {
   const userId = sessionStorage.getItem('userId') || localStorage.getItem('userId') || null;
-  
-  if (!userId) {
-    console.error('❌ Usuario no logueado');
-  }
-  
   return userId;
 }
 
