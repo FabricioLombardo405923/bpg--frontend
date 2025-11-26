@@ -12,7 +12,9 @@ window.showAlert = function (message, type = 'success') {
         duration: 3000,
         gravity: 'top', // top o bottom
         position: 'right', // left, center o right
-        background: colors[type] || '#2ecc71',
+        style: {
+            background: colors[type] || '#2ecc71'
+        },
         close: true,
         stopOnFocus: true
     }).showToast();
