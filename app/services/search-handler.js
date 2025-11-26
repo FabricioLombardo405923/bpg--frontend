@@ -42,14 +42,25 @@ function initializeSearchBar() {
 function realizarBusqueda() {
     const searchInput = document.querySelector('.search-input');
     const query = searchInput.value.trim();
-    
+
     if (!query) {
         searchInput.focus();
         return;
     }
     
     sessionStorage.setItem('searchQuery', query);
-    loadPage('busqueda');
+    
+    const params = new URLSearchParams(window.location.search);
+    const isBusqueda = params.get('page') === 'busqueda';
+
+    if (isBusqueda) {
+        if (typeof initializeBusqueda === 'function') {
+            initializeBusqueda();
+        }
+    } else {
+        loadPage('busqueda');
+    }
+
 }
 
 function navigateAJuego(gameId) {
