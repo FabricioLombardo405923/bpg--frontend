@@ -288,7 +288,7 @@ function initCarousel() {
 // --- NAVEGACIÓN ---
 function navigateToGame(gameId) {
     sessionStorage.setItem('gameID', `${gameId}`);
-    window.location.href = '/app/?page=juego';
+    loadPage('juego');
 }
 
 // Iniciar cuando el DOM esté listo

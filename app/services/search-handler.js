@@ -42,19 +42,41 @@ function initializeSearchBar() {
 function realizarBusqueda() {
     const searchInput = document.querySelector('.search-input');
     const query = searchInput.value.trim();
-    
+
     if (!query) {
         searchInput.focus();
         return;
     }
     
     sessionStorage.setItem('searchQuery', query);
-    window.location.href = `/app/?page=busqueda`;
+    
+    const params = new URLSearchParams(window.location.search);
+    const isBusqueda = params.get('page') === 'busqueda';
+
+    if (isBusqueda) {
+        if (typeof initializeBusqueda === 'function') {
+            initializeBusqueda();
+        }
+    } else {
+        loadPage('busqueda');
+    }
+
 }
 
 function navigateAJuego(gameId) {
+    const oldGameId = sessionStorage.getItem('gameID');
     sessionStorage.setItem('gameID', `${gameId}`);
-    window.location.href = `/app/?page=juego`;
+    
+    const params = new URLSearchParams(window.location.search);
+    const isJuego = params.get('page') === 'juego';
+
+    if (isJuego) {
+        if (typeof initializeJuego === 'function') {
+            initializeJuego();
+        }
+    } else {
+        loadPage('juego');
+    }
 }
 
 // Sistema de sugerencias de búsqueda
