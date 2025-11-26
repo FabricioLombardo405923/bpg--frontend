@@ -66,7 +66,8 @@ function setupAuthObserver() {
 
         if (user) {
             // ✅ Usuario autenticado
-            
+            await ensureUserExists(user);
+
             // Actualizar UI del navbar
             if (loginBtn) loginBtn.style.display = 'none';
             if (profileBtn) profileBtn.style.display = 'block';
@@ -140,6 +141,43 @@ function setupAuthObserver() {
             }
         }
     });
+}
+
+async function ensureUserExists(user) {
+    try {
+        // Verificar si el usuario existe
+        const checkResponse = await fetch(`${window.API_BASE_URL}/usuarios/${user.uid}`);
+        
+        if (checkResponse.status === 404) {
+            // Usuario no existe, crearlo
+            const AVATAR_STYLE = 'fun-emoji';
+            const seed = `emoji-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+            
+            const initialData = {
+                email: user.email,
+                displayName: user.displayName || 'Usuario',
+                avatar_url: seed,
+                avatar_style: AVATAR_STYLE
+            };
+            
+            const createResponse = await fetch(`${window.API_BASE_URL}/usuarios/${user.uid}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(initialData)
+            });
+            
+            if (!createResponse.ok) {
+                console.error('❌ Error creando usuario en BD:', await createResponse.text());
+            } 
+        } 
+        // else if (checkResponse.ok) {
+        //     console.log('✅ Usuario ya existe en BD');
+        // }
+    } catch (error) {
+        console.error('❌ Error verificando/creando usuario:', error);
+    }
 }
 
 // =================================================================
