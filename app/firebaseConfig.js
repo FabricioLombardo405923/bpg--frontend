@@ -37,4 +37,3 @@ window.updateProfile = updateProfile;
 window.updatePassword = updatePassword;
 window.deleteUser = deleteUser;
 
-console.log("🔥 Firebase inicializado");
