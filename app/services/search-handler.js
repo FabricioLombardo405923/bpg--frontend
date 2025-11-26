@@ -49,12 +49,12 @@ function realizarBusqueda() {
     }
     
     sessionStorage.setItem('searchQuery', query);
-    window.location.href = `/app/?page=busqueda`;
+    loadPage('busqueda');
 }
 
 function navigateAJuego(gameId) {
     sessionStorage.setItem('gameID', `${gameId}`);
-    window.location.href = `/app/?page=juego`;
+    loadgamePage('juego');
 }
 
 // Sistema de sugerencias de búsqueda

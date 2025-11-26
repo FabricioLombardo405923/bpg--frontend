@@ -318,7 +318,7 @@ function getUserId() {
 
 function navigateToGame(gameId) {
     sessionStorage.setItem('gameID', `${gameId}`);
-    window.location.href = `/app/?page=juego`;
+    loadPage('juego');
 }
 
 function mostrarLoader(show) {

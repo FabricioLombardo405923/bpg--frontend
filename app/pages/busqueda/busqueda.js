@@ -12,6 +12,7 @@ const searchState = {
 
 // Inicializar búsqueda
 async function initializeBusqueda() {
+    console.log('🔍 Inicializando página de búsqueda');
     // Obtener término de búsqueda de sessionStorage
     searchState.query = sessionStorage.getItem('searchQuery') || '';
     
@@ -207,7 +208,7 @@ function crearResultadoCard(game) {
 
 function navigateToGame(gameId) {
     sessionStorage.setItem('gameID', `${gameId}`);
-    window.location.href = `/app/?page=juego`;
+    loadPage('juego');
 }
 
 // Utilidades

@@ -454,9 +454,6 @@ document.addEventListener('DOMContentLoaded', () => {
     // Event listeners para navegación
     setupNavigationListeners();
 
-    // Event listeners para búsqueda
-    setupSearchListeners();
-
     // Event listener para overlay móvil
     const overlay = document.getElementById('mobile-overlay');
     if (overlay) {
@@ -514,44 +511,6 @@ function setupNavigationListeners() {
             }
         }
     });
-}
-
-function setupSearchListeners() {
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        // Búsqueda al presionar Enter
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleSearch(searchInput.value);
-            }
-        });
-
-        // Búsqueda con debounce mientras escribes
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            const query = e.target.value;
-            
-            if (query.length >= 3) {
-                searchTimeout = setTimeout(() => {
-                    handleSearch(query);
-                }, 500);
-            }
-        });
-    }
-
-    // Event listener para botón de búsqueda si existe
-    const searchBtn = document.querySelector('.search-btn');
-    if (searchBtn) {
-        searchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const input = document.querySelector('.search-input');
-            if (input) {
-                handleSearch(input.value);
-            }
-        });
-    }
 }
 
 // =================================================================
