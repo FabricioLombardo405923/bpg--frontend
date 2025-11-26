@@ -267,7 +267,7 @@ function renderPriceSection() {
                     ? formatPriceUSD(precio)
                     : formatPriceARS(precio);
             } else {
-                card.querySelector('.current-price').textContent = 'Ver precio';
+                card.querySelector('.current-price').textContent = 'Gratis';
             }
 
             // Precio anterior y descuento
@@ -305,7 +305,7 @@ function renderPriceSection() {
                     ? formatPriceUSD(precio)
                     : formatPriceARS(precio);
             } else {
-                card.querySelector('.current-price').textContent = 'Ver precio';
+                card.querySelector('.current-price').textContent = 'Gratis';
             }
 
             if (game.precioNormal && descuento > 0) {
