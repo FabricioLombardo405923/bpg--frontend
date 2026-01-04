@@ -133,18 +133,101 @@ async function cargarPlanes() {
   try {
     const response = await fetch(`${API_BASE_URL}/suscripciones/plans`);
     const result = await response.json();
-
+    
     if (!result.success) {
       throw new Error(result.error);
     }
-
+    
     premiumState.plans = result.data;
+    
+    // Renderizar los planes en el DOM
+    renderizarPlanesHTML();
+    
   } catch (error) {
     console.error('❌ Error al cargar planes:', error);
     showAlert('Error al cargar planes', 'error');
+    // Mostrar mensaje de error en el contenedor
+    const container = document.getElementById('plansContainer');
+    if (container) {
+      container.innerHTML = '<p style="text-align: center; color: #e74c3c;">Error al cargar los planes. Por favor, recarga la página.</p>';
+    }
   }
 }
-
+function renderizarPlanesHTML() {
+  const container = document.getElementById('plansContainer');
+  if (!container || !premiumState.plans) return;
+  
+  const plans = premiumState.plans;
+  
+  // Configuración de cada plan para la UI
+  const planConfig = {
+    monthly: {
+      title: 'Mensual',
+      badge: null,
+      features: [
+        'Todos los beneficios Premium',
+        'Cancela cuando quieras',
+        'Facturación mensual'
+      ],
+      saveText: null
+    },
+    annual: {
+      title: 'Anual',
+      badge: 'Recomendado',
+      features: [
+        'Todos los beneficios Premium',
+        'Cancela cuando quieras',
+        'Mejor precio',
+        '2 meses gratis'
+      ],
+      saveText: 'Ahorra 2 meses',
+      recommended: true
+    }
+  };
+  
+  let html = '';
+  
+  // Generar HTML para cada plan
+  Object.entries(plans).forEach(([planType, planData]) => {
+    const config = planConfig[planType];
+    if (!config) return;
+    
+    const isRecommended = config.recommended ? 'plan-recommended' : '';
+    const badgeHTML = config.badge ? `<div class="plan-badge">${config.badge}</div>` : '';
+    const saveHTML = config.saveText ? `<div class="plan-save">${config.saveText}</div>` : '';
+    
+    // Determinar el ícono para cada feature
+    const featuresHTML = config.features.map((feature, index) => {
+      const icon = index === config.features.length - 1 && planType === 'annual' 
+        ? 'fa-star' 
+        : 'fa-check';
+      return `<li><i class="fas ${icon}"></i> ${feature}</li>`;
+    }).join('');
+    
+    html += `
+      <div class="plan-card ${isRecommended}" data-plan="${planType}">
+        ${badgeHTML}
+        <div class="plan-header">
+          <h3>${config.title}</h3>
+          <div class="plan-price">
+            <span class="currency">$</span>
+            <span class="amount">${planData.price.toLocaleString('es-AR')}</span>
+            <span class="period">/${planType === 'monthly' ? 'mes' : 'año'}</span>
+          </div>
+          ${saveHTML}
+        </div>
+        <ul class="plan-features">
+          ${featuresHTML}
+        </ul>
+        <button class="btn btn-premium btn-select-plan" data-plan="${planType}">
+          Seleccionar Plan
+        </button>
+      </div>
+    `;
+  });
+  
+  container.innerHTML = html;
+}
 async function verificarEstadoPremium() {
   try {
     // Verificar si es premium (endpoint más ligero)
@@ -350,16 +433,17 @@ function renderizarEstadoPremium() {
 }
 
 function renderizarPlanes() {
+  // Solo actualizar el estado de los botones, no el HTML completo
   const planCards = document.querySelectorAll('.plan-card');
   
   planCards.forEach(card => {
     const btn = card.querySelector('.btn-select-plan');
     if (!btn) return;
-
+    
     const cardPlan = btn.dataset.plan;
-
+    
     if (premiumState.isPremium && premiumState.subscription) {
-      if (cardPlan === premiumState.subscription.planType && 
+      if (cardPlan === premiumState.subscription.planType &&
           premiumState.subscription.status === 'active') {
         btn.innerHTML = '<i class="fas fa-check"></i> Plan Actual';
         btn.disabled = true;
@@ -372,7 +456,6 @@ function renderizarPlanes() {
         card.classList.remove('plan-current');
       }
     } else {
-      // Usuario no logueado o sin premium - mostrar botón normal
       btn.textContent = 'Seleccionar Plan';
       btn.disabled = false;
       btn.classList.remove('btn-disabled');
@@ -380,7 +463,6 @@ function renderizarPlanes() {
     }
   });
 }
-
 // ============================================
 // EVENT LISTENERS
 // ============================================
@@ -388,9 +470,18 @@ function setupPremiumEventListeners() {
   const btnSelectPlan = document.querySelectorAll('.btn-select-plan');
   
   btnSelectPlan.forEach(btn => {
-    btn.addEventListener('click', (e) => {
-      if (!btn.disabled) {
-        const planType = e.target.closest('.btn-select-plan').dataset.plan;
+    // Remover listeners previos
+    const newBtn = btn.cloneNode(true);
+    btn.parentNode.replaceChild(newBtn, btn);
+    
+    newBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      if (!newBtn.disabled) {
+        // Obtener el planType directamente del botón, no del target del evento
+        const planType = newBtn.dataset.plan;
+        console.log('Plan seleccionado:', planType); // Para debug
         crearSuscripcion(planType);
       }
     });
@@ -399,7 +490,9 @@ function setupPremiumEventListeners() {
   // Botón cancelar
   const btnCancel = document.getElementById('btnCancelSubscription');
   if (btnCancel) {
-    btnCancel.addEventListener('click', cancelarSuscripcion);
+    const newBtnCancel = btnCancel.cloneNode(true);
+    btnCancel.parentNode.replaceChild(newBtnCancel, btnCancel);
+    newBtnCancel.addEventListener('click', cancelarSuscripcion);
   }
 }
 

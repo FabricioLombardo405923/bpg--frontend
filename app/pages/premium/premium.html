@@ -69,49 +69,9 @@
     <!-- Planes -->
     <div class="premium-plans">
         <h2>Elige tu Plan</h2>
-        <div class="plans-grid">
-            <!-- Plan Mensual -->
-            <div class="plan-card" data-plan="monthly">
-                <div class="plan-header">
-                    <h3>Mensual</h3>
-                    <div class="plan-price">
-                        <span class="currency">$</span>
-                        <span class="amount">999</span>
-                        <span class="period">/mes</span>
-                    </div>
-                </div>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> Todos los beneficios Premium</li>
-                    <li><i class="fas fa-check"></i> Cancela cuando quieras</li>
-                    <li><i class="fas fa-check"></i> Facturación mensual</li>
-                </ul>
-                <button class="btn btn-premium btn-select-plan" data-plan="monthly">
-                    Seleccionar Plan
-                </button>
-            </div>
-
-            <!-- Plan Anual -->
-            <div class="plan-card plan-recommended" data-plan="annual">
-                <div class="plan-badge">Recomendado</div>
-                <div class="plan-header">
-                    <h3>Anual</h3>
-                    <div class="plan-price">
-                        <span class="currency">$</span>
-                        <span class="amount">9,990</span>
-                        <span class="period">/año</span>
-                    </div>
-                    <div class="plan-save">Ahorra 2 meses</div>
-                </div>
-                <ul class="plan-features">
-                    <li><i class="fas fa-check"></i> Todos los beneficios Premium</li>
-                    <li><i class="fas fa-check"></i> Cancela cuando quieras</li>
-                    <li><i class="fas fa-check"></i> Mejor precio</li>
-                    <li><i class="fas fa-star"></i> 2 meses gratis</li>
-                </ul>
-                <button class="btn btn-premium btn-select-plan" data-plan="annual">
-                    Seleccionar Plan
-                </button>
-            </div>
+        <div class="plans-grid" id="plansContainer">
+            <!-- Los planes se cargarán dinámicamente aquí -->
+            <div class="loading-spinner"></div>
         </div>
     </div>
 
