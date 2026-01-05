@@ -88,6 +88,24 @@ let loadedStyles = new Set();
 let loadedScripts = new Set();
 let mobileMenuOpen = false;
 
+//TODO: MEJORAR PARA QUE SEA PARA TODOS 
+//limpia la url para que no se vea el gameID
+(function handleGameIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const gameID = params.get("gameID");
+
+    if (gameID) {
+        sessionStorage.setItem("gameID", gameID);
+        params.delete("gameID");
+
+        const newUrl =
+            window.location.pathname +
+            (params.toString() ? `?${params.toString()}` : "");
+
+        window.history.replaceState({}, document.title, newUrl);
+    }
+})();
+
 // =================================================================
 // FUNCIONES DE CARGA DINÁMICA
 // =================================================================

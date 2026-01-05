@@ -213,26 +213,27 @@
         </div>
         <p class="copyright">© 2025 Best Price Game. Todos los derechos reservados.</p>
     </footer>
+<!-- ================= FIREBASE ================= -->
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging-compat.js"></script>
+<script src="./firebaseConfig.js"></script>
 
-    <!-- Firebase -->
-    <script type="module" src="./firebaseConfig.js"></script>
+<!-- ================= SERVICES ================= -->
+<script src="services/notificacionesService.js"></script>
+<script src="services/modalBase.js"></script>
+<script src="services/pagination.js"></script>
+<script src="services/search-handler.js"></script>
+<script src="services/toast.js"></script>
 
-    <!-- Services -->
-    <script src="services/modalBase.js"></script>
-    <link rel="stylesheet" href="services/pagination.css">
-    <script src="services/pagination.js"></script>
-    <script src="services/search-handler.js"></script>
-    <link rel="stylesheet" href="services/search-suggestions.css">
-    <script src="services/toast.js"></script>
+<!-- ================= UI ================= -->
+<script src="ui/notificaciones.js"></script>
 
-    <!-- Modales -->
-    <script src="modals/confirmacion/confirmacion.js"></script>
-    <link rel="stylesheet" href="modals/confirmacion/confirmacion.css">
-    <script src="modals/modals-init.js"></script>
+<!-- ================= AUTH ================= -->
+<script src="services/auth-handler.js"></script>
 
-    <!-- App principal -->
-    <script src="app.js"></script>
-    <script src="services/auth-handler.js"></script>
+<!-- ================= APP ================= -->
+<script src="app.js"></script>
 
 </body>
 </html>

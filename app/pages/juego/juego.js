@@ -11,7 +11,7 @@ let isInLibrary = false;
 
 async function initializeJuego() {
     gameState.gameId = sessionStorage.getItem('gameID');
-    
+
     if (!gameState.gameId) {
         showError('No se especificó un juego para mostrar');
         return;
