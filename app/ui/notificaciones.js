@@ -67,7 +67,6 @@ class NotificacionesUI {
     popup.className = 'notificacion-popup';
     popup.style.cssText = `
       background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%);
-      border-left: 4px solid #7c3aed;
       border-radius: 12px;
       padding: 16px;
       margin-bottom: 12px;
