@@ -80,6 +80,12 @@ const pages = {
         css: 'pages/terminos/terminos.css'
         //init: 'initializeTerminos' 
     },
+    notificaciones: { 
+        html: 'pages/notificaciones/notificaciones.html', 
+        js:'pages/notificaciones/notificaciones.js',
+        css: 'pages/notificaciones/notificaciones.css',
+        init: 'initializeNotificaciones' 
+    },
 };
 
 // Variables globales del sistema
