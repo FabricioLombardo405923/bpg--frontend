@@ -15,7 +15,6 @@ const messaging = firebase.messaging();
 
 // Manejar notificaciones en background (cuando la app está cerrada o minimizada)
 messaging.onBackgroundMessage((payload) => {
-  console.log('📬 Notificación recibida en background:', payload);
   
   const { notification, data } = payload;
   
@@ -50,7 +49,6 @@ messaging.onBackgroundMessage((payload) => {
 
 // Manejar clicks en la notificación
 self.addEventListener('notificationclick', (event) => {
-  console.log('👆 Click en notificación:', event);
   
   event.notification.close();
   

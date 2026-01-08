@@ -62,7 +62,6 @@ window.deleteUserFirebase = (user) => {
     return user.delete();
 };
 
-console.log("✅ Firebase Auth inicializado correctamente");
 
 // ==================== NOTIFICACIONES ====================
 const VAPID_KEY = "BP7BrG5k2L8bSatHT4tv9ksP5DF7r-GwT2o-PKTZ_o8jJfx27HUB1fq9UltUwBIkHXz5XPn2a00cgM5aMbP9xNc";
@@ -84,7 +83,6 @@ window.solicitarPermisoNotificaciones = async function (userId) {
         }
 
         const token = await messaging.getToken({ vapidKey: VAPID_KEY });
-        console.log("📱 Token FCM:", token);
 
         if (token && window.NotificacionesService) {
             await NotificacionesService.actualizarFCMToken(userId, token);
@@ -104,7 +102,6 @@ window.escucharNotificacionesForeground = function (callback) {
     if (!messaging) return;
 
     messaging.onMessage((payload) => {
-        console.log("📬 Notificación foreground:", payload);
 
         const { title, body, image } = payload.notification || {};
 
@@ -138,7 +135,6 @@ window.registrarServiceWorker = async function () {
 
     try {
         const registration = await navigator.serviceWorker.register("/firebase-messaging-sw.js");
-        console.log("✅ Service Worker registrado");
         return registration;
     } catch (error) {
         console.error("❌ Error Service Worker:", error);

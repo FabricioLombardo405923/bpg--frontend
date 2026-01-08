@@ -1,12 +1,10 @@
 function initAuthHandler() {
   // Verificar si Firebase está listo
   if (typeof firebase === 'undefined' || !firebase.auth) {
-    console.warn('⏳ Esperando a que Firebase se cargue...');
     setTimeout(initAuthHandler, 100);
     return;
   }
   
-  console.log('✅ Firebase Auth listo, configurando observer...');
   setupAuthObserver();
 }
 
@@ -64,16 +62,14 @@ function setupAuthObserver() {
     const userNameSpan = document.querySelector('.user-name');
     
     if (user) {
-      console.log('✅ Usuario autenticado:', user.email);
       
-      // ✅ Usuario autenticado
+      // Usuario autenticado
       await ensureUserExists(user);
       
       // INICIALIZAR NOTIFICACIONES (FCM)
       try {
         if (window.notificacionesUI) {
           await window.notificacionesUI.inicializar(user.uid);
-          console.log('✅ Notificaciones inicializadas');
         }
       } catch (err) {
         console.warn('⚠ No se pudieron inicializar notificaciones', err);
