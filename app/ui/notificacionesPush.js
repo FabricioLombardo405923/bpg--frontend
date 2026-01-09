@@ -179,6 +179,11 @@ class NotificacionesUI {
     // Agregar al contenedor
     this.notificacionesContainer.appendChild(popup);
     
+    // Marcar como mostrada
+    if (id) {
+      NotificacionesService.marcarComoMostrada(id).catch(console.error);
+    }
+
     // Auto-cerrar después de 10 segundos
     setTimeout(() => {
       this.cerrarPopup(popup);

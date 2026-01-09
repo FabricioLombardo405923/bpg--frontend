@@ -101,7 +101,7 @@ class NotificacionesService {
   static async obtenerNotificacionesPendientes(userId, tipo = null) {
     try {
       const url = tipo 
-        ? `${API_BASE_URL}/notificaciones/${userId}/pendientes?tipo=${tipo}`
+        ? `${API_BASE_URL}/notificaciones/${userId}/push-pendientes-mostrar`
         : `${API_BASE_URL}/notificaciones/${userId}/pendientes`;
         
       const response = await fetch(url);
@@ -114,6 +114,28 @@ class NotificacionesService {
       return data.data;
     } catch (error) {
       console.error('Error al obtener notificaciones pendientes:', error);
+      throw error;
+    }
+  }
+
+  /**
+   * Marcar notificación como mostrada
+   */
+  static async marcarComoMostrada(notificacionId) {
+    try {
+      const response = await fetch(`${API_BASE_URL}/notificaciones/${notificacionId}/mostrada`, {
+        method: 'PUT'
+      });
+      
+      const data = await response.json();
+      
+      if (!data.success) {
+        throw new Error(data.error);
+      }
+      
+      return true;
+    } catch (error) {
+      console.error('Error al marcar como leída:', error);
       throw error;
     }
   }
