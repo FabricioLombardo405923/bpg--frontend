@@ -6,28 +6,31 @@ padding: 2rem;
 
 /* Header */
 .biblioteca-header {
-margin-bottom: 2rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
 }
 
 .header-content {
-display: flex;
-align-items: center;
-gap: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
 }
 
 .header-icon {
-width: 64px;
-height: 64px;
-background: linear-gradient(135deg, var(--color-primary), var(--color-secondary));
-border-radius: 16px;
-display: flex;
-align-items: center;
-justify-content: center;
-font-size: 2rem;
-color: white;
-box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--color-primary), rgba(124, 58, 237, 0.6));
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    color: white;
 }
-
 .header-text {
 flex: 1;
 }
