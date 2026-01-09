@@ -237,8 +237,8 @@ function renderNotificacionesDropdown() {
 // ============================================
 async function marcarNotifComoLeida(notifId) {
     try {
-        const response = await fetch(`${API_BASE_URL}/notificaciones/${notifId}/leer`, {
-            method: 'PATCH'
+        const response = await fetch(`${API_BASE_URL}/notificaciones/${notifId}/leida`, {
+            method: 'PUT'
         });
 
         const result = await response.json();
