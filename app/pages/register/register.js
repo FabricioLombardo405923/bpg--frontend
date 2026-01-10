@@ -29,14 +29,14 @@ window.initializeRegister = function() {
 
     try {
       const userCredential = await window.createUserWithEmailAndPassword(
-        window.auth, 
+        //window.auth, 
         email, 
         password
       );
       const user = userCredential.user;
 
       // Guardar el nombre en el perfil del usuario
-      await window.updateProfile(user, { displayName: name });
+      await window.updateProfileFirebase(user, { displayName: name });
 
       showAlert(`¡Cuenta creada con éxito! Bienvenido ${name}`, "success");
       // onAuthStateChanged (en auth-handler.js) se encargará de redirigir

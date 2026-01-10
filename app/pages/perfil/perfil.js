@@ -594,7 +594,7 @@ window.deleteAccount = async function () {
         
         if (!response.ok) throw new Error("Error al eliminar los datos del servidor");
         
-        await window.deleteUser(user);
+        await window.deleteUserFirebase(user);
         sessionStorage.removeItem("userId");
         loadPage("home");
         showAlert("Cuenta eliminada correctamente", "success");
