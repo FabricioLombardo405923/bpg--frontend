@@ -481,7 +481,7 @@ function setupPremiumEventListeners() {
       if (!newBtn.disabled) {
         // Obtener el planType directamente del botón, no del target del evento
         const planType = newBtn.dataset.plan;
-        console.log('Plan seleccionado:', planType); // Para debug
+        //console.log('Plan seleccionado:', planType); // Para debug
         crearSuscripcion(planType);
       }
     });

@@ -87,12 +87,12 @@ async function loadUserProfile() {
             userProfile = result.data;
         } else if (response.status === 404) {
             // Usuario no existe en BD, crear perfil inicial
-            console.log('⚠️ Usuario no encontrado en BD, creando perfil inicial...');
+           // console.log('⚠️ Usuario no encontrado en BD, creando perfil inicial...');
             const created = await createInitialProfile();
             
             // Si falló la creación, usar datos de Firebase
             if (!created && !userProfile) {
-                console.log('⚠️ Usando datos de Firebase como fallback');
+                //console.log('⚠️ Usando datos de Firebase como fallback');
                 displayFirebaseData();
             }
         } else {
@@ -101,7 +101,7 @@ async function loadUserProfile() {
         
         // VALIDACIÓN: Asegurarse de que userProfile existe
         if (!userProfile) {
-            console.log('⚠️ userProfile es null, usando datos de Firebase');
+            //console.log('⚠️ userProfile es null, usando datos de Firebase');
             displayFirebaseData();
         }
         
@@ -172,7 +172,7 @@ function displayFirebaseData() {
         nacionalidad: null,
         biografia: null
     };
-    console.log('ℹ️ Usando datos de Firebase:', userProfile);
+    //console.log('ℹ️ Usando datos de Firebase:', userProfile);
 }
 
 // =================================================================

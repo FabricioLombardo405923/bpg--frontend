@@ -361,7 +361,7 @@ function mostrarError(mensaje) {
 
 function mostrarNotificacion(mensaje, tipo = 'info') {
   // Implementa tu sistema de notificaciones aquí
-    console.log(`[${tipo.toUpperCase()}] ${mensaje}`);
+    //console.log(`[${tipo.toUpperCase()}] ${mensaje}`);
     
     // Ejemplo simple con alert (reemplazar con tu UI de notificaciones)
     if (tipo === 'error') {

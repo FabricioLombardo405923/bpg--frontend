@@ -104,7 +104,7 @@ function setupAuthObserver() {
         loadPage('home');
       }
     } else {
-      console.log('❌ Usuario NO autenticado');
+      //console.log('❌ Usuario NO autenticado');
       
       // ❌ Usuario NO autenticado
       if (loginBtn) loginBtn.style.display = 'block';
@@ -175,7 +175,7 @@ async function ensureUserExists(user) {
       if (!createResponse.ok) {
         console.error('❌ Error creando usuario en BD:', await createResponse.text());
       } else {
-        console.log('✅ Usuario creado en BD');
+        //console.log('✅ Usuario creado en BD');
       }
     }
   } catch (error) {
