@@ -294,10 +294,19 @@ function crearFavoritoCard(favorito) {
     const btnRemove = card.querySelector('.btn-remove-favorite');
     btnRemove.onclick = async (e) => {
         e.stopPropagation();
-        if (confirm(`¿Eliminar "${favorito.nombre}" de favoritos?`)) {
+
+        // Mostrar modal de confirmación personalizado
+        const modal = new ConfirmModal();
+        const confirmed = await modal.confirm(
+            "Eliminar",
+            `¿Eliminar "${favorito.nombre}" de favoritos?`
+        );
+
+        if (!confirmed) return;
+
         await eliminarFavorito(favorito.idSteam);
-        }
     };
+
 
     // Botón ver detalles
     const btnDetails = card.querySelector('.btn-ver-detalles');

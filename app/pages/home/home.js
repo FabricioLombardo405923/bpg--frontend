@@ -2,10 +2,12 @@ function getUserid() {
     var userId = sessionStorage.getItem('userId') || null; 
     return userId;
 }
-
-const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
-const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=12`;
+//LOS MÁS POPULARES
+const API_URL_POPULARES = `${window.API_BASE_URL}/games/deals/popular?pageSize=20`;
+//RECOMENDADOS
 const API_URL_POPULARES_RECOMENDADOS = `${window.API_BASE_URL}/games/popular?pageSize=8`;
+//DESCUENTOS RECIENTES
+const API_URL_RECIENTES = `${window.API_BASE_URL}/games/deals/recent?pageSize=12`;
 
 // Inicializar la página
 async function initializeHome() {
@@ -148,12 +150,12 @@ function crearHeroCard(game) {
     img.onerror = () => handleImageError(img, game);
     
     card.querySelector('.hero-title').textContent = game.title;
-    card.querySelector('.hero-current-price').textContent = 
-        `$${parseFloat(game.salePrice).toFixed(2)}`;
+    card.querySelector('.hero-current-price').textContent =
+        `$${formatPrice(game.salePrice)}`;
     
     const originalPrice = card.querySelector('.hero-original-price');
     if (game.salePrice < game.normalPrice) {
-        originalPrice.textContent = `$${parseFloat(game.normalPrice).toFixed(2)}`;
+        originalPrice.textContent = `$${formatPrice(game.normalPrice)}`;
         originalPrice.style.display = 'inline';
     } else {
         originalPrice.style.display = 'none';
@@ -207,11 +209,11 @@ function crearGameCard(game) {
     }
     
     card.querySelector('.price-current').textContent = 
-        `$${parseFloat(game.salePrice).toFixed(2)}`;
+        `$${formatPrice(game.salePrice)}`;
     
     const originalPrice = card.querySelector('.price-original');
     if (game.salePrice < game.normalPrice) {
-        originalPrice.textContent = `$${parseFloat(game.normalPrice).toFixed(2)}`;
+        originalPrice.textContent = `$${formatPrice(game.normalPrice)}`;
         originalPrice.style.display = 'inline';
     } else {
         originalPrice.style.display = 'none';
@@ -544,4 +546,17 @@ async function eliminarBiblioteca(idSteam) {
         showAlert('Error de conexión', 'error');
         return false;
     }
+}
+
+//FORMATEAR PRECIOS
+function formatPrice(price) {
+    if (price == null) return '0,00';
+    
+    const numPrice = parseFloat(price);
+    
+    // Formatear con separador de miles (.) y decimal (,)
+    return numPrice.toLocaleString('es-AR', {
+        minimumFractionDigits: 2,
+        maximumFractionDigits: 2
+    });
 }

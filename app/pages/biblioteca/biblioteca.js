@@ -272,14 +272,24 @@ function crearBibliotecaCard(biblioteca) {
         plataformasEl.style.display = 'none';
     }
 
+
     // Botón eliminar
     const btnRemove = card.querySelector('.btn-remove-biblioteca');
     btnRemove.onclick = async (e) => {
         e.stopPropagation();
-        if (confirm(`¿Eliminar "${biblioteca.nombre}" de biblioteca?`)) {
+
+        // Mostrar modal de confirmación personalizado
+        const modal = new ConfirmModal();
+        const confirmed = await modal.confirm(
+            "Eliminar",
+            `¿Eliminar "${biblioteca.nombre}" de biblioteca?`
+        );
+
+        if (!confirmed) return;
+
         await eliminarBiblioteca(biblioteca.idSteam);
-        }
     };
+
 
     // Botón ver detalles
     const btnDetails = card.querySelector('.btn-ver-detalles');
