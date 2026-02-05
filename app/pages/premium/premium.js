@@ -285,9 +285,14 @@ async function crearSuscripcion(planType) {
     currency: 'ARS' 
   }).format(plan.price);
   
-  if (!confirm(`¿Confirmas la compra del plan ${planName} por ${planPrice}?`)) {
-    return;
-  }
+  const modal = new ConfirmModal();
+  const confirmed = await modal.confirm(
+    'Convertirse en Premium',
+    `¿Confirmás la compra del plan ${planName} por ${planPrice}?`
+  );
+
+  if (!confirmed) return;
+
 
   premiumState.isLoading = true;
   mostrarLoader(true);
@@ -338,12 +343,13 @@ async function crearSuscripcion(planType) {
 // CANCELAR SUSCRIPCIÓN
 // ============================================
 async function cancelarSuscripcion() {
-  if (!confirm(
-    '¿Estás seguro de que deseas cancelar tu suscripción Premium?\n\n' +
-    'Mantendrás el acceso hasta el final del período pagado.'
-  )) {
-    return;
-  }
+  const modal = new ConfirmModal();
+  const confirmed = await modal.confirm(
+    'Cancelar suscripción',
+    '¿Estás seguro de que deseas cancelar tu suscripción Premium?'
+  );
+
+  if (!confirmed) return;
 
   try {
     mostrarLoader(true);

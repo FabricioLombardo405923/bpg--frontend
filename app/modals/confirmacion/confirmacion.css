@@ -30,14 +30,13 @@
 
 /* Header */
 .modal-confirm-header {
-    background: #1174b6;
+    background: var(--gradient-primary);
     padding: 15px;
-    color: white;
+    color: var(--text-primary);
     display: flex;
     justify-content: space-between;
     align-items: center;
 }
-
 .modal-confirm-header h1 {
     font-size: 18px;
     margin: 0;
