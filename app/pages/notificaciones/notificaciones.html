@@ -1,0 +1,101 @@
+<div class="notificaciones-container">
+    <!-- Header -->
+    <div class="notificaciones-header">
+        <div class="header-content">
+            <div class="header-icon">
+                <i class="fas fa-bell"></i>
+            </div>
+            <div class="header-text">
+                <h2 class="section-title">Notificaciones</h2>
+                <p class="notificaciones-subtitle">
+                    <span id="notificacionesCount">0</span> notificaciones totales
+                </p>
+            </div>
+        </div>
+        <!-- TODO: HACER SI PINTA -->
+        <!-- <div class="header-actions">
+            <button class="btn btn-secondary" id="marcarTodasLeidas">
+                <i class="fas fa-check-double"></i>
+                Marcar todas como leídas
+            </button>
+        </div> -->
+    </div>
+
+    <!-- Filtros -->
+    <div class="notificaciones-filters">
+        <div class="filter-tabs">
+            <button class="filter-tab active" data-filter="all">
+                Todas
+                <span class="tab-count" id="countAll">0</span>
+            </button>
+            <button class="filter-tab" data-filter="pending">
+                Pendientes
+                <span class="tab-count" id="countPending">0</span>
+            </button>
+            <button class="filter-tab" data-filter="read">
+                Leídas
+                <span class="tab-count" id="countRead">0</span>
+            </button>
+        </div>
+        
+        <div class="sort-controls">
+            <label for="sortNotificaciones">Ordenar:</label>
+            <select id="sortNotificaciones">
+                <option value="recent">Más recientes</option>
+                <option value="oldest">Más antiguas</option>
+            </select>
+        </div>
+    </div>
+
+    <!-- Lista de notificaciones -->
+    <div id="notificacionesList" class="notificaciones-list"></div>
+
+    <!-- Estado vacío -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">
+            <i class="fas fa-bell-slash"></i>
+        </div>
+        <h3>No tienes notificaciones</h3>
+        <p>Cuando recibas notificaciones sobre ofertas y descuentos, aparecerán aquí</p>
+    </div>
+
+    <!-- Loader -->
+    <div id="notificacionesLoader" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Cargando notificaciones...</p>
+    </div>
+</div>
+
+<!-- Template para notificación -->
+<template id="notificacion-item-template">
+    <div class="notificacion-item">
+        <div class="notificacion-indicator"></div>
+        <div class="notificacion-image">
+            <img loading="lazy" alt="Portada del juego">
+        </div>
+        <div class="notificacion-content">
+            <div class="notificacion-header">
+                <h3 class="notificacion-title"></h3>
+                <span class="notificacion-time"></span>
+            </div>
+            <p class="notificacion-mensaje"></p>
+            <div class="notificacion-precio">
+                <span class="precio-anterior"></span>
+                <span class="precio-actual"></span>
+                <span class="descuento-badge"></span>
+            </div>
+        </div>
+        <div class="notificacion-actions">
+            <button class="btn btn-sm btn-primary btn-ver-oferta">
+                <i class="fas fa-external-link-alt"></i>
+                Ver oferta
+            </button>
+            <button class="btn-icon btn-marcar-leida" title="Marcar como leída">
+                <i class="fas fa-check"></i>
+            </button>
+            <!-- <button class="btn-icon btn-eliminar" title="Eliminar">
+                <i class="fas fa-trash"></i>
+            </button> -->
+        </div>
+    </div>
+</template>

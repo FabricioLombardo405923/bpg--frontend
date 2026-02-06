@@ -1,0 +1,129 @@
+<div class="premium-container">
+    <!-- Header Premium (se oculta si es premium) -->
+    <div id="premiumHeaderFree" class="premium-header">
+        <div class="premium-badge">
+            <i class="fas fa-crown"></i>
+        </div>
+        <h1 class="premium-title">Hazte Premium</h1>
+        <p class="premium-subtitle">Desbloquea todas las funciones y mejora tu experiencia</p>
+    </div>
+
+    <!-- Header Premium Activo (se muestra si es premium) -->
+    <div id="premiumHeaderActive" class="premium-header" style="display: none;">
+        <div class="premium-badge">
+            <i class="fas fa-crown"></i>
+        </div>
+        <h1 class="premium-title premium-title-active">¡Ya eres Premium!</h1>
+        <p class="premium-subtitle">Disfruta de todos los beneficios exclusivos</p>
+    </div>
+
+    <!-- Estado actual-->
+    <div class="premium-banner" id="premiumStatus" style="display: none;">
+        <div class="banner-icon">
+            <i class="fa fa-check-circle"></i>
+        </div>
+
+        <div class="banner-info">
+            <h4>Suscripción Premium Activa</h4>
+            <p>
+            <strong>Plan:</strong> <span id="planName">-</span> •
+            <strong>Válido hasta:</strong> <span id="validUntil">-</span>
+            </p>
+        </div>
+
+        <button class="btn-cancel" id="btnCancelSubscription">Cancelar Plan</button>
+    </div>
+
+
+
+
+
+    <!-- Beneficios -->
+    <div class="premium-benefits">
+        <h2>Beneficios Premium</h2>
+        <div class="benefits-grid">
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-infinity"></i>
+                </div>
+                <h3>Biblioteca Ilimitada</h3>
+                <p>Guarda todos los juegos que quieras sin límites</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <h3>Favoritos Ilimitados</h3>
+                <p>Marca tus juegos favoritos sin restricciones</p>
+            </div>
+            <div class="benefit-card">
+                <div class="benefit-icon">
+                    <i class="fas fa-ad"></i>
+                </div>
+                <h3>Sin Anuncios</h3>
+                <p>Disfruta de una experiencia sin interrupciones</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Planes -->
+    <div class="premium-plans">
+        <h2>Elige tu Plan</h2>
+        <div class="plans-grid" id="plansContainer">
+            <!-- Los planes se cargarán dinámicamente aquí -->
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+
+    <!-- FAQs -->
+    <div class="premium-faq">
+        <h2>Preguntas Frecuentes</h2>
+        <div class="faq-list">
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>¿Cómo funciona la suscripción?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Al suscribirte a Premium, obtienes acceso inmediato a todas las funciones premium. Tu suscripción se renovará automáticamente al final de cada período (mensual o anual) hasta que decidas cancelarla.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>¿Puedo cancelar en cualquier momento?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Sí, puedes cancelar tu suscripción en cualquier momento desde tu cuenta. Si cancelas, mantendrás el acceso Premium hasta el final del período que ya pagaste.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>¿Qué métodos de pago aceptan?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Aceptamos todos los métodos de pago disponibles en Mercado Pago: tarjetas de crédito, débito, efectivo (Rapipago, Pago Fácil), transferencias bancarias y saldo en Mercado Pago.</p>
+                </div>
+            </div>
+
+            <div class="faq-item">
+                <button class="faq-question">
+                    <span>¿Qué pasa si cancelo mi suscripción?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+                <div class="faq-answer">
+                    <p>Si cancelas, mantendrás todos los beneficios Premium hasta que finalice tu período de facturación actual. Después de esa fecha, tu cuenta volverá a ser gratuita automáticamente.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Loader -->
+    <div id="premiumLoader" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Procesando...</p>
+    </div>
+</div>

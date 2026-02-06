@@ -1,5 +1,8 @@
 {
   "projects": {
-    "default": "bestpricegame-30c56"
-  }
+    "default": "bestpricegame-30c56",
+    "bpg": "bestpricegame-30c56"
+  },
+  "targets": {},
+  "etags": {}
 }

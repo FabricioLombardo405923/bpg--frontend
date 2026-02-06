@@ -1,0 +1,243 @@
+<div class="perfil-container">
+    <!-- Header del Perfil -->
+    <div class="perfil-header">
+        <div class="perfil-avatar-section">
+            <div class="avatar-wrapper">
+                <div class="avatar-circle" id="avatar-display">
+                    <i class="fas fa-user"></i>
+                </div>
+                <button class="avatar-edit-btn" id="change-avatar-btn">
+                    <i class="fas fa-camera"></i>
+                </button>
+            </div>
+            <div class="perfil-info-header">
+                <h1 id="perfil-display-name">Cargando...</h1>
+                <p id="perfil-email">email@ejemplo.com</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navegación de Tabs -->
+    <div class="perfil-tabs">
+        <button class="tab-btn active" data-tab="info">
+            <i class="fas fa-info-circle"></i>
+            Información
+        </button>
+        <button class="tab-btn" data-tab="seguridad">
+            <i class="fas fa-lock"></i>
+            Seguridad
+        </button>
+  <!--   <button class="tab-btn" data-tab="estadisticas">
+            <i class="fas fa-chart-bar"></i>
+            Estadísticas
+        </button>*/-->
+    </div>
+
+    <!-- Contenido de Tabs -->
+    <div class="perfil-content">
+        
+        <!-- TAB: Información Personal -->
+        <div class="tab-content active" id="tab-info">
+                <div class="section-header">
+                    <h2>Información Personal</h2>
+                    <button class="btn btn-primary" id="edit-profile-btn">
+                        <i class="fas fa-edit"></i>
+                        Editar Perfil
+                    </button>
+                </div>
+
+                <!-- Vista de solo lectura -->
+                <div id="profile-view" class="profile-view">
+                    <div class="info-grid">
+                        <div class="info-item">
+                            <label>Nombre de Usuario</label>
+                            <p id="view-displayName">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Email</label>
+                            <p id="view-email">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Teléfono</label>
+                            <p id="view-telefono">-</p>
+                        </div>
+                        <div class="info-item">
+                            <label>Nacionalidad</label>
+                            <p id="view-nacionalidad">-</p>
+                        </div>
+                        <div class="info-item full-width">
+                            <label>Biografía</label>
+                            <p id="view-biografia">-</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Formulario de edición -->
+                <div id="profile-edit" class="profile-edit" style="display: none;">
+                    <form id="edit-profile-form">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="edit-displayName">
+                                    <i class="fas fa-user"></i>
+                                    Nombre de Usuario
+                                </label>
+                                <input 
+                                    type="text" 
+                                    id="edit-displayName" 
+                                    name="displayName"
+                                    placeholder="Tu nombre de usuario"
+                                    required
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-telefono">
+                                    <i class="fas fa-phone"></i>
+                                    Teléfono
+                                </label>
+                                <input 
+                                    type="tel" 
+                                    id="edit-telefono" 
+                                    name="telefono"
+                                    placeholder="+54 9 11 1234-5678"
+                                >
+                            </div>
+
+                            <div class="form-group">
+                                <label for="edit-nacionalidad">
+                                    <i class="fas fa-flag"></i>
+                                    Nacionalidad
+                                </label>
+                                <select id="edit-nacionalidad" name="nacionalidad">
+                                    <option value="">Seleccionar...</option>
+                                    <option value="AR">Argentina</option>
+                                    <option value="BR">Brasil</option>
+                                    <option value="CL">Chile</option>
+                                    <option value="CO">Colombia</option>
+                                    <option value="MX">México</option>
+                                    <option value="PE">Perú</option>
+                                    <option value="UY">Uruguay</option>
+                                    <option value="VE">Venezuela</option>
+                                    <option value="ES">España</option>
+                                    <option value="US">Estados Unidos</option>
+                                    <option value="OTHER">Otro</option>
+                                </select>
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label for="edit-biografia">
+                                    <i class="fas fa-align-left"></i>
+                                    Biografía
+                                </label>
+                                <textarea 
+                                    id="edit-biografia" 
+                                    name="biografia"
+                                    placeholder="Cuéntanos un poco sobre ti..."
+                                    rows="4"
+                                    maxlength="500"
+                                ></textarea>
+                                <small class="char-counter">
+                                    <span id="bio-count">0</span>/500 caracteres
+                                </small>
+                            </div>
+                        </div>
+
+                        <div class="form-actions">
+                            <button type="button" class="btn btn-secondary" id="cancel-edit-btn">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button type="submit" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                Guardar Cambios
+                            </button>
+                        </div>
+                    </form>
+                </div>
+        </div>
+
+        <!-- TAB: Seguridad -->
+        <div class="tab-content" id="tab-seguridad">
+                <h2>Seguridad de la Cuenta</h2>
+                
+                <div class="security-section">
+                    <h3>Cambiar Contraseña</h3>
+                    <form id="change-password-form">
+                        <div class="form-group">
+                            <label for="new-password">Nueva Contraseña</label>
+                            <input 
+                                type="password" 
+                                id="new-password" 
+                                name="newPassword"
+                                placeholder="Mínimo 6 caracteres"
+                                minlength="6"
+                                required
+                            >
+                        </div>
+                        <div class="form-group">
+                            <label for="confirm-password">Confirmar Contraseña</label>
+                            <input 
+                                type="password" 
+                                id="confirm-password" 
+                                name="confirmPassword"
+                                placeholder="Repetir contraseña"
+                                minlength="6"
+                                required
+                            >
+                        </div>
+                        <br>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-key"></i>
+                            Cambiar Contraseña
+                        </button>
+                    </form>
+            
+                    <br>
+
+                    <h3>Información de la Cuenta</h3>
+                    <div class="info-item">
+                        <label>Proveedor de Autenticación</label>
+                        <p id="auth-provider">-</p>
+                    </div>
+                    <div class="info-item">
+                        <label>Fecha de Creación</label>
+                        <p id="creation-date">-</p>
+                    </div>
+                </div>
+
+        </div>
+
+
+    <!-- Loading Overlay -->
+    <div id="profile-loading" class="loading-overlay" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Guardando cambios...</p>
+    </div>
+</div>
+    <div class="delete-account-section">
+        <h3><i class="fa fa-trash"></i> Eliminar cuenta</h3>
+        <p class="delete-text">
+            Esta acción es <strong>permanente</strong> y no podrás recuperar tu información luego de eliminarla.
+        </p>
+        <button id="delete-account-btn" class="btn-delete-account"  onclick="deleteAccount()">
+            Eliminar cuenta
+        </button>
+
+    </div>
+<!-- Modal para cambiar avatar -->
+<div id="avatar-modal" class="modal" style="display: none;">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Cambiar Avatar</h3>
+            <button class="modal-close" onclick="closeAvatarModal()">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        <div class="modal-body">
+            <p class="text-muted">Selecciona un estilo para tu avatar.</p>
+            <div class="emoji-grid" id="emoji-grid">
+                <!-- Se genera dinámicamente -->
+            </div>
+        </div>
+    </div>
+</div>

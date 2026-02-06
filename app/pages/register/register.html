@@ -1,0 +1,30 @@
+<section class="register-section">
+  <div class="auth-container">
+    <h2>Crear Cuenta</h2>
+
+    <form id="register-form" class="auth-form">
+      <div class="form-group">
+        <input type="text" id="register-name" placeholder="Nombre completo" required>
+      </div>
+      <div class="form-group">
+        <input type="email" id="register-email" placeholder="Correo electrónico" required>
+      </div>
+      <div class="form-group">
+        <input type="password" id="register-password" placeholder="Contraseña (mínimo 6 caracteres)" required minlength="6">
+      </div>
+      <div class="form-group">
+        <input type="password" id="register-password2" placeholder="Confirmar contraseña" required minlength="6">
+      </div>
+      <button type="submit" class="btn btn-primary">Registrarse</button>
+    </form>
+
+
+    <p class="error-message" id="register-error"></p>
+
+    <div class="auth-links">
+      <p>¿Ya tenés cuenta? 
+        <a href="#" onclick="loadPage('login')">Iniciar sesión</a>
+      </p>
+    </div>
+  </div>
+</section>

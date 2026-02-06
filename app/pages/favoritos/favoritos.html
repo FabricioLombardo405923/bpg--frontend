@@ -1,0 +1,88 @@
+<div class="favoritos-container">
+    <!-- Header -->
+    <div class="favoritos-header">
+        <div class="header-content">
+        <div class="header-icon">
+            <i class="fas fa-heart"></i>
+        </div>
+        <div class="header-text">
+            <h2 class="section-title">Mis Favoritos</h2>
+            <p class="favoritos-subtitle">
+            <span id="favoritosCount">0</span> juegos guardados
+            </p>
+        </div>
+        </div>
+    </div>
+
+    <!-- Filtros y ordenamiento -->
+    <div class="favoritos-controls">
+        <div class="search-box">
+        <i class="fas fa-search"></i>
+        <input 
+            type="text" 
+            id="searchFavoritos" 
+            placeholder="Buscar en favoritos..."
+            autocomplete="off"
+        >
+        </div>
+        
+        <div class="sort-controls">
+        <label for="sortFavoritos">Ordenar por:</label>
+        <select id="sortFavoritos">
+            <option value="recent">Más recientes</option>
+            <option value="oldest">Más antiguos</option>
+            <option value="name-asc">Nombre (A-Z)</option>
+            <option value="name-desc">Nombre (Z-A)</option>
+        </select>
+        </div>
+    </div>
+
+    <!-- Grid de favoritos -->
+    <div id="favoritosGrid" class="favoritos-grid"></div>
+
+    <!-- Estado vacío -->
+    <div id="emptyState" class="empty-state" style="display: none;">
+        <div class="empty-state-icon">
+        <i class="fas fa-heart-broken"></i>
+        </div>
+        <h3>No tienes juegos favoritos</h3>
+        <p>Empieza a guardar tus juegos favoritos para acceder rápidamente a ellos</p>
+        <button class="btn btn-primary" onclick="loadPage('home')">
+        <i class="fas fa-compass"></i>
+        Explorar Juegos
+        </button>
+    </div>
+
+    <!-- Loader -->
+    <div id="favoritosLoader" class="loading-container" style="display: none;">
+        <div class="loading-spinner"></div>
+        <p>Cargando favoritos...</p>
+    </div>
+</div>
+
+<!-- Template para card de favorito -->
+<template id="favorito-card-template">
+    <div class="favorito-card">
+        <div class="favorito-image-container">
+        <img class="favorito-image" loading="lazy" alt="Juego">
+        <div class="favorito-overlay">
+            <button class="btn-icon btn-remove-favorite" title="Quitar de favoritos">
+            <i class="fas fa-heart-broken"></i>
+            </button>
+        </div>
+        </div>
+        <div class="favorito-content">
+        <h3 class="favorito-title"></h3>
+        <div class="favorito-meta">
+            <div class="favorito-generos"></div>
+            <div class="favorito-plataformas"></div>
+        </div>
+        <div class="favorito-footer">
+            <button class="btn btn-sm btn-primary btn-ver-detalles">
+            <i class="fas fa-info-circle"></i>
+            Ver Detalles
+            </button>
+        </div>
+        </div>
+    </div>
+</template>

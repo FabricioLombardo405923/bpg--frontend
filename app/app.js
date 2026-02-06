@@ -1,23 +1,91 @@
 // Configuración de la API
-window.API_BASE_URL = (function() {
-    const isProd = window.location.hostname !== 'localhost';
-    return isProd 
-        ? 'https://api-bpg.vercel.app/api'
-        : 'http://localhost:3000/api';
-})();
+const produccion =
+    window.location.href.startsWith("https://bestpricegame-30c56.web.app");
+
+window.API_BASE_URL = produccion
+    ? "https://bpg-backend.vercel.app/api"
+    : "http://localhost:3000/api";
 
 // Configuración de páginas
 const pages = {
     home: {
         html: 'pages/home/home.html',
-        //css: 'pages/home/home.css',
-        //js: 'pages/home/home.js',
-        deps: [
-            /*'services/gamesService.js',
-            'services/libraryService.js'*/
-        ],
+        css: 'pages/home/home.css',
+        js: 'pages/home/home.js',
         init: 'initializeHome'
-    }
+    },
+    favoritos: {
+        html: 'pages/favoritos/favoritos.html',
+        css: 'pages/favoritos/favoritos.css',
+        js: 'pages/favoritos/favoritos.js',
+        init: 'initializeFavoritos'
+    },
+    biblioteca: {
+        html: 'pages/biblioteca/biblioteca.html',
+        css: 'pages/biblioteca/biblioteca.css',
+        js: 'pages/biblioteca/biblioteca.js',
+        init: 'initializeBiblioteca'
+    },
+    perfil: {
+        html: 'pages/perfil/perfil.html',
+        css: 'pages/perfil/perfil.css',
+        js: 'pages/perfil/perfil.js',
+        init: 'initializePerfil'
+    },
+    juego: {
+        html: 'pages/juego/juego.html',
+        css: 'pages/juego/juego.css',
+        js: 'pages/juego/juego.js',
+        init: 'initializeJuego'
+    },
+    busqueda: {
+        html: 'pages/busqueda/busqueda.html',
+        css: 'pages/busqueda/busqueda.css',
+        js: 'pages/busqueda/busqueda.js',
+        init: 'initializeBusqueda'
+    },
+    login: { 
+        html: 'pages/login/login.html', 
+        js:'pages/login/login.js',
+        css: 'pages/login/login.css',
+        init: 'initializeLogin'
+    },
+    register: { 
+        html: 'pages/register/register.html', 
+        js:'pages/register/register.js',
+        css:'pages/register/register.css',
+        init: 'initializeRegister' 
+    },
+    "reset-password": { 
+        html: 'pages/reset-password/reset-password.html', 
+        js: 'pages/reset-password/reset-password.js',
+        css: 'pages/reset-password/reset-password.css',
+        init: 'initializeResetPassword'
+    },
+    premium: { 
+        html: 'pages/premium/premium.html', 
+        js:'pages/premium/premium.js',
+        css: 'pages/premium/premium.css',
+        init: 'initializePremium' 
+    },
+    preguntas: { 
+        html: 'pages/preguntas/preguntas.html', 
+        //js:'pages/preguntas/preguntas.js',
+        css: 'pages/preguntas/preguntas.css'
+        //init: 'initializePreguntas' 
+    },
+    terminos: { 
+        html: 'pages/terminos/terminos.html', 
+        //js:'pages/terminos/terminos.js',
+        css: 'pages/terminos/terminos.css'
+        //init: 'initializeTerminos' 
+    },
+    notificaciones: { 
+        html: 'pages/notificaciones/notificaciones.html', 
+        js:'pages/notificaciones/notificaciones.js',
+        css: 'pages/notificaciones/notificaciones.css',
+        init: 'initializeNotificaciones' 
+    },
 };
 
 // Variables globales del sistema
@@ -26,12 +94,31 @@ let loadedStyles = new Set();
 let loadedScripts = new Set();
 let mobileMenuOpen = false;
 
+//TODO: MEJORAR PARA QUE SEA PARA TODOS 
+//limpia la url para que no se vea el gameID
+(function handleGameIdFromUrl() {
+    const params = new URLSearchParams(window.location.search);
+    const gameID = params.get("gameID");
+
+    if (gameID) {
+        sessionStorage.setItem("gameID", gameID);
+        params.delete("gameID");
+
+        const newUrl =
+            window.location.pathname +
+            (params.toString() ? `?${params.toString()}` : "");
+
+        window.history.replaceState({}, document.title, newUrl);
+    }
+})();
+
 // =================================================================
 // FUNCIONES DE CARGA DINÁMICA
 // =================================================================
 
 // Cargar CSS dinámicamente
-function loadCSS(href) {
+// Cargar CSS dinámicamente
+function loadCSS(href, isPageStyle = true) {
     return new Promise((resolve, reject) => {
         if (loadedStyles.has(href)) {
             resolve();
@@ -41,16 +128,34 @@ function loadCSS(href) {
         const link = document.createElement('link');
         link.rel = 'stylesheet';
         link.href = href;
+        
+        // Marcar estilos de página para poder eliminarlos después
+        if (isPageStyle) {
+            link.setAttribute('data-page-style', 'true');
+        }
+        
         link.onload = () => {
             loadedStyles.add(href);
             resolve();
         };
         link.onerror = () => {
             console.warn(`⚠️ No se pudo cargar CSS: ${href}`);
-            resolve(); // No fallar por CSS faltante
+            resolve();
         };
         document.head.appendChild(link);
     });
+}
+
+// Limpiar estilos de página
+function cleanupPageStyles() {
+    // Remover todos los estilos de página anteriores
+    const pageStyles = document.querySelectorAll('link[data-page-style="true"]');
+    pageStyles.forEach(link => {
+        link.remove();
+    });
+    
+    // Limpiar el Set de estilos cargados
+    loadedStyles.clear();
 }
 
 // Cargar JavaScript dinámicamente
@@ -145,6 +250,7 @@ async function loadPage(pageName, params = {}) {
         // Limpiar página anterior
         if (currentPage) {
             cleanupPageScripts(currentPage);
+            cleanupPageStyles();
         }
 
         // Mostrar loading
@@ -311,13 +417,13 @@ function updateURL(pageName, params = {}) {
 // =================================================================
 // FUNCIONES DE BÚSQUEDA Y NAVEGACIÓN
 // =================================================================
-
+/*
 function handleSearch(query) {
     if (query.trim()) {
         loadPage('home', { search: query.trim() });
     }
 }
-
+*/
 function navigateToGame(gameId) {
     loadPage('juego', { id: gameId });
 }
@@ -369,14 +475,8 @@ function closeMobileMenu() {
 document.addEventListener('DOMContentLoaded', () => {
     console.log('🎮 Inicializando Best Price Games...');
 
-    // Crear menú móvil si no existe
-    createMobileMenu();
-
     // Event listeners para navegación
     setupNavigationListeners();
-
-    // Event listeners para búsqueda
-    setupSearchListeners();
 
     // Event listener para overlay móvil
     const overlay = document.getElementById('mobile-overlay');
@@ -408,7 +508,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Exponer funciones globales
     window.loadPage = loadPage;
-    window.handleSearch = handleSearch;
+    //window.handleSearch = handleSearch;
     window.navigateToGame = navigateToGame;
     window.navigateToProfile = navigateToProfile;
     window.navigateToFavorites = navigateToFavorites;
@@ -420,64 +520,6 @@ document.addEventListener('DOMContentLoaded', () => {
 // =================================================================
 // FUNCIONES DE SETUP
 // =================================================================
-
-function createMobileMenu() {
-    // Crear botón hamburguesa si no existe
-    if (!document.querySelector('.mobile-menu-toggle')) {
-        const navbar = document.querySelector('.navbar .nav-container');
-        const toggleBtn = document.createElement('button');
-        toggleBtn.className = 'mobile-menu-toggle';
-        toggleBtn.innerHTML = '<i class="fas fa-bars"></i>';
-        toggleBtn.onclick = toggleMobileMenu;
-        navbar.appendChild(toggleBtn);
-    }
-
-    // Crear menú móvil si no existe
-    if (!document.getElementById('mobile-nav')) {
-        const mobileNav = document.createElement('div');
-        mobileNav.id = 'mobile-nav';
-        mobileNav.className = 'mobile-nav';
-        mobileNav.innerHTML = `
-            <div class="mobile-nav-header">
-                <div class="nav-brand">
-                    <h1>BPG</h1>
-                </div>
-                <button onclick="closeMobileMenu()" class="mobile-menu-toggle">
-                    <i class="fas fa-times"></i>
-                </button>
-            </div>
-            <ul class="mobile-nav-menu">
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="home">
-                        <i class="fas fa-home"></i> Inicio
-                    </button>
-                </li>
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="favoritos">
-                        <i class="fas fa-heart"></i> Favoritos
-                    </button>
-                </li>
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="biblioteca">
-                        <i class="fas fa-book"></i> Biblioteca
-                    </button>
-                </li>
-                <li class="mobile-nav-item">
-                    <button class="mobile-nav-btn" data-page="perfil">
-                        <i class="fas fa-user"></i> Perfil
-                    </button>
-                </li>
-            </ul>
-        `;
-        document.body.appendChild(mobileNav);
-
-        // Crear overlay
-        const overlay = document.createElement('div');
-        overlay.id = 'mobile-overlay';
-        overlay.className = 'mobile-overlay';
-        document.body.appendChild(overlay);
-    }
-}
 
 function setupNavigationListeners() {
     // Event listeners para botones de navegación (desktop y móvil)
@@ -493,44 +535,6 @@ function setupNavigationListeners() {
             }
         }
     });
-}
-
-function setupSearchListeners() {
-    const searchInput = document.querySelector('.search-input');
-    if (searchInput) {
-        // Búsqueda al presionar Enter
-        searchInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                e.preventDefault();
-                handleSearch(searchInput.value);
-            }
-        });
-
-        // Búsqueda con debounce mientras escribes
-        let searchTimeout;
-        searchInput.addEventListener('input', (e) => {
-            clearTimeout(searchTimeout);
-            const query = e.target.value;
-            
-            if (query.length >= 3) {
-                searchTimeout = setTimeout(() => {
-                    handleSearch(query);
-                }, 500);
-            }
-        });
-    }
-
-    // Event listener para botón de búsqueda si existe
-    const searchBtn = document.querySelector('.search-btn');
-    if (searchBtn) {
-        searchBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            const input = document.querySelector('.search-input');
-            if (input) {
-                handleSearch(input.value);
-            }
-        });
-    }
 }
 
 // =================================================================
@@ -550,25 +554,6 @@ window.addEventListener('unhandledrejection', (event) => {
 // UTILIDADES GLOBALES
 // =================================================================
 
-// Función para mostrar notificaciones
-window.showNotification = function(message, type = 'info') {
-    const notification = document.createElement('div');
-    notification.className = `alert alert-${type}`;
-    notification.innerHTML = `
-        <i class="alert-icon fas fa-${getIconByType(type)}"></i>
-        <div class="alert-content">
-            <div class="alert-message">${message}</div>
-        </div>
-    `;
-    
-    document.body.appendChild(notification);
-    
-    // Auto-remove después de 5 segundos
-    setTimeout(() => {
-        notification.remove();
-    }, 5000);
-};
-
 function getIconByType(type) {
     const icons = {
         success: 'check-circle',
@@ -578,3 +563,33 @@ function getIconByType(type) {
     };
     return icons[type] || 'info-circle';
 }
+
+
+window.addEventListener("DOMContentLoaded", () => {
+    const banner = document.getElementById("cookie-banner");
+    const consent = localStorage.getItem("aceptar_legales");
+
+    // Solo mostrar si nunca aceptó/declinó
+    if (consent === null) {
+        banner.classList.remove("hidden");
+    }
+
+    // ACEPTAR
+    document.getElementById("cookie-accept").onclick = () => {
+        localStorage.setItem("aceptar_legales", "true");
+        banner.classList.add("hidden");
+    };
+
+    // RECHAZAR
+    document.getElementById("cookie-decline").onclick = () => {
+        localStorage.setItem("aceptar_legales", "false");
+        banner.classList.add("hidden");
+    };
+
+    // ABRIR TÉRMINOS
+    document.getElementById("cookie-terms-link").onclick = (e) => {
+        e.preventDefault();
+        loadPage("terminos");
+    };
+});
+

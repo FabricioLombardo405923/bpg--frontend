@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Best Price Games</title>
-    
 
     <!-- Estilos -->
     <link rel="stylesheet" href="styles.css">
@@ -16,29 +15,47 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Orbitron:wght@400;700;900&display=swap" rel="stylesheet">
-    
-    <!-- PWA Meta tags -->
-    <meta name="theme-color" content="#7c3aed">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-    <meta name="apple-mobile-web-app-title" content="Best Price Games">
+
+    <!-- Toastify -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+
+    <!-- FAVICON -->
+    <link rel="icon" type="image/png" href="favicon/favicon-96x96.png" sizes="96x96" />
+    <link rel="icon" type="image/svg+xml" href="favicon/favicon.svg" />
+    <link rel="shortcut icon" href="favicon/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="favicon/apple-touch-icon.png" />
+    <meta name="apple-mobile-web-app-title" content="BPG" />
+    <link rel="manifest" href="favicon/site.webmanifest" />
+
 </head>
 <body>
     <!-- NAVBAR PRINCIPAL -->
     <nav class="navbar">
         <div class="nav-container">
             <!-- Brand/Logo -->
-            <div class="nav-brand">
+            <!-- <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
                 <div class="nav-logo">🎮</div>
                 <h1>BPG</h1>
+            </div> -->
+            <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
+                <div class="nav-logo">
+                    <img src="favicon/LogoBlancoSinFondo.png" alt="logo">
+                </div>
+                <h1>BPG</h1>
             </div>
+            
+            <!-- Botón menú móvil -->
+            <button class="mobile-menu-toggle" onclick="toggleMobileMenu()">
+                <i class="fas fa-bars"></i>
+            </button>
             
             <!-- Búsqueda (Desktop y Mobile) -->
             <div class="nav-search">
                 <i class="fas fa-search search-icon"></i>
-                <input 
-                    type="text" 
-                    class="search-input" 
+                <input
+                    type="text"
+                    class="search-input"
                     placeholder="Buscar juegos, géneros..."
                     autocomplete="off"
                 >
@@ -64,16 +81,123 @@
                         <span>Biblioteca</span>
                     </button>
                 </li>
+                
+                <!-- CAMPANITA DE NOTIFICACIONES -->
+                <div class="nav-notificaciones" id="navNotificaciones" style="display: none;">
+                    <button class="nav-btn" id="notifBellBtn" title="Notificaciones">
+                        <i class="fas fa-bell"></i>
+                        <span class="notif-badge" id="notifBadge" style="display: none;">0</span>
+                    </button>
+
+                    <div class="notif-dropdown" id="notifDropdown">
+                        <div class="notif-dropdown-header">
+                            <h3>Notificaciones</h3>
+                            <button class="btn-close-notif" id="closeNotifDropdown">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <div class="notif-dropdown-body" id="notifDropdownBody">
+                            <div class="notif-loading">
+                                <div class="loading-spinner-small"></div>
+                                <p>Cargando...</p>
+                            </div>
+                        </div>
+                        <div class="notif-dropdown-footer">
+                            <button class="btn-ver-todas" onclick="loadPage('notificaciones')">
+                                Ver todas las notificaciones
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </ul>
             
             <!-- Usuario -->
-            <div class="nav-user" onclick="navigateToProfile()">
-                <div class="user-avatar">A</div>
-                <span class="user-name" style="display: none;">Alex_Gamer2024</span>
-                <i class="fas fa-chevron-down" style="font-size: 0.8rem; color: var(--text-muted);"></i>
+            <div class="nav-user">
+
+
+                <button class="user-avatar-btn">
+                    👤 <span class="user-name"></span> <i class="fas fa-caret-down"></i>
+                </button>
+                <div class="user-menu">
+                    <button onclick="loadPage('login')" id="login-btn"><i class="fas fa-sign-in-alt"></i> Iniciar sesión</button>
+                    <button onclick="navigateToProfile()" id="profile-btn" style="display:none;"><i class="fas fa-user"></i> Mi perfil</button>
+                    <button onclick="loadPage('premium')" id="premium-btn" style="display:block;"><i class="fas fa-crown"></i> Premium</button>
+                    <button onclick="logout()" id="logout-btn" style="display:none;"><i class="fas fa-sign-out-alt"></i> Cerrar sesión</button>
+                </div>
             </div>
         </div>
     </nav>
+    <!-- MENÚ MÓVIL -->
+    <div class="mobile-overlay" id="mobile-overlay"></div>
+
+    <div class="mobile-nav" id="mobile-nav">
+        <div class="mobile-nav-header">
+            <!-- <div class="nav-brand">
+                <div class="nav-logo">🎮</div>
+                <h1>BPG</h1>
+            </div> -->
+            <div class="nav-brand" onclick="loadPage('home')" style="cursor: pointer;">
+                <div class="nav-logo">
+                    <img src="favicon/LogoBlancoSinFondo.png" alt="logo">
+                </div>
+                <h1>BPG</h1>
+            </div>
+            <button onclick="closeMobileMenu()" class="mobile-close-btn">
+                <i class="fas fa-times"></i>
+            </button>
+        </div>
+        
+        <ul class="mobile-nav-menu">
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="home">
+                    <i class="fas fa-home"></i>
+                    <span>Inicio</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="loadPage('login')" id="mobile-login-btn" class="mobile-nav-btn">
+                    <i class="fas fa-sign-in-alt"></i>
+                    <span>Iniciar sesión</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="navigateToProfile()" id="mobile-profile-btn" class="mobile-nav-btn" style="display:none;">
+                    <i class="fas fa-user"></i>
+                    <span>Mi perfil</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="notificaciones">
+                    <i class="fas fa-bell"></i>
+                    <span>Notificaciones</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="favoritos">
+                    <i class="fas fa-heart"></i>
+                    <span>Favoritos</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button class="mobile-nav-btn" data-page="biblioteca">
+                    <i class="fas fa-book"></i>
+                    <span>Biblioteca</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="loadPage('premium')" id="mobile-premium-btn" class="mobile-nav-btn">
+                    <i class="fas fa-crown"></i>
+                    <span>Premium</span>
+                </button>
+            </li>
+            <li class="mobile-nav-item">
+                <button onclick="logout()" id="mobile-logout-btn" class="mobile-nav-btn" style="display:none;">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Cerrar sesión</span>
+                </button>
+            </li>
+        </ul>
+    </div>
 
     <!-- CONTENIDO PRINCIPAL -->
     <main class="main-content">
@@ -104,34 +228,55 @@
             </div>
         </div>
     </main>
-    
-    <!-- Services -->
-    <script src="services/modalBase.js"></script>
-    <script src="services/juegoService.js"></script>
-    <script src="services/usuarioService.js"></script>
-    <script src="services/favoritoService.js"></script>
-    <script src="services/bibliotecaService.js"></script>
-    
-    <!-- Modales -->
-    <script src="modals/confirmacion/confirmacion.js"></script>
-    <script src="modals/modals-init.js"></script>
-    
-    <!-- App principal -->
-    <script src="app.js"></script>
+    <!-- COOKIE -->
+    <div id="cookie-banner" class="cookie-banner hidden">
+        <div class="cookie-text">
+            ¿Confirma estar de acuerdo con nuestos <a href="#" id="cookie-terms-link">términos y condiciones</a> y aceptas las cookies?
+        </div>
 
-    <!-- Service Worker para PWA -->
-    <script>
-        if ('serviceWorker' in navigator) {
-            window.addEventListener('load', () => {
-                navigator.serviceWorker.register('/sw.js')
-                    .then(registration => {
-                        console.log('SW registrado: ', registration);
-                    })
-                    .catch(registrationError => {
-                        console.log('SW registro falló: ', registrationError);
-                    });
-            });
-        }
-    </script>
+        <div class="cookie-buttons">
+            <button class="btn-accept" id="cookie-accept">Aceptar</button>
+            <button class="btn-decline" id="cookie-decline">Rechazar</button>
+        </div>
+    </div>
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="footer-links">
+            <a class="nav-link" onclick="loadPage('preguntas')">Preguntas Frecuentes</a>
+            <a class="nav-link" onclick="loadPage('terminos')">Términos y Condiciones</a>
+        </div>
+        <p class="copyright">© 2025 Best Price Game. Todos los derechos reservados.</p>
+    </footer>
+<!-- ================= FIREBASE ================= -->
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-auth-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/11.0.1/firebase-messaging-compat.js"></script>
+<script src="./firebaseConfig.js"></script>
+
+<!-- ================= SERVICES ================= -->
+<script src="services/notificacionesService.js"></script>
+<script src="services/modalBase.js"></script>
+<script src="services/pagination.js"></script>
+<link rel="stylesheet" href="services/pagination.css">
+<script src="services/search-handler.js"></script>
+<link rel="stylesheet" href="services/search-suggestions.css">
+<script src="services/toast.js"></script>
+
+<!-- ================= MODALES ================= -->
+    <script src="modals/confirmacion/confirmacion.js"></script>
+    <link rel="stylesheet" href="modals/confirmacion/confirmacion.css">
+    <script src="modals/modals-init.js"></script>
+
+<!-- ================= UI ================= -->
+<script src="ui/notificacionesPush.js"></script>
+<script src="ui/notificaciones.js"></script>
+<link rel="stylesheet" href="ui/notificaciones.css">
+
+<!-- ================= AUTH ================= -->
+<script src="services/auth-handler.js"></script>
+
+<!-- ================= APP ================= -->
+<script src="app.js"></script>
+
 </body>
 </html>

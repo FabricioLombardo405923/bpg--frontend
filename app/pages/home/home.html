@@ -1,54 +1,86 @@
-<!-- HOME PAGE -->
-<div class="home-page">
-
-    <!-- CONTENIDO PRINCIPAL -->
-    <section class="games-section">
-        <h2 class="section-title">🎮 Juegos Destacados</h2>
-
-        <!-- GRID DE JUEGOS -->
-        <div class="games-grid">
-            <!-- Tarjeta de Juego -->
-            <div class="card">
-                <img src="assets/juegos/game1.jpg" alt="Juego 1">
-                <h3>CyberQuest 2077</h3>
-                <p class="price">$29.99</p>
-                <button class="btn btn-primary">Ver Detalles</button>
+<div class="home-container">
+    <!-- Carrusel grande -->
+    <section class="hero-carousel-section">
+        <h2 class="section-title">LOS MÁS POPULARES</h2>
+        <div class="hero-carousel-wrapper">
+            <button class="hero-prev-btn"><i class="fas fa-chevron-left"></i></button>
+            <div class="hero-carousel" id="heroCarousel">
+                <!-- Imágenes cargadas dinámicamente -->
             </div>
+            <button class="hero-next-btn"><i class="fas fa-chevron-right"></i></button>
+        </div>
+    </section>
 
-            <div class="card">
-                <img src="assets/juegos/game2.jpg" alt="Juego 2">
-                <h3>Dragon Realms</h3>
-                <p class="price">$49.99</p>
-                <button class="btn btn-primary">Ver Detalles</button>
-            </div>
+    <!-- Lista de juegos recomendados -->
+    <section class="games-list-section">
+        <h2 class="section-title">RECOMENDADOS</h2>
+        <div class="games-grid-list" id="gamesList">
+            <!-- Cards cargadas dinámicamente -->
+        </div>
+    </section>
 
-            <div class="card">
-                <img src="assets/juegos/game3.jpg" alt="Juego 3">
-                <h3>Speed Rush</h3>
-                <p class="price">$19.99</p>
-                <button class="btn btn-primary">Ver Detalles</button>
+    <!-- Carrusel de descuentos -->
+    <section class="recent-carousel-section">
+        <h2 class="section-title">DESCUENTOS RECIENTES</h2>
+        <div class="carousel-wrapper">
+            <button class="prev-btn"><i class="fas fa-chevron-left"></i></button>
+            <div class="games-grid carousel" id="carousel">
+                <!-- Tarjetas de juegos -->
             </div>
-
-            <div class="card">
-                <img src="assets/juegos/game4.jpg" alt="Juego 4">
-                <h3>Soccer World 25</h3>
-                <p class="price">$39.99</p>
-                <button class="btn btn-primary">Ver Detalles</button>
-            </div>
-
-            <div class="card">
-                <img src="assets/juegos/game5.jpg" alt="Juego 5">
-                <h3>Wizard’s Path</h3>
-                <p class="price">$59.99</p>
-                <button class="btn btn-primary">Ver Detalles</button>
-            </div>
-
-            <div class="card">
-                <img src="assets/juegos/game6.jpg" alt="Juego 6">
-                <h3>Battlefield Legacy</h3>
-                <p class="price">$69.99</p>
-                <button class="btn btn-primary">Ver Detalles</button>
-            </div>
+            <button class="next-btn"><i class="fas fa-chevron-right"></i></button>
         </div>
     </section>
 </div>
+
+<!-- Templates HTML -->
+<template id="hero-template">
+    <div class="hero-slide">
+        <img class="hero-image" loading="lazy">
+        <div class="hero-quick-actions">
+            <button class="btn-hero-action btn-hero-favorite" title="Agregar a favoritos">
+                <i class="far fa-heart"></i>
+            </button>
+            <button class="btn-hero-action btn-hero-library" title="Agregar a biblioteca">
+                <i class="far fa-bookmark"></i>
+            </button>
+        </div>
+        <div class="hero-overlay">
+            <h3 class="hero-title"></h3>
+            <p class="hero-price">
+                <span class="hero-current-price"></span>
+                <span class="hero-original-price"></span>
+            </p>
+            <div class="hero-rating"></div>
+            <button class="btn btn-primary">Ver Detalles</button>
+        </div>
+    </div>
+</template>
+
+<template id="card-template">
+    <div class="game-card">
+        <div class="game-image">
+            <img loading="lazy">
+            <span class="game-badge badge-discount">Oferta</span>
+            <div class="card-quick-actions">
+                <button class="btn-card-action btn-card-favorite" title="Agregar a favoritos">
+                    <i class="far fa-heart"></i>
+                </button>
+                <button class="btn-card-action btn-card-library" title="Agregar a biblioteca">
+                    <i class="far fa-bookmark"></i>
+                </button>
+            </div>
+        </div>
+        <div class="game-content">
+            <h3 class="game-title"></h3>
+            <div class="game-info">
+                <div class="game-rating"></div>
+                <div class="game-genres"></div>
+            </div>
+            <div class="game-price">
+                <span class="price-current"></span>
+                <span class="price-original"></span>
+            </div>
+            <button class="btn btn-primary">Ver Detalles</button>
+        </div>
+    </div>
+</template>
